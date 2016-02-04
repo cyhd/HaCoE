@@ -20,7 +20,7 @@ Supported force sensor
 
 Installation
 
-- install 4.8.x
+- install QT 4.8.x
 - install QWT 5.1
 - install the API of your robot (Entact API, ...)
 - create an environment variable QTDIR pointing to the QT installation directory
