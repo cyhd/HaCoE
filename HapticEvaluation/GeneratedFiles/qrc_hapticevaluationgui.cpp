@@ -1,51 +1,46 @@
-//
-// HaCoE Haptic Communication Evaluation is a software to build haptic communication experiments, using haptic arms and force sensors, generating standard XML files you can load in R.
-//
-//   Copyright (C) 2014 Cedric Dumas 
-//
-//   contributors: Cedric Dumas, Boris Takac, Devin Luu, Amine Chellali, Caroline Cao
-//   contact: Cedric.Dumas@gmail.com
-//
-//   This program is free software; you can redistribute it and/or modify
-//   it under the terms of the GNU General Public License as published by
-//   the Free Software Foundation; either version 3 of the License, or
-//   (at your option) any later version.
-//   This program is distributed in the hope that it will be useful,
-//   but WITHOUT ANY WARRANTY; without even the implied warranty of
-//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//   GNU General Public License for more details.
-//  You should have received a copy of the GNU General Public License
-//  along with this program; if not, write to the Free Software Foundation,
-//  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
-//
-
 /****************************************************************************
 ** Resource object code
 **
-** Created: Thu 8. Oct 16:57:06 2015
-**      by: The Resource Compiler for Qt version 4.8.4
+** Created by: The Resource Compiler for Qt version 5.5.1
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include <QtCore/qglobal.h>
+#ifdef QT_NAMESPACE
+#  define QT_RCC_PREPEND_NAMESPACE(name) ::QT_NAMESPACE::name
+#  define QT_RCC_MANGLE_NAMESPACE0(x) x
+#  define QT_RCC_MANGLE_NAMESPACE1(a, b) a##_##b
+#  define QT_RCC_MANGLE_NAMESPACE2(a, b) QT_RCC_MANGLE_NAMESPACE1(a,b)
+#  define QT_RCC_MANGLE_NAMESPACE(name) QT_RCC_MANGLE_NAMESPACE2( \
+        QT_RCC_MANGLE_NAMESPACE0(name), QT_RCC_MANGLE_NAMESPACE0(QT_NAMESPACE))
+#else
+#   define QT_RCC_PREPEND_NAMESPACE(name) name
+#   define QT_RCC_MANGLE_NAMESPACE(name) name
+#endif
 
-QT_BEGIN_NAMESPACE
+#ifdef QT_NAMESPACE
+namespace QT_NAMESPACE {
+#endif
 
-QT_END_NAMESPACE
+#ifdef QT_NAMESPACE
+}
+#endif
 
-
-int QT_MANGLE_NAMESPACE(qInitResources_hapticevaluationgui)()
+int QT_RCC_MANGLE_NAMESPACE(qInitResources_hapticevaluationgui)();
+int QT_RCC_MANGLE_NAMESPACE(qInitResources_hapticevaluationgui)()
 {
     return 1;
 }
 
-Q_CONSTRUCTOR_FUNCTION(QT_MANGLE_NAMESPACE(qInitResources_hapticevaluationgui))
-
-int QT_MANGLE_NAMESPACE(qCleanupResources_hapticevaluationgui)()
+int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_hapticevaluationgui)();
+int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_hapticevaluationgui)()
 {
     return 1;
 }
 
-Q_DESTRUCTOR_FUNCTION(QT_MANGLE_NAMESPACE(qCleanupResources_hapticevaluationgui))
-
+namespace {
+   struct initializer {
+       initializer() { QT_RCC_MANGLE_NAMESPACE(qInitResources_hapticevaluationgui)(); }
+       ~initializer() { QT_RCC_MANGLE_NAMESPACE(qCleanupResources_hapticevaluationgui)(); }
+   } dummy;
+}
