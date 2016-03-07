@@ -88,6 +88,7 @@ public:
     QRadioButton *radioButtonSingleHaptic;
     QRadioButton *radioButtonDepthConstant;
     QRadioButton *radioButtonDepthLinear;
+    QRadioButton *radioButtonForceToNet;
     QFrame *frame_5;
     QLabel *label;
     QLabel *label_2;
@@ -181,7 +182,7 @@ public:
     {
         if (HapticEvaluationGUIClass->objectName().isEmpty())
             HapticEvaluationGUIClass->setObjectName(QStringLiteral("HapticEvaluationGUIClass"));
-        HapticEvaluationGUIClass->resize(1048, 860);
+        HapticEvaluationGUIClass->resize(1059, 926);
         centralWidget = new QWidget(HapticEvaluationGUIClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         pushButtonStart = new QPushButton(centralWidget);
@@ -192,7 +193,7 @@ public:
         pushButtonStop->setGeometry(QRect(940, 670, 75, 23));
         labelStatus = new QLabel(centralWidget);
         labelStatus->setObjectName(QStringLiteral("labelStatus"));
-        labelStatus->setGeometry(QRect(10, 770, 821, 20));
+        labelStatus->setGeometry(QRect(10, 830, 821, 20));
         labelStatus->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         qwtPlot = new QwtPlot(centralWidget);
         qwtPlot->setObjectName(QStringLiteral("qwtPlot"));
@@ -360,6 +361,9 @@ public:
         radioButtonDepthLinear = new QRadioButton(frame_4);
         radioButtonDepthLinear->setObjectName(QStringLiteral("radioButtonDepthLinear"));
         radioButtonDepthLinear->setGeometry(QRect(10, 210, 141, 18));
+        radioButtonForceToNet = new QRadioButton(frame_4);
+        radioButtonForceToNet->setObjectName(QStringLiteral("radioButtonForceToNet"));
+        radioButtonForceToNet->setGeometry(QRect(10, 230, 141, 18));
         radioButtonSLPosition->raise();
         radioButtonSLForce->raise();
         radioButtonDLForce->raise();
@@ -371,6 +375,7 @@ public:
         radioButtonDepthConstant->raise();
         radioButtonDepthLinear->raise();
         label_14->raise();
+        radioButtonForceToNet->raise();
         frame_5 = new QFrame(centralWidget);
         frame_5->setObjectName(QStringLiteral("frame_5"));
         frame_5->setGeometry(QRect(10, 300, 621, 191));
@@ -450,7 +455,7 @@ public:
         labelTy_B->setGeometry(QRect(560, 80, 46, 13));
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(416, 500, 251, 301));
+        tabWidget->setGeometry(QRect(416, 500, 251, 321));
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
         frameHaptRep_2 = new QFrame(tab_2);
@@ -641,7 +646,7 @@ public:
         HapticEvaluationGUIClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(HapticEvaluationGUIClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1048, 21));
+        menuBar->setGeometry(QRect(0, 0, 1059, 26));
         HapticEvaluationGUIClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(HapticEvaluationGUIClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -705,6 +710,7 @@ public:
         radioButtonSingleHaptic->setText(QApplication::translate("HapticEvaluationGUIClass", "Single Force Feedback", 0));
         radioButtonDepthConstant->setText(QApplication::translate("HapticEvaluationGUIClass", " Force with Depth constant", 0));
         radioButtonDepthLinear->setText(QApplication::translate("HapticEvaluationGUIClass", " Force with Depth linear", 0));
+        radioButtonForceToNet->setText(QApplication::translate("HapticEvaluationGUIClass", "Force to network", 0));
         label->setText(QApplication::translate("HapticEvaluationGUIClass", "Force X_A", 0));
         label_2->setText(QApplication::translate("HapticEvaluationGUIClass", "Force Y_A", 0));
         label_3->setText(QApplication::translate("HapticEvaluationGUIClass", "Force Z_A", 0));

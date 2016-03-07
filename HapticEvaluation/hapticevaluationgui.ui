@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1048</width>
-    <height>860</height>
+    <width>1059</width>
+    <height>926</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>770</y>
+      <y>830</y>
       <width>821</width>
       <height>20</height>
      </rect>
@@ -722,6 +722,19 @@
       <string> Force with Depth linear</string>
      </property>
     </widget>
+    <widget class="QRadioButton" name="radioButtonForceToNet">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>230</y>
+       <width>141</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Force to network</string>
+     </property>
+    </widget>
     <zorder>radioButtonSLPosition</zorder>
     <zorder>radioButtonSLForce</zorder>
     <zorder>radioButtonDLForce</zorder>
@@ -733,6 +746,7 @@
     <zorder>radioButtonDepthConstant</zorder>
     <zorder>radioButtonDepthLinear</zorder>
     <zorder>label_14</zorder>
+    <zorder>radioButtonForceToNet</zorder>
    </widget>
    <widget class="QFrame" name="frame_5">
     <property name="geometry">
@@ -1068,7 +1082,7 @@
       <x>416</x>
       <y>500</y>
       <width>251</width>
-      <height>301</height>
+      <height>321</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -1842,8 +1856,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1048</width>
-     <height>21</height>
+     <width>1059</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>

@@ -1,0 +1,8 @@
+<map id="HapticThreadRepSeq" name="HapticThreadRepSeq">
+<area shape="rect" id="node2" href="$class_haptic_thread.html" title="HapticThread" alt="" coords="174,333,273,360"/>
+<area shape="rect" id="node8" href="$class_haptic_thread_hapt_replication.html" title="HapticThreadHaptReplication" alt="" coords="261,455,450,481"/>
+<area shape="rect" id="node4" href="$struct_vector3.html" title="Vector3" alt="" coords="285,81,351,108"/>
+<area shape="rect" id="node5" href="$class_haptic_device.html" title="HapticDevice" alt="" coords="5,81,103,108"/>
+<area shape="rect" id="node6" href="$class_device.html" title="Device" alt="" coords="24,5,84,32"/>
+<area shape="rect" id="node7" href="$struct_matrix3x3.html" title="Matrix3x3" alt="" coords="399,81,477,108"/>
+</map>

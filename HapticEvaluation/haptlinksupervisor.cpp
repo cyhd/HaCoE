@@ -214,6 +214,11 @@ void HaptLinkSupervisor::start()
 		thread = new HapticThreadDoubleForce();
 		threadCreated = true;
 	}
+	else if ( experimentType == FORCE2NET )
+	{
+		thread = new HapticThreadForceToNetwork();
+		threadCreated = true;
+	}
 	else if (experimentType == SINGLEHAPTIC) 
 	{
 		thread = new HapticThreadSingleHaptic();

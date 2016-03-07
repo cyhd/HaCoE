@@ -1,0 +1,5 @@
+<map id="Calibration" name="Calibration">
+<area shape="rect" id="node2" href="$struct_r_t_coefs.html" title="RTCoefs" alt="" coords="5,95,76,121"/>
+<area shape="rect" id="node3" href="$struct_transform.html" title="Transform" alt="" coords="137,5,216,32"/>
+<area shape="rect" id="node4" href="$struct_configuration.html" title="Configuration" alt="" coords="244,95,341,121"/>
+</map>

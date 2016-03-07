@@ -35,11 +35,13 @@
 #include "qcheckbox.h"
 #include "hrexperiment.h"
 #include <string>
+#include "qwt_compat.h"
 
 using namespace std;
 #define KEEP true
 HapticEvaluationGUI* HapticEvaluationGUI::instance = NULL;
-HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WFlags flags)
+
+HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 : QMainWindow(parent, flags)
 {	
 	ui.setupUi(this);
@@ -463,6 +465,10 @@ void HapticEvaluationGUI::setStartLog()
 		HaptLinkSupervisor::getInstance()->setExperimentType( SLPOS );
 	else if ( ui.radioButtonSLForce->isChecked() )
 		HaptLinkSupervisor::getInstance()->setExperimentType( SLFORCE );
+	else if (ui.radioButtonForceToNet->isChecked()) {
+		HaptLinkSupervisor::getInstance()->setExperimentType(FORCE2NET);
+
+	}
 	else if ( ui.radioButtonDLForce->isChecked() )
 		HaptLinkSupervisor::getInstance()->setExperimentType( DLFORCE );
 	else if ( ui.radioButtonHaptRep->isChecked() )
@@ -786,6 +792,15 @@ void HapticEvaluationGUI::setExpInfo( void )
 	ui.frameHaptRep->setVisible( false );
 	ui.frameHaptRepAuto->setVisible( false );
 
+	
+	if ( ui.radioButtonForceToNet->isChecked() )
+	{	
+		ui.pushButtonStart->setEnabled( true );
+		ui.textEditExpInfo->setPlainText( "Dual Link Force Control through Network:\n"
+										  "This control scheme uses a master-master configuration.\n"
+										  "-Omni A and B will output a force proportional to the difference in position between them " 
+										  "to try and move to the same position.");
+	}
 	if ( ui.radioButtonSLPosition->isChecked() )
 	{	
 		ui.pushButtonStart->setEnabled( true );
@@ -952,48 +967,48 @@ void HapticEvaluationGUI::initGraph()
 	courbeFxA= new QwtPlotCurve( "Fx_A (N)" );
 	courbeFxA->setPen(QPen(Qt::yellow));
 	courbeFxA->attach(ui.qwtPlot);
-	courbeFxA->setRawData( dataX, dataFxA, index );
+	courbeFxA->setRawSamples( dataX, dataFxA, index );
 
 	courbeFxB= new QwtPlotCurve( "Fx_B (N)" );
 	courbeFxB->setPen(QPen(Qt::darkYellow));
 	courbeFxB->attach(ui.qwtPlot);
-	courbeFxB->setRawData( dataX, dataFxB, index );
+		courbeFxB->setRawSamples( dataX, dataFxB, index );
     
 	courbeFyA = new QwtPlotCurve( "Fy_A (N)" );
 	courbeFyA->setPen(QPen(Qt::green));
 	courbeFyA->attach(ui.qwtPlot);
-	courbeFyA->setRawData( dataX, dataFyA, index );
+	courbeFyA->setRawSamples( dataX, dataFyA, index );
 	
 	courbeFyB = new QwtPlotCurve( "Fy_B (N)" );
 	courbeFyB->setPen(QPen(Qt::darkGreen));
 	courbeFyB->attach(ui.qwtPlot);
-	courbeFyB->setRawData( dataX, dataFyB, index );
+	courbeFyB->setRawSamples( dataX, dataFyB, index );
 	
 	courbeFzA = new QwtPlotCurve( "Fz_A (N)" );
 	courbeFzA->setPen(QPen(Qt::blue));
 	courbeFzA->attach(ui.qwtPlot);
-	courbeFzA->setRawData( dataX, dataFzA, index );
+	courbeFzA->setRawSamples( dataX, dataFzA, index );
 
 	courbeFzB = new QwtPlotCurve( "Fz_B (N)" );
 	courbeFzB->setPen(QPen(Qt::darkRed));
 	courbeFzB->attach(ui.qwtPlot);
-	courbeFzB->setRawData( dataX, dataFzB, index );
+	courbeFzB->setRawSamples( dataX, dataFzB, index );
 
 	courbeFtotalA = new QwtPlotCurve( "F_A (N)" );
 	courbeFtotalA->setPen(QPen(Qt::red));
 	courbeFtotalA->attach(ui.qwtPlot);
-	courbeFtotalA->setRawData( dataX, dataFtotalA, index );
+	courbeFtotalA->setRawSamples( dataX, dataFtotalA, index );
 
 	courbeFtotalB = new QwtPlotCurve( "F_B (N)" );
 	courbeFtotalB->setPen(QPen(Qt::darkBlue));
 	courbeFtotalB->attach(ui.qwtPlot);
-	courbeFtotalB->setRawData( dataX, dataFtotalB, index );
+	courbeFtotalB->setRawSamples( dataX, dataFtotalB, index );
 	
 	/*
 	courbePx = new QwtPlotCurve("Pos (m)");
 	courbePx->setPen(QPen(Qt::cyan));
 	courbePx->attach(ui.qwtPlot);
-	courbePx->setRawData( dataX, dataPx, index );
+	courbePx->setRawSamples( dataX, dataPx, index );
 	courbePx->setYAxis(ui.qwtPlot->yRight);
 	*/
 
@@ -1018,7 +1033,7 @@ void HapticEvaluationGUI::initGraph()
     
 	Grid= new QwtPlotGrid();
 	Grid->enableX(false);
-	Grid->setMajPen(QPen(Qt::darkCyan));
+	Grid->setMajorPen(QPen(Qt::darkCyan));
     Grid->attach(ui.qwtPlot); 
 
 //	startTimer( period );
@@ -1067,15 +1082,15 @@ void HapticEvaluationGUI::updateDevGraphDisplay(Vector3 g , Vector3 p)
 	index++;
 	realIndex++;
 
-	courbeFxA->setRawData( dataX, dataFxA, KEEP ? qMin( realIndex, nbPoints ) : index );
-	courbeFyA->setRawData( dataX, dataFyA, KEEP ? qMin( realIndex, nbPoints ) : index );
-	courbeFzA->setRawData( dataX, dataFzA, KEEP ? qMin( realIndex, nbPoints ) : index );	
-	courbeFtotalA->setRawData( dataX, dataFtotalA, KEEP ? qMin( realIndex, nbPoints ) : index );	
-	courbeFxB->setRawData( dataX, dataFxB, KEEP ? qMin( realIndex, nbPoints ) : index );
-	courbeFyB->setRawData( dataX, dataFyB, KEEP ? qMin( realIndex, nbPoints ) : index );
-	courbeFzB->setRawData( dataX, dataFzB, KEEP ? qMin( realIndex, nbPoints ) : index );	
-	courbeFtotalB->setRawData( dataX, dataFtotalB, KEEP ? qMin( realIndex, nbPoints ) : index );
-	//courbePx->setRawData( dataX, dataPx, KEEP ? qMin( realIndex, nbPoints ) : index );
+	courbeFxA->setRawSamples( dataX, dataFxA, KEEP ? qMin( realIndex, nbPoints ) : index );
+	courbeFyA->setRawSamples( dataX, dataFyA, KEEP ? qMin( realIndex, nbPoints ) : index );
+	courbeFzA->setRawSamples( dataX, dataFzA, KEEP ? qMin( realIndex, nbPoints ) : index );	
+	courbeFtotalA->setRawSamples( dataX, dataFtotalA, KEEP ? qMin( realIndex, nbPoints ) : index );	
+	courbeFxB->setRawSamples( dataX, dataFxB, KEEP ? qMin( realIndex, nbPoints ) : index );
+	courbeFyB->setRawSamples( dataX, dataFyB, KEEP ? qMin( realIndex, nbPoints ) : index );
+	courbeFzB->setRawSamples( dataX, dataFzB, KEEP ? qMin( realIndex, nbPoints ) : index );	
+	courbeFtotalB->setRawSamples( dataX, dataFtotalB, KEEP ? qMin( realIndex, nbPoints ) : index );
+	//courbePx->setRawSamples( dataX, dataPx, KEEP ? qMin( realIndex, nbPoints ) : index );
 }
 
 void HapticEvaluationGUI::disableHRFrame()

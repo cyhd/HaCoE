@@ -57,6 +57,7 @@ enum expType
 	SLPOS, // Single Link Position Control
 	SLFORCE, // Single Link Force Control
 	DLFORCE, // Dual Link Force Control
+	FORCE2NET, //send (and receive) data to network
 	HAPTREPSIM, // Haptic Replication Experiment
 	HAPTREPSEQ,
 	HAPTREPAUTO,

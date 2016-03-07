@@ -28,14 +28,15 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 
 	HapticEvaluationGUI *gui = HapticEvaluationGUI::getInstance();
-    HaptLinkSupervisor *supervisor = HaptLinkSupervisor::getInstance();
+    
+	HaptLinkSupervisor *supervisor = HaptLinkSupervisor::getInstance();
 
 	gui->show();
-	a.exec();
+	// en return : a.exec();
 	
 	delete supervisor;
 	
 	Sleep(20);
 
-	return 0;
+	return a.exec();
 }

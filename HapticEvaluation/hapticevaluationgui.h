@@ -23,7 +23,7 @@
 #define HAPTICEVALUATIONGUI_H
 
 //#include <QtGui/QMainWindow>
-#include <QWidget>
+#include <QtWidgets>
 #include "ui_hapticevaluationgui.h"
 #include "Observer.h"
 #include "datamodel.h"
@@ -41,7 +41,7 @@ class HapticEvaluationGUI : public QMainWindow, Observer
 	Q_OBJECT
 
 public:
-	HapticEvaluationGUI(QWidget *parent = 0, Qt::WFlags flags = 0);
+	HapticEvaluationGUI(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~HapticEvaluationGUI();
 
     //QwtPlotCurve  * courbePx;

@@ -1,0 +1,22 @@
+<map id="Parser" name="Parser">
+<area shape="rect" id="node2" href="$struct_d_t_d.html" title="DTD" alt="" coords="741,520,787,547"/>
+<area shape="rect" id="node3" href="$structprefix.html" title="prefix" alt="" coords="5,295,59,321"/>
+<area shape="rect" id="node4" href="$structbinding.html" title="binding" alt="" coords="416,351,479,377"/>
+<area shape="rect" id="node5" href="$structattribute__id.html" title="attribute_id" alt="" coords="143,247,229,273"/>
+<area shape="rect" id="node17" href="$struct_e_l_e_m_e_n_t___t_y_p_e.html" title="ELEMENT_TYPE" alt="" coords="702,159,826,185"/>
+<area shape="rect" id="node10" href="$structtag.html" title="tag" alt="" coords="744,421,784,448"/>
+<area shape="rect" id="node18" href="$struct_d_e_f_a_u_l_t___a_t_t_r_i_b_u_t_e.html" title="DEFAULT_ATTRIBUTE" alt="" coords="369,196,525,223"/>
+<area shape="rect" id="node6" href="$struct_s_t_r_i_n_g___p_o_o_l.html" title="STRING_POOL" alt="" coords="391,613,503,640"/>
+<area shape="rect" id="node7" href="$structblock.html" title="block" alt="" coords="159,613,213,640"/>
+<area shape="rect" id="node8" href="$struct_h_a_s_h___t_a_b_l_e.html" title="HASH_TABLE" alt="" coords="394,524,501,551"/>
+<area shape="rect" id="node9" href="$struct_n_a_m_e_d.html" title="NAMED" alt="" coords="151,524,221,551"/>
+<area shape="rect" id="node11" href="$struct_t_a_g___n_a_m_e.html" title="TAG_NAME" alt="" coords="401,401,494,428"/>
+<area shape="rect" id="node12" href="$struct_e_n_t_i_t_y.html" title="ENTITY" alt="" coords="414,691,481,717"/>
+<area shape="rect" id="node16" href="$structopen__internal__entity.html" title="open_internal_entity" alt="" coords="695,749,833,776"/>
+<area shape="rect" id="node13" href="$structprolog__state.html" title="prolog_state" alt="" coords="717,800,811,827"/>
+<area shape="rect" id="node14" href="$structposition.html" title="position" alt="" coords="731,851,797,877"/>
+<area shape="rect" id="node15" href="$struct_x_m_l___encoding.html" title="XML_Encoding" alt="" coords="710,901,818,928"/>
+<area shape="rect" id="node19" href="$struct_i_n_i_t___e_n_c_o_d_i_n_g.html" title="INIT_ENCODING" alt="" coords="705,1029,823,1056"/>
+<area shape="rect" id="node20" href="$structencoding.html" title="encoding" alt="" coords="410,995,485,1021"/>
+<area shape="rect" id="node21" href="$struct_a_t_t_r_i_b_u_t_e.html" title="ATTRIBUTE" alt="" coords="719,1080,809,1107"/>
+</map>

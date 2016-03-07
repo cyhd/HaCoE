@@ -6,16 +6,16 @@
       <Extensions>cpp;cxx;c;def</Extensions>
     </Filter>
     <Filter Include="Source Files\device">
-      <UniqueIdentifier>{3ccc8494-26f8-4233-b0e2-b4c53deaa9d0}</UniqueIdentifier>
+      <UniqueIdentifier>{02c819fd-b026-47d1-b42c-70a96ff70ca6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\general use">
-      <UniqueIdentifier>{2e2a8e2b-1d54-4ad4-a265-832abe070da2}</UniqueIdentifier>
+      <UniqueIdentifier>{1f1d3a2e-cb50-4b82-9dbb-0e0c5227dbf6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\gui">
-      <UniqueIdentifier>{71319207-875f-4d5a-802b-6b019568de50}</UniqueIdentifier>
+      <UniqueIdentifier>{a2e438a2-8d33-4907-ba94-c5047e00f56c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\logger">
-      <UniqueIdentifier>{be5e7a30-7880-4db4-8998-f2637945ae0e}</UniqueIdentifier>
+      <UniqueIdentifier>{906bddce-0da8-4768-a67c-b9aac383de13}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
@@ -23,41 +23,41 @@
       <ParseFiles>false</ParseFiles>
     </Filter>
     <Filter Include="Source Files\threads">
-      <UniqueIdentifier>{aa9a5a8f-6bf8-4230-b44b-c7c6a64b2be5}</UniqueIdentifier>
+      <UniqueIdentifier>{ad56ecd5-1931-430a-9d7c-e88a32e274d2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\experiment">
-      <UniqueIdentifier>{47eb4861-d948-4eb5-82a5-f509ddbcba18}</UniqueIdentifier>
+      <UniqueIdentifier>{858256ca-569e-4879-a361-19d942784337}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\supervisor">
-      <UniqueIdentifier>{9d3d3486-384b-4132-8bf3-af9798cdfb4d}</UniqueIdentifier>
+      <UniqueIdentifier>{6fa2c16b-2b8f-48ad-badd-aa32beb2852b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h</Extensions>
     </Filter>
     <Filter Include="Header Files\device">
-      <UniqueIdentifier>{3a7d9b78-671e-45a0-adb4-d7cc04448307}</UniqueIdentifier>
+      <UniqueIdentifier>{b8af56e2-6e53-4956-97ad-513f2e7698e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\general use">
-      <UniqueIdentifier>{a5d03441-9ac3-4e51-a42f-0c99175f50f9}</UniqueIdentifier>
+      <UniqueIdentifier>{0c4c6222-ca62-4f14-9de8-1f6762225596}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\gui">
-      <UniqueIdentifier>{c9a9708a-846a-4e78-9f86-bf470563f65f}</UniqueIdentifier>
+      <UniqueIdentifier>{b428078e-a610-4ff2-8c95-71a4fc627fbc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\logger">
-      <UniqueIdentifier>{7bc56ff4-4585-4272-a2d0-ac7976272df3}</UniqueIdentifier>
+      <UniqueIdentifier>{f65e7c17-0f17-436b-8c1c-5c0f3d6f7121}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\logger\log helper files">
-      <UniqueIdentifier>{8dae7354-9e67-40d7-bd69-9f3363e4f566}</UniqueIdentifier>
+      <UniqueIdentifier>{b23f19f8-3b66-4ccb-8009-3119b17d26da}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\supervisor">
-      <UniqueIdentifier>{0cf89417-fc31-4ec1-88d4-c252e89f39c5}</UniqueIdentifier>
+      <UniqueIdentifier>{d457860c-625d-44c3-96a0-9ebf6e860507}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\threads">
-      <UniqueIdentifier>{2037c93b-1476-41f6-a889-c371831ee6e7}</UniqueIdentifier>
+      <UniqueIdentifier>{14981be3-ff74-44b5-930a-1d06d913ef50}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\experiment">
-      <UniqueIdentifier>{8c2dcdb4-d8cf-4c0d-bae7-c3e8ca21293a}</UniqueIdentifier>
+      <UniqueIdentifier>{8be7457f-5a9a-475c-8d92-5203a0036c77}</UniqueIdentifier>
     </Filter>
     <Filter Include="Form Files">
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
@@ -69,12 +69,12 @@
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{23465f25-c3e9-4fa5-9414-efa5f02a6183}</UniqueIdentifier>
+      <UniqueIdentifier>{6e79cc40-1eff-459a-906e-af0e4d797c1f}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{99f346cc-00bc-47fa-9f30-acfe12b5f379}</UniqueIdentifier>
+      <UniqueIdentifier>{82f36692-858c-439c-9120-aa835d3dfe83}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
@@ -170,6 +170,9 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_hapticevaluationgui.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="OmniDevice.cpp">
+      <Filter>Source Files\device</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AtiU6.h">
@@ -229,8 +232,8 @@
     <ClInclude Include="HRExperiment.h">
       <Filter>Header Files\experiment</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="OmniDevice.h">
+      <Filter>Header Files\device</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -243,11 +246,5 @@
     <CustomBuild Include="hapticevaluationgui.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="HapticEvaluation.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="HapticEvaluation.licenseheader" />
   </ItemGroup>
 </Project>
