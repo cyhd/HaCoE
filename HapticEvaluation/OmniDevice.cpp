@@ -8,7 +8,7 @@ HDErrorInfo lastError;
 #define DEVICE_NAME_MASTER	"PHANToM 2"
 #define DEVICE_NAME_SLAVE	"PHANToM 1"
 
-// Define Omni positions and velcities.
+// Define Omni positions and velocities.
 hduVector3Dd posMaster, posSlave;
 hduVector3Dd velMaster, velSlave;
 
@@ -39,12 +39,27 @@ struct DeviceDisplayStates
 
 OmniDevice::OmniDevice()
 {	 
+	// some sensable error handling junk
+    HDErrorInfo error;
+
+	// Left device.
+    phantomidMaster = hdInitDevice(DEVICE_NAME_MASTER);
+
+	if (HD_DEVICE_ERROR(error = hdGetError()))
+    {
+        connectSuccess = false;
+    }
+	else
+		connectSuccess = true;
 	
+    hdEnable(HD_FORCE_OUTPUT);
+    hdEnable(HD_FORCE_RAMPING);
 }
 	
 
 OmniDevice::~OmniDevice()
 {
+	OmniDevice::closeConnection();
 }
 
 
@@ -100,71 +115,54 @@ hduVector3Dd OmniDevice::velocityEstimate(hduVector3Dd NewPosition, bool Mastero
 	
 }
 
-void OmniDevice::inititalizeDualOmnis()
-{
-	// some sensable error handling junk
-    HDErrorInfo error;
 
-	// Left device.
-    phantomidMaster = hdInitDevice(DEVICE_NAME_MASTER);
-
-	if (HD_DEVICE_ERROR(error = hdGetError()))
-    {
-        hduPrintError(stderr, &error, "Failed to initialize left haptic device");
-        fprintf(stderr, "Make sure the configuration \"%s\" exists\n", DEVICE_NAME_MASTER);
-        fprintf(stderr, "\nPress any key to quit.\n");
-        getchar();
-        exit(-1);
-    }
-
-	printf("1. Found device 1: %s\n",hdGetString(HD_DEVICE_MODEL_TYPE));
-    hdEnable(HD_FORCE_OUTPUT);
-    hdEnable(HD_FORCE_RAMPING);
-
-    // Right device.
-    phantomidSlave = hdInitDevice(DEVICE_NAME_SLAVE);
-    if (HD_DEVICE_ERROR(error = hdGetError()))
-    {
-        hduPrintError(stderr, &error, "Failed to initialize right haptic device");
-        fprintf(stderr, "Make sure the configuration \"%s\" exists\n", DEVICE_NAME_SLAVE);
-        fprintf(stderr, "\nPress any key to quit.\n");
-        getchar();
-        exit(-1);
-    }
-
-	printf("2. Found device 2: %s\n",hdGetString(HD_DEVICE_MODEL_TYPE));
-    hdEnable(HD_FORCE_OUTPUT);
-    hdEnable(HD_FORCE_RAMPING);
-
-	// Start the scheduler.
-	hdStartScheduler();
-	if (HD_DEVICE_ERROR(error = hdGetError()))
-	{
-		hduPrintError(stderr, &error, "Failed to start scheduler");
-        	fprintf(stderr, "\nPress any key to quit.\n");
-        	getchar();
-        	exit(-1);
-	}
-
-}
-
-void OmniDevice::shutdownDualOmnis()
+void OmniDevice::closeConnection( void )
 {
     hdStopScheduler();
     hdUnschedule(gSchedulerCallback);
 
-	// Shutdown the Omnis
+	// Shutdown the Omni
     if (phantomidMaster != HD_INVALID_HANDLE)
     {
         hdDisableDevice(phantomidMaster);
         phantomidMaster = HD_INVALID_HANDLE;
     }
 
-    if (phantomidSlave != HD_INVALID_HANDLE)
-    {
-        hdDisableDevice(phantomidSlave);
-        phantomidSlave = HD_INVALID_HANDLE;
-    }
+}
+
+void OmniDevice::writeForce( Vector3 force )
+{
+	motionIn[0] = force.x;  // forces
+	motionIn[1] = force.y;
+	motionIn[2] = force.z;
+
+	hdMakeCurrentDevice(phantomidMaster);
+    hdSetDoublev(HD_CURRENT_FORCE, motionIn);
+	hdEndFrame(phantomidMaster);
+}
+
+void OmniDevice::writePosition( Vector3 position )
+{
+	positionIn[0] = position.x;
+	positionIn[1] = position.y;
+	positionIn[2] = position.z;
+	
+	hdMakeCurrentDevice(phantomidMaster);
+    hdSetDoublev(HD_CURRENT_POSITION, positionIn);
+	hdEndFrame(phantomidMaster);
+}
+
+void OmniDevice::writeDamping( Vector3 translation , Vector3 rotation )
+{
+	
+	damping[0] = translation.x;
+	damping[1] = translation.y;
+	damping[2] = translation.z;
+	damping[3] = rotation.x;
+	damping[4] = rotation.y;
+	damping[5] = rotation.z;
+
+	setDampingEAPI( getEntactHandle() , damping , 6 );
 }
 
 void OmniDevice::omniTeleoperationController(double virtualSpringConstant, double virtualDampingConstant, hduVector3Dd gravityCompensationVector, omniTeleoperationMode teleopMode) 
@@ -255,28 +253,6 @@ HDCallbackCode HDCALLBACK OmniDevice::MasterSlaveCallback(void *data)
     return HD_CALLBACK_CONTINUE;
 }
 
-/******************************************************************************
- Initializes the master-slave callback.
-******************************************************************************/
-void OmniDevice::MasterSlave()
-{
-    inititalizeDualOmnis();
-	std::cout << "haptic link started" << std::endl;
-	printf("Press any key to quit.\n");
-    gSchedulerCallback = hdScheduleAsynchronous(
-    MasterSlaveCallback, 0, HD_DEFAULT_SCHEDULER_PRIORITY);
-    omniErrorCheck();
-	while (!_kbhit())
-    {  
-		if (!hdWaitForCompletion(gSchedulerCallback, HD_WAIT_CHECK_STATUS))
-		{
-			printf("The main scheduler callback has exited\n");
-			printf("Press any key to quit.\n");
-			getchar();
-			exit(-1);
-		}
-	}
-}
 
 /******************************************************************************
  This handler gets called when the process is exiting.  Ensures that HDAPI is

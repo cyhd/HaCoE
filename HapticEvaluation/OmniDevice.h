@@ -21,13 +21,22 @@ public:
 
 	// Destructor
 	~OmniDevice(void);	
-
+	void closeConnection( void ); //declared as virtual function in Device
+	short readData( void ); // declared as virtual function in Device
 
 	//getters
+	int getMode();
+	bool getConnectSuccess() const { return connectSuccess; }
 
 	//setters
+	int setMode();
+	void writeForce(Vector3 force );
+	void writePosition(Vector3 position );
+	void writeDamping(Vector3 translation , Vector3 rotation);
 
 	//calibration
+	int calibrate(void);
+
 	enum omniTeleoperationMode {NORMAL, NO_FORCE_FEEDBACK	};
 	HDCallbackCode HDCALLBACK DeviceStateCallback(void *pUserData);
 	void inititalizeDualOmnis();
@@ -44,6 +53,12 @@ protected:
 	
 private:
 
+	double motionIn[3]; // array which the Omni reads.  The force and torque will be input to this array.
+	double positionIn[3]; // for position control
+
+	double damping[6]; //array of damping constants
+
+	bool connectSuccess;
 
 	
 };
