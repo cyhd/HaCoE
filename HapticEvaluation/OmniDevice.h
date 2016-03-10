@@ -37,21 +37,16 @@ public:
 	//calibration
 	int calibrate(void);
 
-	enum omniTeleoperationMode {NORMAL, NO_FORCE_FEEDBACK	};
 	HDCallbackCode HDCALLBACK DeviceStateCallback(void *pUserData);
-	void inititalizeDualOmnis();
-	void shutdownDualOmnis();
 	int omniErrorCheck();
-	void MasterSlave();
 	void exitHandler();
-	static hduVector3Dd velocityEstimate(hduVector3Dd NewPosition, bool MasterorSlave);
 	static HDCallbackCode HDCALLBACK MasterSlaveCallback(void *data);
-	static void omniTeleoperationController(double virtualSpringConstant, double virtualDampingConstant, hduVector3Dd gravityCompensationVector, omniTeleoperationMode teleopMode = NORMAL);
-
 	
 protected:
 	
 private:
+
+	double position[3]; // Store the position of the Omni device
 
 	double motionIn[3]; // array which the Omni reads.  The force and torque will be input to this array.
 	double positionIn[3]; // for position control

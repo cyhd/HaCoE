@@ -5,28 +5,13 @@ using namespace std;
 HDSchedulerHandle gSchedulerCallback = HD_INVALID_HANDLE;
 HDErrorInfo lastError;
 
-#define DEVICE_NAME_MASTER	"PHANToM 2"
-#define DEVICE_NAME_SLAVE	"PHANToM 1"
-
-// Define Omni positions and velocities.
-hduVector3Dd posMaster, posSlave;
-hduVector3Dd velMaster, velSlave;
-
-hduVector3Dd forceVec(0,0,0);
-hduVector3Dd forceVec1(0,0,0);
-hduVector3Dd forceVec2(0,0,0);
-hduVector3Dd forceMaster(0,0,0);
-hduVector3Dd forceSlave(0,0,0);
-
+#define DEVICE_NAME	"PHANToM"
 
 // SensAble device handle and scheduler declarations.
-HHD phantomidMaster = HD_INVALID_HANDLE;  // Phantom on the left.
-HHD phantomidSlave = HD_INVALID_HANDLE;	// Phantom on the right.
+HHD phantomid = HD_INVALID_HANDLE;  // Phantom device.
+
 //Scaling factor for gravity compensation to account for extra weight
 float Scale_Master = 1.5;
-
-#define MASTER 1
-#define SLAVE 0
 
 /* Haptic device record. */
 struct DeviceDisplayStates
@@ -43,7 +28,7 @@ OmniDevice::OmniDevice()
     HDErrorInfo error;
 
 	// Left device.
-    phantomidMaster = hdInitDevice(DEVICE_NAME_MASTER);
+    phantomid = hdInitDevice(DEVICE_NAME);
 
 	if (HD_DEVICE_ERROR(error = hdGetError()))
     {
@@ -60,59 +45,31 @@ OmniDevice::OmniDevice()
 OmniDevice::~OmniDevice()
 {
 	OmniDevice::closeConnection();
+	OmniDevice::exitHandler();
 }
 
+
+short OmniDevice::readData( void )
+{
+	hdMakeCurrentDevice(phantomid);
+	hdGetDoublev(HD_CURRENT_POSITION, position);
+	hdBeginFrame(phantomid)
+	this->setTranslation( position[0] , position[1] , position[2] ); //these positions are given in millimetres.  Send back the translation info first
+		
+	return true;
+}
 
 HDCallbackCode HDCALLBACK OmniDevice::DeviceStateCallback(void *pUserData)
 {
     DeviceDisplayStates *pDisplayState = static_cast<DeviceDisplayStates *>(pUserData);
 
-    hdMakeCurrentDevice(pDisplayState->m_hHD);      
+	hdMakeCurrentDevice(pDisplayState->m_hHD);      
     hdGetDoublev(HD_CURRENT_POSITION, pDisplayState->position);
     hdGetDoublev(HD_CURRENT_FORCE, pDisplayState->force);
 
-    return HD_CALLBACK_DONE;
-}
-
-hduVector3Dd OmniDevice::velocityEstimate(hduVector3Dd NewPosition, bool MasterorSlave)
-{
-	double T = 0.001; // seconds
-	// Filter the sample
-	double fc = 10;   // Hz
-	double lambda = 2*3.14159265*fc;
-	double w = lambda*T/(1+lambda*T);
-
-	/* Velocity estimate Code */
-	static hduVector3Dd OldPositionM(0.0,0.0,0.0);
-	static hduVector3Dd OldVelocityM(0.0,0.0,0.0);
-	static hduVector3Dd OldPositionS(0.0,0.0,0.0);
-	static hduVector3Dd OldVelocityS(0.0,0.0,0.0);
-
-	if (MasterorSlave == MASTER)
-	{
-		// Calculate the current velocity, assuming 1 ms between samples.
-		hduVector3Dd NewVelocity = (NewPosition - OldPositionM) / 0.001;
-		NewVelocity = w * NewVelocity + (1-w) * OldVelocityM;
-
-		// Set variables for next iteration
-		OldVelocityM = NewVelocity;
-		OldPositionM = NewPosition;
-		
-		return NewVelocity;
-	}
-	else
-	{
-		// Calculate the current velocity, assuming 1 ms between samples.
-		hduVector3Dd NewVelocity = (NewPosition - OldPositionS) / 0.001;
-		NewVelocity = w * NewVelocity + (1-w) * OldVelocityS;
-
-		// Set variables for next iteration
-		OldVelocityS = NewVelocity;
-		OldPositionS = NewPosition;	
-		
-		return NewVelocity;
-	}
+	this->setTranslation( position[0] , position[1] , position[2] ); //these positions are given in millimetres.  Send back the translation info first
 	
+    return HD_CALLBACK_DONE;
 }
 
 
@@ -122,10 +79,10 @@ void OmniDevice::closeConnection( void )
     hdUnschedule(gSchedulerCallback);
 
 	// Shutdown the Omni
-    if (phantomidMaster != HD_INVALID_HANDLE)
+    if (phantomid != HD_INVALID_HANDLE)
     {
-        hdDisableDevice(phantomidMaster);
-        phantomidMaster = HD_INVALID_HANDLE;
+        hdDisableDevice(phantomid);
+        phantomid = HD_INVALID_HANDLE;
     }
 
 }
@@ -136,9 +93,9 @@ void OmniDevice::writeForce( Vector3 force )
 	motionIn[1] = force.y;
 	motionIn[2] = force.z;
 
-	hdMakeCurrentDevice(phantomidMaster);
+	hdMakeCurrentDevice(phantomid);
     hdSetDoublev(HD_CURRENT_FORCE, motionIn);
-	hdEndFrame(phantomidMaster);
+	hdEndFrame(phantomid);
 }
 
 void OmniDevice::writePosition( Vector3 position )
@@ -147,63 +104,31 @@ void OmniDevice::writePosition( Vector3 position )
 	positionIn[1] = position.y;
 	positionIn[2] = position.z;
 	
-	hdMakeCurrentDevice(phantomidMaster);
+	hdMakeCurrentDevice(phantomid);
     hdSetDoublev(HD_CURRENT_POSITION, positionIn);
-	hdEndFrame(phantomidMaster);
+	hdEndFrame(phantomid);
 }
 
-void OmniDevice::writeDamping( Vector3 translation , Vector3 rotation )
-{
-	
-	damping[0] = translation.x;
-	damping[1] = translation.y;
-	damping[2] = translation.z;
-	damping[3] = rotation.x;
-	damping[4] = rotation.y;
-	damping[5] = rotation.z;
-
-	setDampingEAPI( getEntactHandle() , damping , 6 );
-}
 
 void OmniDevice::omniTeleoperationController(double virtualSpringConstant, double virtualDampingConstant, hduVector3Dd gravityCompensationVector, omniTeleoperationMode teleopMode) 
 {
 	//**************************************************//
 	/* 	Obtain position of each device's end effector   */
 	//**************************************************//
-    hdBeginFrame(phantomidMaster);
-    hdGetDoublev(HD_CURRENT_POSITION, posMaster);
-	velMaster = velocityEstimate(posMaster, true);
-
-    hdBeginFrame(phantomidSlave);
-    hdGetDoublev(HD_CURRENT_POSITION, posSlave);
-	velSlave = velocityEstimate(posSlave, false);
-	forceVec =  virtualSpringConstant * (posMaster - posSlave) + virtualDampingConstant * (velMaster - velSlave);
- 	if(teleopMode == NO_FORCE_FEEDBACK)
-	{			
-		forceMaster = (Scale_Master * gravityCompensationVector);
-	}
-	else{
-		forceMaster = forceVec + Scale_Master * gravityCompensationVector;
-	}
-
-	forceSlave = forceVec + gravityCompensationVector;
-
+    hdBeginFrame(phantomid);
+    hdGetDoublev(HD_CURRENT_POSITION, position);
+	
+     
 	//********************************//
 	/* 	 Output forces to each Omni   */
 	//********************************//
 
 	// Identify left haptic device.
-	hdMakeCurrentDevice(phantomidMaster);
+	hdMakeCurrentDevice(phantomid);
     hdSetDoublev(HD_CURRENT_FORCE, forceMaster);
     
-	// Identify second haptic device
-    hdMakeCurrentDevice(phantomidSlave);
-    hdSetDoublev(HD_CURRENT_FORCE, forceSlave);
-
 	// Flush forces on the first device.
-    hdEndFrame(phantomidMaster);
-	// Flush forces on the second device.
-    hdEndFrame(phantomidSlave);
+    hdEndFrame(phantomid);
 }
 
 
@@ -236,21 +161,6 @@ int OmniDevice::omniErrorCheck()
     }
 	
 	return HD_CALLBACK_CONTINUE;
-}
-
-/******************************************************************************
- Main callback.  Retrieves position from both devices, calculates forces,
- and sets forces for both devices.
-******************************************************************************/
-HDCallbackCode HDCALLBACK OmniDevice::MasterSlaveCallback(void *data)
-{
-  	double virtualSpringConstant=0.2;
-	double virtualDampingConstant=.0;
-	omniTeleoperationMode teleopMode = NO_FORCE_FEEDBACK;
-	hduVector3Dd gravityCompensationVector;
-	gravityCompensationVector.set(0.0,0.5,0.0);
-	omniTeleoperationController(virtualSpringConstant,virtualDampingConstant, gravityCompensationVector, teleopMode);
-    return HD_CALLBACK_CONTINUE;
 }
 
 
