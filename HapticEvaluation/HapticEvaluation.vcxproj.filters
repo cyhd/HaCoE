@@ -173,6 +173,15 @@
     <ClCompile Include="OmniDevice.cpp">
       <Filter>Source Files\device</Filter>
     </ClCompile>
+    <ClCompile Include="HapticThreadForceToNetwork.cpp">
+      <Filter>Source Files\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="ReadNetworkThread.cpp">
+      <Filter>Source Files\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="WriteNetworkThread.cpp">
+      <Filter>Source Files\threads</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AtiU6.h">
@@ -234,6 +243,15 @@
     </ClInclude>
     <ClInclude Include="OmniDevice.h">
       <Filter>Header Files\device</Filter>
+    </ClInclude>
+    <ClInclude Include="HapticThreadForceToNetwork.h">
+      <Filter>Header Files\threads</Filter>
+    </ClInclude>
+    <ClInclude Include="WriteNetworkThread.h">
+      <Filter>Header Files\threads</Filter>
+    </ClInclude>
+    <ClInclude Include="ReadNetworkThread.h">
+      <Filter>Header Files\threads</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

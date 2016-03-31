@@ -68,18 +68,19 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(OH_SDK_BASE)\include;..\Dependencies\EntactAPI\include;$(OH_SDK_BASE)\utilities\include;.\GeneratedFiles;$(QTDIR)\include\QtWidgets;$(QTDIR)\include;$(QWTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtXmlPatterns;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(QUANTADIR)\include;$(OH_SDK_BASE)\include;..\Dependencies\EntactAPI\include;$(OH_SDK_BASE)\utilities\include;.\GeneratedFiles;$(QTDIR)\include\QtWidgets;$(QTDIR)\include;$(QWTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtXmlPatterns;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_THREAD_SUPPORT;QT_CORE_LIB;QT_GUI_LIB;QT_XML_LIB;QT_XMLPATTERNS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>qwtd.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;Qt5Widgetsd.lib;EntactAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>quanta.lib;qwtd.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;Qt5Widgetsd.lib;EntactAPI.lib;hd.lib;hl.lib;hdu.lib;hlu.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>..\Dependencies\EntactAPI\lib32;$(QTDIR)\lib;%(AdditionalLibraryDirectories);$(QWTDIR)\lib;$(OH_SDK_BASE)\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\Dependencies\EntactAPI\lib32;$(OH_SDK_BASE)\utilities\lib\Win32\Debug;$(QTDIR)\lib;%(AdditionalLibraryDirectories);$(QUANTADIR)\lib;$(QWTDIR)\lib;$(OH_SDK_BASE)\lib\Win32\Debug</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc.lib; libcmt.lib; msvcrt.lib; libcd.lib; msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -92,12 +93,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HapticThreadForceToNetwork.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="AtiU6.cpp" />
     <ClCompile Include="EntactDevice.cpp" />
     <ClCompile Include="MilliSecTime.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="OmniDevice.cpp" />
+    <ClCompile Include="ReadNetworkThread.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="hapticevaluationgui.cpp" />
     <ClCompile Include="datalogger.cpp" />
@@ -117,6 +120,7 @@
     <ClCompile Include="ftrt.c" />
     <ClCompile Include="node.c" />
     <ClCompile Include="stack.c" />
+    <ClCompile Include="WriteNetworkThread.cpp" />
     <ClCompile Include="xmlparse.c" />
     <ClCompile Include="xmlrole.c" />
     <ClCompile Include="xmltok.c" />
@@ -166,10 +170,13 @@
     <ClInclude Include="EntactDevice.h" />
     <ClInclude Include="HapticDevice.h" />
     <ClInclude Include="datamodel.h" />
+    <ClInclude Include="HapticThreadForceToNetwork.h" />
     <ClInclude Include="MilliSecTime.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="OmniDevice.h" />
+    <ClInclude Include="ReadNetworkThread.h" />
     <ClInclude Include="Subject.h" />
+    <ClInclude Include="WriteNetworkThread.h" />
     <CustomBuild Include="hapticevaluationgui.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Filename)%(Extension)...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"   -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_XMLPATTERNS_LIB  -I"C:\qwt-5.2.1\src\." -I".\GeneratedFiles\." -I"$(QTDIR)\include\." -I".\GeneratedFiles\$(Configuration)\." -I"$(QTDIR)\include\qtmain\." -I"$(QTDIR)\include\QtCore\." -I"$(QTDIR)\include\QtGui\." -I"$(QTDIR)\include\QtXml\." -I"$(QTDIR)\include\QtXmlPatterns\." -I".\." ".\hapticevaluationgui.h" -o ".\GeneratedFiles\$(Configuration)\moc_%(Filename).cpp"

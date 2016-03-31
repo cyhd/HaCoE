@@ -29,6 +29,8 @@
 #include "HapticThreadSingleHapticCst.h"
 #include "HapticThreadSingleHapticSlope.h"
 #include "datalogger.h"
+#include "WriteNetworkThread.h"
+#include "ReadNetworkThread.h"
 
 using namespace std;
 
@@ -216,7 +218,9 @@ void HaptLinkSupervisor::start()
 	}
 	else if ( experimentType == FORCE2NET )
 	{
-		thread = new HapticThreadForceToNetwork();
+		//thread = new HapticThreadForceToNetwork();
+		thread = new WriteNetworkThread();
+		thread = new ReadNetworkThread();
 		threadCreated = true;
 	}
 	else if (experimentType == SINGLEHAPTIC) 

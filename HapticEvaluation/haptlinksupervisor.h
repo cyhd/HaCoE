@@ -32,6 +32,7 @@
 #include "Subject.h"
 #include "AtiU6.h"
 #include "EntactDevice.h"
+#include "OmniDevice.h"
 #include <QBasicTimer>
 #include "HapticThread.h"
 #include "HapticThreadDoubleForce.h"

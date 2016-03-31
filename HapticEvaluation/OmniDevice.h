@@ -22,7 +22,7 @@ public:
 	// Destructor
 	~OmniDevice(void);	
 	void closeConnection( void ); //declared as virtual function in Device
-	short readData( void ); // declared as virtual function in Device
+	short readData( void *pUserData ); // declared as virtual function in Device
 
 	//getters
 	int getMode();
@@ -37,7 +37,7 @@ public:
 	//calibration
 	int calibrate(void);
 
-	HDCallbackCode HDCALLBACK DeviceStateCallback(void *pUserData);
+	//HDCallbackCode HDCALLBACK DeviceStateCallback(void *pUserData);
 	int omniErrorCheck();
 	void exitHandler();
 	static HDCallbackCode HDCALLBACK MasterSlaveCallback(void *data);

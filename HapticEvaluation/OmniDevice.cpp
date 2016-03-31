@@ -48,7 +48,7 @@ OmniDevice::~OmniDevice()
 	OmniDevice::exitHandler();
 }
 
-
+/*
 short OmniDevice::readData( void )
 {
 	hdMakeCurrentDevice(phantomid);
@@ -58,8 +58,10 @@ short OmniDevice::readData( void )
 		
 	return true;
 }
+*/
 
-HDCallbackCode HDCALLBACK OmniDevice::DeviceStateCallback(void *pUserData)
+//HDCallbackCode HDCALLBACK OmniDevice::DeviceStateCallback(void *pUserData)
+short OmniDevice::readData( void *pUserData )
 {
     DeviceDisplayStates *pDisplayState = static_cast<DeviceDisplayStates *>(pUserData);
 
@@ -109,19 +111,16 @@ void OmniDevice::writePosition( Vector3 position )
 	hdEndFrame(phantomid);
 }
 
-
+/*
 void OmniDevice::omniTeleoperationController(double virtualSpringConstant, double virtualDampingConstant, hduVector3Dd gravityCompensationVector, omniTeleoperationMode teleopMode) 
 {
-	//**************************************************//
-	/* 	Obtain position of each device's end effector   */
-	//**************************************************//
+
     hdBeginFrame(phantomid);
     hdGetDoublev(HD_CURRENT_POSITION, position);
 	
      
-	//********************************//
-	/* 	 Output forces to each Omni   */
-	//********************************//
+
+
 
 	// Identify left haptic device.
 	hdMakeCurrentDevice(phantomid);
@@ -131,7 +130,7 @@ void OmniDevice::omniTeleoperationController(double virtualSpringConstant, doubl
     hdEndFrame(phantomid);
 }
 
-
+*/
 int OmniDevice::omniErrorCheck()
 {
 	HDErrorInfo error;
@@ -168,6 +167,7 @@ int OmniDevice::omniErrorCheck()
  This handler gets called when the process is exiting.  Ensures that HDAPI is
  properly shutdown.
 ******************************************************************************/
+/*
 void OmniDevice::exitHandler()
 {
    
@@ -189,3 +189,4 @@ void OmniDevice::exitHandler()
 		phantomidSlave = HD_INVALID_HANDLE;
     }
 }
+*/
