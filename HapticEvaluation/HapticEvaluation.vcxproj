@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -7,6 +7,10 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -18,13 +22,11 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>Static</UseOfMfc>
     <UseOfAtl>false</UseOfAtl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -37,37 +39,31 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>14.0.23107.0</_ProjectFileVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir>$(Configuration)\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir>$(Configuration)\</IntDir>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\qwt-5.2.1\src;..\..\EntactAPI\include;.\GeneratedFiles;$(QTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\qtmain;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtXmlPatterns;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>F:\Dev\qwt-5.2.1\src;F:\Dev\EntactAPI\include;.\GeneratedFiles;$(QTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\qtmain;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtXmlPatterns;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_THREAD_SUPPORT;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_XML_LIB;QT_XMLPATTERNS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <DebugInformationFormat />
-      <BrowseInformation>true</BrowseInformation>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
     </ClCompile>
     <Link>
       <AdditionalDependencies>EntactAPI.lib;qwt5.lib;qtmain.lib;QtCore4.lib;QtGui4.lib;QtXml4.lib;QtXmlPatterns4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\qwt-5.2.1\lib;..\..\EntactAPI\lib32;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>F:\Dev\qwt-5.2.1\lib;F:\Dev\EntactAPI\lib32;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention />
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
     </Link>
-    <Bscmake>
-      <PreserveSbr>true</PreserveSbr>
-    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -86,21 +82,38 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention />
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="AtiU6.cpp" />
-    <ClCompile Include="datalogger.cpp" />
-    <ClCompile Include="dom.c" />
     <ClCompile Include="EntactDevice.cpp" />
-    <ClCompile Include="expatls.c" />
+    <ClCompile Include="MilliSecTime.cpp" />
+    <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="Subject.cpp" />
+    <ClCompile Include="hapticevaluationgui.cpp" />
+    <ClCompile Include="datalogger.cpp" />
+    <ClCompile Include="HapticThreadDoubleForce.cpp" />
+    <ClCompile Include="HapticThreadHaptReplication.cpp" />
+    <ClCompile Include="HapticThreadSingleForce.cpp" />
+    <ClCompile Include="HapticThreadSingleHaptic.cpp" />
+    <ClCompile Include="HapticThreadSingleHapticCst.cpp" />
+    <ClCompile Include="HapticThreadSingleHapticSlope.cpp" />
+    <ClCompile Include="HapticThreadSinglePosition.cpp" />
     <ClCompile Include="experimentReader.cpp" />
+    <ClCompile Include="HRExperiment.cpp" />
+    <ClCompile Include="haptlinksupervisor.cpp" />
+    <ClCompile Include="dom.c" />
+    <ClCompile Include="expatls.c" />
     <ClCompile Include="ftconfig.c" />
     <ClCompile Include="ftrt.c" />
-    <ClCompile Include="GeneratedFiles\Debug\moc_hapticevaluationgui.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="node.c" />
+    <ClCompile Include="stack.c" />
+    <ClCompile Include="xmlparse.c" />
+    <ClCompile Include="xmlrole.c" />
+    <ClCompile Include="xmltok.c" />
     <ClCompile Include="GeneratedFiles\qrc_hapticevaluationgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -110,25 +123,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_hapticevaluationgui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="hapticevaluationgui.cpp" />
-    <ClCompile Include="HapticThreadDoubleForce.cpp" />
-    <ClCompile Include="HapticThreadHaptReplication.cpp" />
-    <ClCompile Include="HapticThreadSingleForce.cpp" />
-    <ClCompile Include="HapticThreadSingleHaptic.cpp" />
-    <ClCompile Include="HapticThreadSingleHapticCst.cpp" />
-    <ClCompile Include="HapticThreadSingleHapticSlope.cpp" />
-    <ClCompile Include="HapticThreadSinglePosition.cpp" />
-    <ClCompile Include="haptlinksupervisor.cpp" />
-    <ClCompile Include="HRExperiment.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="MilliSecTime.cpp" />
-    <ClCompile Include="node.c" />
-    <ClCompile Include="Observer.cpp" />
-    <ClCompile Include="stack.c" />
-    <ClCompile Include="Subject.cpp" />
-    <ClCompile Include="xmlparse.c" />
-    <ClCompile Include="xmlrole.c" />
-    <ClCompile Include="xmltok.c" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_hapticevaluationgui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="hapticevaluationgui.qrc">
@@ -158,12 +155,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AtiU6.h" />
-    <ClInclude Include="datalogger.h" />
-    <ClInclude Include="datamodel.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="EntactDevice.h" />
-    <ClInclude Include="experimentReader.h" />
     <ClInclude Include="HapticDevice.h" />
+    <ClInclude Include="datamodel.h" />
+    <ClInclude Include="MilliSecTime.h" />
+    <ClInclude Include="Observer.h" />
+    <ClInclude Include="Subject.h" />
     <CustomBuild Include="hapticevaluationgui.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Filename)%(Extension)...</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"   -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_XMLPATTERNS_LIB  -I"C:\qwt-5.2.1\src\." -I".\GeneratedFiles\." -I"$(QTDIR)\include\." -I".\GeneratedFiles\$(Configuration)\." -I"$(QTDIR)\include\qtmain\." -I"$(QTDIR)\include\QtCore\." -I"$(QTDIR)\include\QtGui\." -I"$(QTDIR)\include\QtXml\." -I"$(QTDIR)\include\QtXmlPatterns\." -I".\." ".\hapticevaluationgui.h" -o ".\GeneratedFiles\$(Configuration)\moc_%(Filename).cpp"
@@ -176,6 +174,8 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(Configuration)\moc_%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
+    <ClInclude Include="datalogger.h" />
+    <ClInclude Include="haptlinksupervisor.h" />
     <ClInclude Include="HapticThread.h" />
     <ClInclude Include="HapticThreadDoubleForce.h" />
     <ClInclude Include="HapticThreadHaptReplication.h" />
@@ -183,25 +183,15 @@
     <ClInclude Include="HapticThreadSingleHapticCst.h" />
     <ClInclude Include="HapticThreadSingleHapticSlope.h" />
     <ClInclude Include="HapticThreadSinglePosition.h" />
-    <ClInclude Include="haptlinksupervisor.h" />
+    <ClInclude Include="experimentReader.h" />
     <ClInclude Include="HRExperiment.h" />
-    <ClInclude Include="MilliSecTime.h" />
-    <ClInclude Include="Observer.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="Subject.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="HapticEvaluation.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="HapticEvaluation.licenseheader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOnBuild="0" MocOptions="" QtVersion_x0020_Win32="qt" />
+      <UserProperties lupdateOnBuild="0" MocDir=".\GeneratedFiles\$(ConfigurationName)" MocOptions="" QtVersion_x0020_Win32="qt" RccDir=".\GeneratedFiles" UicDir=".\GeneratedFiles" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
