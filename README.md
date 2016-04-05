@@ -20,10 +20,15 @@ Supported force sensor
 
 Installation
 
-- install QT 4.8.x
-- install QWT 5.1
-- install the API of your robot (Entact API, ...)
-- create an environment variable QTDIR pointing to the QT installation directory
-- build with Visual C++
+- install QT 5.5 (previously 4.8.x)
+- install QWT 6.1.2 (previously 5.1)
+- install the OpenHaptics 3.4 for the Sensable Omni
+- install the Quanta network API https://www.evl.uic.edu/cavern/quanta/download.php 
+- create environment variables:
+      - QTDIR pointing to the QT installation directory
+      - QWTDIR pointing to QWT installation directory
+      - OH_SDK_BASE to point to OpenHaptics
+      - QUANTADIR to point to Quanta
+- build with Visual C++ 2010
 
 
