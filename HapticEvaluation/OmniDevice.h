@@ -32,14 +32,14 @@ public:
 	int setMode();
 	void writeForce(Vector3 force );
 	void writePosition(Vector3 position );
-	void writeDamping(Vector3 translation , Vector3 rotation);
+	//void writeDamping(Vector3 translation , Vector3 rotation);
 
 	//calibration
-	int calibrate(void);
+	//int calibrate(void);
 
 	//HDCallbackCode HDCALLBACK DeviceStateCallback(void *pUserData);
 	int omniErrorCheck();
-	void exitHandler();
+	//void exitHandler();
 	static HDCallbackCode HDCALLBACK MasterSlaveCallback(void *data);
 	
 protected:
