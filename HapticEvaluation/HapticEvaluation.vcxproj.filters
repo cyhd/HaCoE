@@ -134,8 +134,7 @@
     <ClCompile Include="haptlinksupervisor.cpp">
       <Filter>Source Files\supervisor</Filter>
     </ClCompile>
-    <!--
-	<ClCompile Include="dom.c">
+    <ClCompile Include="dom.c">
       <Filter>Header Files\logger\log helper files</Filter>
     </ClCompile>
     <ClCompile Include="expatls.c">
@@ -162,7 +161,6 @@
     <ClCompile Include="xmltok.c">
       <Filter>Header Files\logger\log helper files</Filter>
     </ClCompile>
-	-->
     <ClCompile Include="GeneratedFiles\qrc_hapticevaluationgui.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
