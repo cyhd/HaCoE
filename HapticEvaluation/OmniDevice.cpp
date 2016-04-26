@@ -45,7 +45,7 @@ OmniDevice::OmniDevice()
 OmniDevice::~OmniDevice()
 {
 	OmniDevice::closeConnection();
-	//OmniDevice::exitHandler();
+	OmniDevice::exitHandler();
 }
 
 /*

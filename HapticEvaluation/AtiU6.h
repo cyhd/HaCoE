@@ -29,10 +29,8 @@ This class inherits from device.
 #pragma once
 #include "Device.h"
 #include "ftconfig.h"
-
 #include "LabJackUD.h"
-
-//#pragma comment(lib, "labjackud.lib")
+#pragma comment(lib, "labjackud.lib")
 
 class AtiU6 : public Device
 {
