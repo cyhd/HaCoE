@@ -22,7 +22,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
     <UseOfAtl>false</UseOfAtl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -44,6 +44,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -68,20 +69,22 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(QUANTADIR)\include;$(OH_SDK_BASE)\include;..\Dependencies\EntactAPI\include;$(OH_SDK_BASE)\utilities\include;.\GeneratedFiles;$(QTDIR)\include\QtWidgets;$(QTDIR)\include;$(QWTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtXmlPatterns;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OH_SDK_BASE)\include;..\Dependencies\EntactAPI\include;$(OH_SDK_BASE)\utilities\include;.\GeneratedFiles;$(QTDIR)\include\QtWidgets;$(QTDIR)\include;$(QWTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtXmlPatterns;.\;..\Dependencies\Labjack;$(BOOSTDIR)\include\boost-1_60;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_THREAD_SUPPORT;QT_CORE_LIB;QT_GUI_LIB;QT_XML_LIB;QT_XMLPATTERNS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>quanta.lib;qwtd.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;Qt5Widgetsd.lib;EntactAPI.lib;hd.lib;hl.lib;hdu.lib;hlu.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>LabJackM.lib;LabJackUD.lib;Ws2_32.lib;qwtd.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;Qt5Widgetsd.lib;EntactAPI.lib;hd.lib;hdu.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>..\Dependencies\EntactAPI\lib32;$(OH_SDK_BASE)\utilities\lib\Win32\Debug;$(QTDIR)\lib;%(AdditionalLibraryDirectories);$(QUANTADIR)\lib;$(QWTDIR)\lib;$(OH_SDK_BASE)\lib\Win32\Debug</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libc.lib; libcmt.lib; msvcrt.lib; libcd.lib; msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>..\Dependencies\EntactAPI\lib32;$(OH_SDK_BASE)\lib\Win32\Debug;$(QTDIR)\lib;%(AdditionalLibraryDirectories);$(QWTDIR)\lib;$(OH_SDK_BASE)\utilities\lib\Win32\Debug;..\Dependencies\Labjack;$(BOOSTDIR)\lib</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>msvcprtd.lib;LIBCMTD.lib;libcmt.lib;libcmtd.lib;libcpmtd.lib;msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -90,7 +93,12 @@
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <AdditionalOptions>/ENTRY:"mainCRTStartup" %(AdditionalOptions)</AdditionalOptions>
+      <PreventDllBinding>
+      </PreventDllBinding>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="HapticThreadForceToNetwork.cpp" />
@@ -114,6 +122,7 @@
     <ClCompile Include="experimentReader.cpp" />
     <ClCompile Include="HRExperiment.cpp" />
     <ClCompile Include="haptlinksupervisor.cpp" />
+    <!--
     <ClCompile Include="dom.c" />
     <ClCompile Include="expatls.c" />
     <ClCompile Include="ftconfig.c" />
@@ -124,6 +133,7 @@
     <ClCompile Include="xmlparse.c" />
     <ClCompile Include="xmlrole.c" />
     <ClCompile Include="xmltok.c" />
+-->
     <ClCompile Include="GeneratedFiles\qrc_hapticevaluationgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>
@@ -136,6 +146,7 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_hapticevaluationgui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="WriteNetworkThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="hapticevaluationgui.qrc">
