@@ -29,6 +29,7 @@
 #include "HapticThreadSingleHapticCst.h"
 #include "HapticThreadSingleHapticSlope.h"
 #include "datalogger.h"
+#include "HapticThreadForceToNetwork.h"
 #include "WriteNetworkThread.h"
 #include "ReadNetworkThread.h"
 
@@ -62,6 +63,27 @@ int HaptLinkSupervisor::initEntactB( int index , char *ip )
 	return haptDeviceB->getConnectSuccess();
 }
 
+//initialization of Omni devices
+int HaptLinkSupervisor::initOmniA()
+{
+	haptDeviceA = new OmniDevice();
+	return haptDeviceA->getConnectSuccess();
+}
+
+int HaptLinkSupervisor::initOmniB()
+{
+	haptDeviceB = new OmniDevice();
+	return haptDeviceB->getConnectSuccess();
+}
+
+/*
+int HaptLinkSupervisor::initRemoteDevice( int index , char *ip )
+{
+	haptDeviceB = new RemoteDevice( index , ip );
+	return haptDeviceB->getConnectSuccess();
+}
+*/
+
 void HaptLinkSupervisor::calibrateEntactA()
 {
 	if ( haptActiveA )
@@ -71,44 +93,43 @@ void HaptLinkSupervisor::calibrateEntactA()
 void HaptLinkSupervisor::calibrateEntactB()
 {
 	if ( haptActiveB )
-	{	haptDeviceB->calibrate();
-	}
+		haptDeviceB->calibrate();
 }
 
 void HaptLinkSupervisor::zeroEntactB()
 {
-	if ( haptActiveB ) {
-	Vector3 translationDamping, rotationDamping;
+	if ( haptActiveB ) 
+	{
+		Vector3 translationDamping, rotationDamping;
 
-	const double HR_GENERAL_DAMPING_TRANSLATION = 0.0008; //damping constants
-	const double HR_GENERAL_DAMPING_ROTATION = 1.0;
+		const double HR_GENERAL_DAMPING_TRANSLATION = 0.0008; //damping constants
+		const double HR_GENERAL_DAMPING_ROTATION = 1.0;
 
-	translationDamping.x = HR_GENERAL_DAMPING_TRANSLATION; //damping constants for the Entact
-	translationDamping.y = HR_GENERAL_DAMPING_TRANSLATION;
-	translationDamping.z = HR_GENERAL_DAMPING_TRANSLATION;
-	rotationDamping.x = HR_GENERAL_DAMPING_ROTATION;
-	rotationDamping.y = HR_GENERAL_DAMPING_ROTATION;
-	rotationDamping.z = HR_GENERAL_DAMPING_ROTATION;
+		translationDamping.x = HR_GENERAL_DAMPING_TRANSLATION; //damping constants for the Entact
+		translationDamping.y = HR_GENERAL_DAMPING_TRANSLATION;
+		translationDamping.z = HR_GENERAL_DAMPING_TRANSLATION;
+		rotationDamping.x = HR_GENERAL_DAMPING_ROTATION;
+		rotationDamping.y = HR_GENERAL_DAMPING_ROTATION;
+		rotationDamping.z = HR_GENERAL_DAMPING_ROTATION;
 
-	haptDeviceB->setMode( EAPI_FORCECONTROL_MODE ); //B in Force Control. 
-	haptDeviceB->writeDamping( translationDamping , rotationDamping ); //sets damping to the device
+		haptDeviceB->setMode( EAPI_FORCECONTROL_MODE ); //B in Force Control. 
+		haptDeviceB->writeDamping( translationDamping , rotationDamping ); //sets damping to the device
 	
 	// HOME to the start position
-	Vector3 zero;
-	zero.x = 0;
-	zero.y = 0;
-	zero.z = 0;
+		Vector3 zero;
+		zero.x = 0;
+		zero.y = 0;
+		zero.z = 0;
 		
-	Vector3 un;
-	un.x = 0;
-	un.y = 0;
-	un.z = 0.3;
+		Vector3 un;
+		un.x = 0;
+		un.y = 0;
+		un.z = 0.3;
 
-	haptDeviceB->writeForce( un , zero );
-	getMutex()->lock();
+		haptDeviceB->writeForce( un , zero );
+		getMutex()->lock();
 		positionControlzero = haptDeviceB->getTranslation();
-	getMutex()->unlock();
-	
+		getMutex()->unlock();
 	}
 }
 /*
@@ -146,6 +167,8 @@ HaptLinkSupervisor::~HaptLinkSupervisor()
 	delete timerForce;
 	//if ( threadCreated ) delete thread;
 }	
+
+
 void HaptLinkSupervisor::closeConnection()
 {
 	if ( LJActiveA == 1 ) 
@@ -218,7 +241,7 @@ void HaptLinkSupervisor::start()
 	}
 	else if ( experimentType == FORCE2NET )
 	{
-		//thread = new HapticThreadForceToNetwork();
+		thread = new HapticThreadForceToNetwork();
 		thread = new WriteNetworkThread();
 		thread = new ReadNetworkThread();
 		threadCreated = true;

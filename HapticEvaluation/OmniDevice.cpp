@@ -5,77 +5,59 @@ using namespace std;
 HDSchedulerHandle gSchedulerCallback = HD_INVALID_HANDLE;
 HDErrorInfo lastError;
 
-#define DEVICE_NAME	"PHANToM"
+#define DEVICE_NAME_MASTER	"PHANToM 1"
 
 // SensAble device handle and scheduler declarations.
-HHD phantomid = HD_INVALID_HANDLE;  // Phantom device.
+HHD phantomid = HD_INVALID_HANDLE;  // Phantom declaration.
 
 //Scaling factor for gravity compensation to account for extra weight
 float Scale_Master = 1.5;
 
-/* Haptic device record. */
-struct DeviceDisplayStates
-{
-    HHD m_hHD;
-    hduVector3Dd position;
-    hduVector3Dd force;
-};
-
 
 OmniDevice::OmniDevice()
-{	 
+{
 	// some sensable error handling junk
     HDErrorInfo error;
 
-	// Left device.
-    phantomid = hdInitDevice(DEVICE_NAME);
+	// Device.
+    phantomid = hdInitDevice(DEVICE_NAME_MASTER);
 
 	if (HD_DEVICE_ERROR(error = hdGetError()))
     {
         connectSuccess = false;
+		hduPrintError(stderr, &error, "Failed to initialize left haptic device");
+        fprintf(stderr, "Make sure the configuration \"%s\" exists\n", DEVICE_NAME_MASTER);
+        fprintf(stderr, "\nPress any key to quit.\n");
+        getchar();
+        exit(-1);
     }
 	else
-		connectSuccess = true;
-	
+	{
+	printf("1. Found device 1: %s\n",hdGetString(HD_DEVICE_MODEL_TYPE));
     hdEnable(HD_FORCE_OUTPUT);
     hdEnable(HD_FORCE_RAMPING);
+	connectSuccess = true;
+	}
+	// Start the scheduler.
+	hdStartScheduler();
+	if (HD_DEVICE_ERROR(error = hdGetError()))
+	{
+		connectSuccess = false;
+		hduPrintError(stderr, &error, "Failed to start scheduler");
+		fprintf(stderr, "\nPress any key to quit.\n");
+        getchar();
+        exit(-1);
+	}
+
 }
-	
+
 
 OmniDevice::~OmniDevice()
 {
 	OmniDevice::closeConnection();
-	//OmniDevice::exitHandler();
 }
 
-/*
-short OmniDevice::readData( void )
-{
-	hdMakeCurrentDevice(phantomid);
-	hdGetDoublev(HD_CURRENT_POSITION, position);
-	hdBeginFrame(phantomid)
-	this->setTranslation( position[0] , position[1] , position[2] ); //these positions are given in millimetres.  Send back the translation info first
-		
-	return true;
-}
-*/
-
-//HDCallbackCode HDCALLBACK OmniDevice::DeviceStateCallback(void *pUserData)
-short OmniDevice::readData( void *pUserData )
-{
-    DeviceDisplayStates *pDisplayState = static_cast<DeviceDisplayStates *>(pUserData);
-
-	hdMakeCurrentDevice(pDisplayState->m_hHD);      
-    hdGetDoublev(HD_CURRENT_POSITION, pDisplayState->position);
-    hdGetDoublev(HD_CURRENT_FORCE, pDisplayState->force);
-
-	this->setTranslation( position[0] , position[1] , position[2] ); //these positions are given in millimetres.  Send back the translation info first
-	
-    return HD_CALLBACK_DONE;
-}
-
-
-void OmniDevice::closeConnection( void )
+void OmniDevice::closeConnection()
 {
     hdStopScheduler();
     hdUnschedule(gSchedulerCallback);
@@ -86,107 +68,39 @@ void OmniDevice::closeConnection( void )
         hdDisableDevice(phantomid);
         phantomid = HD_INVALID_HANDLE;
     }
-
 }
 
-void OmniDevice::writeForce( Vector3 force )
+short OmniDevice::readData()
 {
-	motionIn[0] = force.x;  // forces
-	motionIn[1] = force.y;
-	motionIn[2] = force.z;
-
-	hdMakeCurrentDevice(phantomid);
-    hdSetDoublev(HD_CURRENT_FORCE, motionIn);
-	hdEndFrame(phantomid);
-}
-
-void OmniDevice::writePosition( Vector3 position )
-{
-	positionIn[0] = position.x;
-	positionIn[1] = position.y;
-	positionIn[2] = position.z;
-	
-	hdMakeCurrentDevice(phantomid);
-    hdSetDoublev(HD_CURRENT_POSITION, positionIn);
-	hdEndFrame(phantomid);
-}
-
-/*
-void OmniDevice::omniTeleoperationController(double virtualSpringConstant, double virtualDampingConstant, hduVector3Dd gravityCompensationVector, omniTeleoperationMode teleopMode) 
-{
-
-    hdBeginFrame(phantomid);
+	hdBeginFrame(phantomid);
     hdGetDoublev(HD_CURRENT_POSITION, position);
+	hdEndFrame(phantomid);
+	this->setTranslation(position[0], position[1], position[2]);
 	
-     
-
-
-
-	// Identify left haptic device.
-	hdMakeCurrentDevice(phantomid);
-    hdSetDoublev(HD_CURRENT_FORCE, forceMaster);
-    
-	// Flush forces on the first device.
-    hdEndFrame(phantomid);
+	return SUCCESS;
 }
 
-*/
-int OmniDevice::omniErrorCheck()
+
+int OmniDevice::calibrate()
 {
-	HDErrorInfo error;
-    
-	if (HD_DEVICE_ERROR(error = hdGetError()))
-    {
-        hduPrintError(stderr, &error, "Error during main loop\n"); 
-
-        if (error.errorCode == HD_WARM_MOTORS &&
-            hdIsEnabled(HD_FORCE_OUTPUT))
-        {
-            fprintf(stderr, "\nTurning forces off till motors cool down...\n");
-            hdDisable(HD_FORCE_OUTPUT);
-        }
-
-        if (hduIsSchedulerError(&error))
-        {
-            /* Just quit, since the user likely unplugged the device */
-            fprintf(stderr, "A scheduler error has been detected.\n");
-            return HD_CALLBACK_DONE;
-        }
-    }
-    else if (!hdIsEnabled(HD_FORCE_OUTPUT))
-    {
-        fprintf(stderr, "\nTurning forces back on...\n");
-        hdEnable(HD_FORCE_OUTPUT);   
-    }
-	
-	return HD_CALLBACK_CONTINUE;
+	return 1;
 }
 
-
-/******************************************************************************
- This handler gets called when the process is exiting.  Ensures that HDAPI is
- properly shutdown.
-******************************************************************************/
-/*
-void OmniDevice::exitHandler()
+void OmniDevice::writeForce(Vector3 force , Vector3 torque )
 {
-   
-   if (!lastError.errorCode)
-    {
-        hdStopScheduler();
-        hdUnschedule(gSchedulerCallback);
-    }
-
-    if (phantomidMaster != HD_INVALID_HANDLE)
-    {
-        hdDisableDevice(phantomidMaster);
-        phantomidMaster = HD_INVALID_HANDLE;
-    }
-
-    if (phantomidSlave != HD_INVALID_HANDLE)
-    {
-        hdDisableDevice(phantomidSlave);
-		phantomidSlave = HD_INVALID_HANDLE;
-    }
+	hdBeginFrame(phantomid);
+	hdSetDoublev(HD_CURRENT_FORCE, force);
+	hdEndFrame(phantomid);
 }
-*/
+
+void OmniDevice::writePosition( Vector3 position , Matrix3x3 rotation ) 
+{
+	hdBeginFrame(phantomid);
+	hdSetDoublev(HD_CURRENT_POSITION, position);
+	hdEndFrame(phantomid);
+	this->setTranslation(position[0], position[1], position[2]);
+}
+
+void OmniDevice::writeDamping( Vector3 translation , Vector3 rotation ) 
+{
+}

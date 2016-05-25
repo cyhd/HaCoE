@@ -143,6 +143,8 @@ public:
 	int initDeviceB( char *filename , char *serialNumber );
 	int initEntactA( int index , char *ip ); //initializing Entacts
 	int initEntactB( int index , char *ip );
+	int initOmniA();
+	int initOmniB();
 	void calibrateEntactA(); //Calibrating entacts
 	void calibrateEntactB();
 

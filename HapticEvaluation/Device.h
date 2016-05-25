@@ -24,7 +24,7 @@
 
 #include "datamodel.h"
 
-enum deviceType { ATI_DEVICE , HAPTIC_DEVICE };
+enum deviceType { ATI_DEVICE , HAPTIC_DEVICE, OMNI_DEVICE };
 
 class Device
 {

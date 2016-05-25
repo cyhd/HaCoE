@@ -68,7 +68,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(OH_SDK_BASE)\include;..\Dependencies\EntactAPI\include;$(OH_SDK_BASE)\utilities\include;.\GeneratedFiles;$(QTDIR)\include\QtWidgets;$(QTDIR)\include;$(QWTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtXmlPatterns;.\;$(ASIO_INCLUDE_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OH_SDK_BASE)\include;..\Dependencies\EntactAPI\include;$(OH_SDK_BASE)\utilities\include;.\GeneratedFiles;$(QTDIR)\include\QtWidgets;$(QTDIR)\include;$(QWTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtXmlPatterns;.\;$(ASIO_INCLUDE_DIR);$(BOOST_INC_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_THREAD_SUPPORT;QT_CORE_LIB;QT_GUI_LIB;QT_XML_LIB;QT_XMLPATTERNS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
@@ -80,7 +80,7 @@
     <Link>
       <AdditionalDependencies>qwtd.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;Qt5XmlPatternsd.lib;Qt5Widgetsd.lib;EntactAPI.lib;hd.lib;hl.lib;hdu.lib;hlu.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>..\Dependencies\EntactAPI\lib32;$(OH_SDK_BASE)\utilities\lib\Win32\Debug;$(QTDIR)\lib;%(AdditionalLibraryDirectories);$(QWTDIR)\lib;$(OH_SDK_BASE)\lib\Win32\Debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\Dependencies\EntactAPI\lib32;$(OH_SDK_BASE)\utilities\lib\Win32\Debug;$(QTDIR)\lib;%(AdditionalLibraryDirectories);$(QWTDIR)\lib;$(OH_SDK_BASE)\lib\Win32\Debug;$(BOOSTDIR)\lib</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
