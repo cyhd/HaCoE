@@ -36,11 +36,19 @@ the haptic devices (Entact W5D).  This class is based off the work of Boris Taka
 #include "datamodel.h"
 #include "Device.h"
 
+enum HapticMode {
+ DISABLED_MODE	= 0x0000,
+ FORCECONTROL_MODE = 0x0001,
+ TORQUECONTROL_MODE	= 0x0002,
+ POSITIONCONTROL_MODE = 0x0003,
+ VIRTUAL_MODE = 0x0004
+};
+
 class HapticDevice : public Device
 {
 public:
-	virtual int getMode() const = 0;
-	virtual int setMode( int setmode ) = 0;
+	virtual int getMode() const { return mode; };
+	virtual int setMode( HapticMode setmode ) { return mode = setmode; }
 	virtual int calibrate() = 0;
 	virtual void writeForce( Vector3 force , Vector3 torque ) = 0;
 	virtual void writePosition( Vector3 position , Matrix3x3 rotation ) = 0;
@@ -55,6 +63,7 @@ private:
 	Vector3 translation;
 	Vector3 rotation;
 	deviceType type;  
+	int mode;
 };
 
 //#endif // DEVICE_H

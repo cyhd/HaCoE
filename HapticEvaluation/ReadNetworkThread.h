@@ -10,7 +10,7 @@ using boost::asio::ip::udp;
 class ReadNetworkThread : public HapticThread
 {
 public:
-	ReadNetworkThread( void );
+	ReadNetworkThread( unsigned short port );
 	~ReadNetworkThread( void );
 	void run();
 	void handle_receive(const boost::system::error_code& error, size_t);

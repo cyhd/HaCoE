@@ -51,8 +51,8 @@ void HapticThreadSingleForce::run()
 	rotationDamping.x = SF_GENERAL_DAMPING_ROTATION;
 	rotationDamping.y = SF_GENERAL_DAMPING_ROTATION;
 	rotationDamping.z = SF_GENERAL_DAMPING_ROTATION;
-	haptDeviceA->setMode( EAPI_FORCECONTROL_MODE ); //A in Force Control.  This is the master.
-	haptDeviceB->setMode( EAPI_FORCECONTROL_MODE ); //B in Position Control.  This is the slave.	
+	haptDeviceA->setMode( FORCECONTROL_MODE ); //A in Force Control.  This is the master.
+	haptDeviceB->setMode( FORCECONTROL_MODE ); //B in Position Control.  This is the slave.	
 	haptDeviceA->writeDamping( translationDamping , rotationDamping ); //sets damping to the two devices.
 	haptDeviceB->writeDamping( translationDamping , rotationDamping );
 

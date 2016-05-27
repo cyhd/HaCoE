@@ -78,6 +78,12 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Header Files\control law">
+      <UniqueIdentifier>{8fa9f21c-bb0d-4835-a250-e5365a16f18b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\control law">
+      <UniqueIdentifier>{bc1ca943-4bef-406d-beca-0f334bc4a40a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -182,6 +188,9 @@
     <ClCompile Include="WriteNetworkThread.cpp">
       <Filter>Source Files\threads</Filter>
     </ClCompile>
+    <ClCompile Include="RemoteControlLawSimple.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AtiU6.h">
@@ -252,6 +261,12 @@
     </ClInclude>
     <ClInclude Include="ReadNetworkThread.h">
       <Filter>Header Files\threads</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLaw.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLawSimple.h">
+      <Filter>Header Files\control law</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

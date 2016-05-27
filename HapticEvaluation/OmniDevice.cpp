@@ -24,31 +24,30 @@ OmniDevice::OmniDevice()
 
 	if (HD_DEVICE_ERROR(error = hdGetError()))
     {
-        connectSuccess = false;
-		hduPrintError(stderr, &error, "Failed to initialize left haptic device");
-        fprintf(stderr, "Make sure the configuration \"%s\" exists\n", DEVICE_NAME_MASTER);
-        fprintf(stderr, "\nPress any key to quit.\n");
-        getchar();
-        exit(-1);
+        connectSuccess = true;
+		printf("1. Found remote device: %s\n",hdGetString(HD_DEVICE_MODEL_TYPE));
+	    setMode(VIRTUAL_MODE);
     }
+
 	else
 	{
-	printf("1. Found device 1: %s\n",hdGetString(HD_DEVICE_MODEL_TYPE));
-    hdEnable(HD_FORCE_OUTPUT);
-    hdEnable(HD_FORCE_RAMPING);
-	connectSuccess = true;
+		printf("1. Found device 1: %s\n",hdGetString(HD_DEVICE_MODEL_TYPE));
+		hdEnable(HD_FORCE_OUTPUT);
+		hdEnable(HD_FORCE_RAMPING);
+		connectSuccess = true;
+		setMode(FORCECONTROL_MODE);
+	
+		// Start the scheduler.
+		hdStartScheduler();
+		if (HD_DEVICE_ERROR(error = hdGetError()))
+		{
+			connectSuccess = false;
+			hduPrintError(stderr, &error, "Failed to start scheduler");
+			fprintf(stderr, "\nPress any key to quit.\n");
+			getchar();
+			exit(-1);
 	}
-	// Start the scheduler.
-	hdStartScheduler();
-	if (HD_DEVICE_ERROR(error = hdGetError()))
-	{
-		connectSuccess = false;
-		hduPrintError(stderr, &error, "Failed to start scheduler");
-		fprintf(stderr, "\nPress any key to quit.\n");
-        getchar();
-        exit(-1);
 	}
-
 }
 
 
@@ -73,32 +72,42 @@ void OmniDevice::closeConnection()
 short OmniDevice::readData()
 {
 	hdBeginFrame(phantomid);
-    hdGetDoublev(HD_CURRENT_POSITION, position);
+    hdGetDoublev(HD_CURRENT_POSITION, positiond);
 	hdEndFrame(phantomid);
-	this->setTranslation(position[0], position[1], position[2]);
+	this->setTranslation(positiond[0], positiond[1], positiond[2]);
 	
 	return SUCCESS;
 }
 
 
-int OmniDevice::calibrate()
+
+int OmniDevice::setMode(HapticMode setmode)
 {
-	return 1;
+	mode = setmode;
+	return mode;
 }
 
 void OmniDevice::writeForce(Vector3 force , Vector3 torque )
 {
+	forced[0]=force.x;
+	forced[1]=force.y;
+	forced[2]=force.z;
+	
 	hdBeginFrame(phantomid);
-	hdSetDoublev(HD_CURRENT_FORCE, force);
+	hdSetDoublev(HD_CURRENT_FORCE, forced);
 	hdEndFrame(phantomid);
 }
 
 void OmniDevice::writePosition( Vector3 position , Matrix3x3 rotation ) 
 {
+	positiond[0]=position.x;
+	positiond[1]=position.y;
+	positiond[2]=position.z;
+	
 	hdBeginFrame(phantomid);
-	hdSetDoublev(HD_CURRENT_POSITION, position);
+	hdSetDoublev(HD_CURRENT_POSITION, positiond);
 	hdEndFrame(phantomid);
-	this->setTranslation(position[0], position[1], position[2]);
+	this->setTranslation(positiond[0], positiond[1], positiond[2]);
 }
 
 void OmniDevice::writeDamping( Vector3 translation , Vector3 rotation ) 

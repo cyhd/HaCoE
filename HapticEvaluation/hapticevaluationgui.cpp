@@ -59,6 +59,10 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 
 	expgroup = new QButtonGroup;
 	expgroup->addButton(ui.radioButtonSLPosition);
+	
+	//*******
+	expgroup->addButton(ui.radioButtonForceToNet);
+	
 	expgroup->addButton(ui.radioButtonSLForce);
 	expgroup->addButton(ui.radioButtonDLForce);
 	expgroup->addButton(ui.radioButtonHaptRep);
@@ -91,12 +95,14 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 
 	ui.pushButtonEntactACalibrate->setEnabled( false );
 	ui.pushButtonEntactBCalibrate->setEnabled( false );
+	ui.pushButtonComInit->setEnabled( false );
 
 	hideDataA();
 
 	hideDataB();
 
 	ui.frameHaptRep->setVisible( false );
+	ui.frameRemCtrl->setVisible( false );
 	ui.frameHaptRepAuto->setVisible( false );
 	ui.pushButtonReadNextTrial->setEnabled( false );
 	/*
@@ -121,9 +127,18 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 	connect(ui.checkBoxAtiActivateB , SIGNAL(stateChanged(int)) , this , SLOT(switchAtiB()));
 	connect(ui.checkBoxActiveEntactA , SIGNAL(stateChanged(int)) , this , SLOT(switchEntactA()));
 	connect(ui.checkBoxActiveEntactB , SIGNAL(stateChanged(int)) , this , SLOT(switchEntactB()));
+
+	connect(ui.checkBoxActiveHapticA , SIGNAL(stateChanged(int)) , this , SLOT(switchEntactA()));
+	connect(ui.checkBoxActiveHapticB , SIGNAL(stateChanged(int)) , this , SLOT(switchEntactB()));
+	connect(ui.pushButtonComInit, SIGNAL(clicked()), this, SLOT(setRemoteComConfig()));
+	
 	connect(ui.pushButtonEntactACalibrate , SIGNAL(clicked()) , this , SLOT(calibrateEntactA()));
 	connect(ui.pushButtonEntactBCalibrate , SIGNAL(clicked()) , this , SLOT(calibrateEntactB()));
 	connect(ui.radioButtonSLPosition , SIGNAL(toggled(bool)) , this , SLOT(setExpInfo()));
+	
+	//**********
+	connect(ui.radioButtonForceToNet , SIGNAL(toggled(bool)) , this , SLOT(setExpInfo()));
+	
 	connect(ui.radioButtonSLForce , SIGNAL(toggled(bool)) , this , SLOT(setExpInfo()));
 	connect(ui.radioButtonDLForce , SIGNAL(toggled(bool)) , this , SLOT(setExpInfo()));
 	connect(ui.radioButtonHaptRep , SIGNAL(toggled(bool)) , this , SLOT(setExpInfo()));
@@ -297,11 +312,16 @@ bool HapticEvaluationGUI::getAtiBActivate()
 
 bool HapticEvaluationGUI::getEntactAActivate()
 {
-	return ui.checkBoxActiveEntactA->isChecked();
+	return ui.checkBoxActiveEntactA->isChecked() || ui.checkBoxActiveHapticA->isChecked();
 }	
 bool HapticEvaluationGUI::getEntactBActivate()
 {
-	return ui.checkBoxActiveEntactB->isChecked();
+	return ui.checkBoxActiveEntactB->isChecked() || ui.checkBoxActiveHapticB->isChecked();
+}
+
+bool HapticEvaluationGUI::getHapticActivate()
+{
+	return ui.checkBoxActiveHapticA->isChecked();
 }
 
 void HapticEvaluationGUI::updateCheckGraph()
@@ -465,10 +485,11 @@ void HapticEvaluationGUI::setStartLog()
 		HaptLinkSupervisor::getInstance()->setExperimentType( SLPOS );
 	else if ( ui.radioButtonSLForce->isChecked() )
 		HaptLinkSupervisor::getInstance()->setExperimentType( SLFORCE );
-	else if (ui.radioButtonForceToNet->isChecked()) {
-		HaptLinkSupervisor::getInstance()->setExperimentType(FORCE2NET);
 
-	}
+	//*********
+	else if (ui.radioButtonForceToNet->isChecked()) 
+		HaptLinkSupervisor::getInstance()->setExperimentType(FORCE2NET);
+	
 	else if ( ui.radioButtonDLForce->isChecked() )
 		HaptLinkSupervisor::getInstance()->setExperimentType( DLFORCE );
 	else if ( ui.radioButtonHaptRep->isChecked() )
@@ -719,16 +740,16 @@ void HapticEvaluationGUI::switchEntactA()
 {
 	if ( getEntactAActivate() )
 	{
-		if ( HaptLinkSupervisor::getInstance()->initEntactA( 0 , ui.lineEditEntactAIP->text().toLocal8Bit().data() ) == 1 )
+		if ( HaptLinkSupervisor::getInstance()->initHapticA( 0 , ui.lineEditEntactAIP->text().toLocal8Bit().data() ) == 1 )
 		{
-			setStatus("Entact A activated.  Press Start to start logging.");
+			setStatus("Haptic device A activated.  Press Start to start logging.");
 			DataLogger::getInstance()->setHapticActiveA( true );
 			HaptLinkSupervisor::getInstance()->setHaptActiveA( true );
 			ui.pushButtonEntactACalibrate->setEnabled( true );
 		}
 		else 
 		{
-			setStatus("Entact A connection failed.  Please check IP is correct and Entact is on.  Then recheck the activate box.");
+			setStatus("Haptic devicet A connection failed.  Please check IP is correct and Haptic device is on.  Then recheck the activate box.");
 			ui.checkBoxActiveEntactA->setChecked( false );
 			ui.checkBoxActiveEntactA->setCheckState( Qt::Unchecked );
 			DataLogger::getInstance()->setHapticActiveA( false );
@@ -737,8 +758,8 @@ void HapticEvaluationGUI::switchEntactA()
 	}
 	else if ( HaptLinkSupervisor::getInstance()->getHaptActiveA() )
 	{
-		HaptLinkSupervisor::getInstance()->closeEntactConnectionA();//fix after creating method to close connections of entacts
-		setStatus("Entact A deactivated.  Press Start to start logging.");
+		HaptLinkSupervisor::getInstance()->closeHapticConnectionA();//fix after creating method to close connections of entacts
+		setStatus("Haptic device A deactivated.  Press Start to start logging.");
 		DataLogger::getInstance()->setHapticActiveA( getEntactAActivate() );
 		HaptLinkSupervisor::getInstance()->setHaptActiveA( getEntactAActivate() );
 		ui.pushButtonEntactACalibrate->setEnabled( false );
@@ -749,16 +770,16 @@ void HapticEvaluationGUI::switchEntactB()
 {
 	if ( getEntactBActivate() )
 	{
-		if ( HaptLinkSupervisor::getInstance()->initEntactB( 1 , ui.lineEditEntactBIP->text().toLocal8Bit().data() ) == 1 )
+		if ( HaptLinkSupervisor::getInstance()->initHapticB( 1 , ui.lineEditEntactBIP->text().toLocal8Bit().data() ) == 1 )
 		{
-			setStatus("Entact B activated.  Press Start to start logging.");
+			setStatus("Haptic device B activated.  Press Start to start logging.");
 			DataLogger::getInstance()->setHapticActiveB( true );
 			HaptLinkSupervisor::getInstance()->setHaptActiveB( true );
 			ui.pushButtonEntactBCalibrate->setEnabled( true );
 		}
 		else
 		{
-			setStatus("Entact B connection failed.  Please check IP is correct and Entact is on.  Then recheck the activate box.");
+			setStatus("Haptic device B connection failed.  Please check IP is correct and Haptic device is on.  Then recheck the activate box.");
 			ui.checkBoxActiveEntactB->setChecked( false );
 			ui.checkBoxActiveEntactB->setCheckState( Qt::Unchecked );
 			DataLogger::getInstance()->setHapticActiveB( false );
@@ -768,8 +789,8 @@ void HapticEvaluationGUI::switchEntactB()
 	}
 	else if ( HaptLinkSupervisor::getInstance()->getHaptActiveB() )
 	{
-		HaptLinkSupervisor::getInstance()->closeEntactConnectionB();
-		setStatus("Entact B deactivated.  Press Start to start logging.");
+		HaptLinkSupervisor::getInstance()->closeHapticConnectionB();
+		setStatus("Haptic device B deactivated.  Press Start to start logging.");
 		DataLogger::getInstance()->setHapticActiveB( getEntactBActivate() );
 		HaptLinkSupervisor::getInstance()->setHaptActiveB( getEntactBActivate() );
 		ui.pushButtonEntactBCalibrate->setEnabled( false );
@@ -777,13 +798,21 @@ void HapticEvaluationGUI::switchEntactB()
 	}
 }
 
+
+
+void HapticEvaluationGUI::setRemoteComConfig( void )
+{
+	HaptLinkSupervisor::getInstance()->initUDPWrite(ui.lineEditRemIP->text().toStdString().data(),ui.lineEditRemPort->text().toStdString().data());
+	HaptLinkSupervisor::getInstance()->initUDPRead(ui.lineEditLocalPort->text().toUInt());
+}
+
 void HapticEvaluationGUI::calibrateEntactA( void )
 {
-	HaptLinkSupervisor::getInstance()->calibrateEntactA();
+	HaptLinkSupervisor::getInstance()->calibrateHapticA();
 }
 void HapticEvaluationGUI::calibrateEntactB( void )
 {
-	HaptLinkSupervisor::getInstance()->calibrateEntactB();
+	HaptLinkSupervisor::getInstance()->calibrateHapticB();
 }
 void HapticEvaluationGUI::setExpInfo( void )
 {
@@ -791,19 +820,29 @@ void HapticEvaluationGUI::setExpInfo( void )
 	disableDepthFrame();
 	ui.frameHaptRep->setVisible( false );
 	ui.frameHaptRepAuto->setVisible( false );
-
+	ui.frameHaptACtrl->setVisible( true );
+	ui.frameHaptBCtrl->setVisible( true );
+	ui.frameRemCtrl->setVisible( false );
 	
 	if ( ui.radioButtonForceToNet->isChecked() )
 	{	
 		ui.pushButtonStart->setEnabled( true );
+				
+		ui.frameRemCtrl->setVisible( true );
+		ui.frameHaptACtrl->setVisible( false );
+		ui.frameHaptBCtrl->setVisible( false );
+
+		ui.pushButtonComInit->setEnabled(true);
+		
 		ui.textEditExpInfo->setPlainText( "Dual Link Force Control through Network:\n"
 										  "This control scheme uses a master-master configuration.\n"
 										  "-Omni A and B will output a force proportional to the difference in position between them " 
 										  "to try and move to the same position.");
 	}
-	if ( ui.radioButtonSLPosition->isChecked() )
+	else if ( ui.radioButtonSLPosition->isChecked() )
 	{	
 		ui.pushButtonStart->setEnabled( true );
+
 		ui.textEditExpInfo->setPlainText( "Single Link Position Control:\n"
 										  "This control scheme uses a master-slave configuration.\n"
 										  "-Entact A is Master, in force mode outputting no force while sending its position to Entact B.\n"
@@ -812,6 +851,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonSLForce->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+		
 		ui.textEditExpInfo->setPlainText( "Single Link Force Control:\n"
 										  "This control scheme uses a master-slave configuration.\n"
 										  "-Entact A is Master, in force mode outputting no force while sending its position to Entact B.\n"
@@ -821,6 +861,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonDLForce->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		ui.textEditExpInfo->setPlainText( "Dual Link Force Control:\n"
 										  "This control scheme uses a master-master configuration.\n"
 										  "-Entact A and B will output a force proportional to the difference in position between them " 
@@ -829,6 +870,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonHaptRep->isChecked() || ui.radioButtonHRSeq->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		enableHRFrame();
 		ui.frameHaptRep->setVisible( true );
 		ui.textEditExpInfo->setPlainText( "Haptic Replication Experiment:\n" 
@@ -839,12 +881,14 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonATIOnly->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		ui.textEditExpInfo->setPlainText( "Use ATI Only:\n" 
 										  "In this mode, only the ATI sensors are used for measuring force.  That is, the haptic devices are not used." );
 	}
 	else if ( ui.radioButtonHaptRepAuto->isChecked() )
 	{
 		ui.frameHaptRepAuto->setVisible( true );
+
 		ui.pushButtonStart->setEnabled( false );
 		ui.textEditExpInfo->setPlainText( "Haptic Replication Experiment:\n" 
 										  "This experiment tests the ability of a subject to feel a force on one hand and to reproduce it in another.\n" 
@@ -855,6 +899,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonSingleHaptic->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		enableHRFrame();
 		ui.frameHaptRep->setVisible( true );
 		ui.textEditExpInfo->setPlainText( "Single Haptic Force Feedback:\n" 
@@ -863,6 +908,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonDepthConstant->isChecked()  )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		DataLogger::getInstance()->setInstruction( true );
 			
 		enableDepthFrame();
@@ -878,6 +924,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonDepthLinear->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		DataLogger::getInstance()->setInstruction( true );
 			
 		enableDepthFrame();
@@ -1207,6 +1254,10 @@ void HapticEvaluationGUI::disableInterface()
 	ui.pushButtonEntactACalibrate->setEnabled( false );
 	ui.pushButtonEntactBCalibrate->setEnabled( false );
 	ui.radioButtonSLPosition->setEnabled( false );
+	
+	//******
+	ui.radioButtonForceToNet->setEnabled( false );
+	
 	ui.radioButtonSLForce->setEnabled( false );
 	ui.radioButtonDLForce->setEnabled( false );
 	ui.radioButtonHaptRep->setEnabled( false );
@@ -1235,6 +1286,10 @@ void HapticEvaluationGUI::enableInterface()
 	ui.pushButtonEntactACalibrate->setEnabled( true );
 	ui.pushButtonEntactBCalibrate->setEnabled( true );
 	ui.radioButtonSLPosition->setEnabled( true );
+
+	//******
+	ui.radioButtonForceToNet->setEnabled( true );
+
 	ui.radioButtonSLForce->setEnabled( true );
 	ui.radioButtonDLForce->setEnabled( true );
 	ui.radioButtonHaptRep->setEnabled( true );

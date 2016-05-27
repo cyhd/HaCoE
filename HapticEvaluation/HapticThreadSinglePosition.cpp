@@ -39,8 +39,8 @@ void HapticThreadSinglePosition::run()
 	zero.z = 0;
 
 	//This block sets up for Single Link Control (master-slave) in Position control... Move to a different file later on
-	supervisor->getHaptDeviceA()->setMode( EAPI_FORCECONTROL_MODE ); //A in Force Control.  This is the master.
-	haptDeviceB->setMode( EAPI_POSITIONCONTROL_MODE ); //B in Position Control.  This is the slave.
+	supervisor->getHaptDeviceA()->setMode( FORCECONTROL_MODE ); //A in Force Control.  This is the master.
+	haptDeviceB->setMode( POSITIONCONTROL_MODE ); //B in Position Control.  This is the slave.
 
 	while( supervisor->getThreadStarted() )
 	{

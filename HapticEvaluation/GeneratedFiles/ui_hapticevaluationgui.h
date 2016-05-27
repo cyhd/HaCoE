@@ -174,6 +174,16 @@ public:
     QLabel *labelExpForceMin;
     QLabel *labelExpDelta;
     QPushButton *pushButtonZero;
+    QFrame *frameRemCtrl;
+    QLabel *label_47;
+    QLabel *label_48;
+    QLabel *label_49;
+    QLineEdit *lineEditRemIP;
+    QLineEdit *lineEditRemPort;
+    QLineEdit *lineEditLocalPort;
+    QPushButton *pushButtonComInit;
+    QCheckBox *checkBoxActiveHapticA;
+    QCheckBox *checkBoxActiveHapticB;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -643,10 +653,42 @@ public:
         pushButtonZero = new QPushButton(centralWidget);
         pushButtonZero->setObjectName(QStringLiteral("pushButtonZero"));
         pushButtonZero->setGeometry(QRect(940, 640, 75, 23));
+        frameRemCtrl = new QFrame(centralWidget);
+        frameRemCtrl->setObjectName(QStringLiteral("frameRemCtrl"));
+        frameRemCtrl->setGeometry(QRect(670, 390, 261, 141));
+        frameRemCtrl->setFrameShape(QFrame::StyledPanel);
+        frameRemCtrl->setFrameShadow(QFrame::Raised);
+        label_47 = new QLabel(frameRemCtrl);
+        label_47->setObjectName(QStringLiteral("label_47"));
+        label_47->setGeometry(QRect(160, 10, 61, 16));
+        label_48 = new QLabel(frameRemCtrl);
+        label_48->setObjectName(QStringLiteral("label_48"));
+        label_48->setGeometry(QRect(170, 70, 81, 20));
+        label_49 = new QLabel(frameRemCtrl);
+        label_49->setObjectName(QStringLiteral("label_49"));
+        label_49->setGeometry(QRect(20, 70, 81, 16));
+        lineEditRemIP = new QLineEdit(frameRemCtrl);
+        lineEditRemIP->setObjectName(QStringLiteral("lineEditRemIP"));
+        lineEditRemIP->setGeometry(QRect(150, 30, 91, 20));
+        lineEditRemPort = new QLineEdit(frameRemCtrl);
+        lineEditRemPort->setObjectName(QStringLiteral("lineEditRemPort"));
+        lineEditRemPort->setGeometry(QRect(30, 90, 41, 20));
+        lineEditLocalPort = new QLineEdit(frameRemCtrl);
+        lineEditLocalPort->setObjectName(QStringLiteral("lineEditLocalPort"));
+        lineEditLocalPort->setGeometry(QRect(170, 90, 41, 20));
+        pushButtonComInit = new QPushButton(frameRemCtrl);
+        pushButtonComInit->setObjectName(QStringLiteral("pushButtonComInit"));
+        pushButtonComInit->setGeometry(QRect(90, 110, 75, 23));
+        checkBoxActiveHapticA = new QCheckBox(frameRemCtrl);
+        checkBoxActiveHapticA->setObjectName(QStringLiteral("checkBoxActiveHapticA"));
+        checkBoxActiveHapticA->setGeometry(QRect(20, 10, 111, 18));
+        checkBoxActiveHapticB = new QCheckBox(frameRemCtrl);
+        checkBoxActiveHapticB->setObjectName(QStringLiteral("checkBoxActiveHapticB"));
+        checkBoxActiveHapticB->setGeometry(QRect(20, 40, 121, 18));
         HapticEvaluationGUIClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(HapticEvaluationGUIClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1059, 26));
+        menuBar->setGeometry(QRect(0, 0, 1059, 21));
         HapticEvaluationGUIClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(HapticEvaluationGUIClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -657,7 +699,7 @@ public:
 
         retranslateUi(HapticEvaluationGUIClass);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(HapticEvaluationGUIClass);
@@ -677,12 +719,12 @@ public:
         checkBoxFyB->setText(QApplication::translate("HapticEvaluationGUIClass", "Fy_B", 0));
         checkBoxFzB->setText(QApplication::translate("HapticEvaluationGUIClass", "Fz_B", 0));
         checkBoxFtotalB->setText(QApplication::translate("HapticEvaluationGUIClass", "Ftotal_B", 0));
-        label_15->setText(QApplication::translate("HapticEvaluationGUIClass", "Right Entact Controls", 0));
+        label_15->setText(QApplication::translate("HapticEvaluationGUIClass", "Right Haptic Device", 0));
         lineEditEntactBIP->setText(QApplication::translate("HapticEvaluationGUIClass", "192.168.1.101", 0));
         label_19->setText(QApplication::translate("HapticEvaluationGUIClass", "IP", 0));
         checkBoxActiveEntactB->setText(QApplication::translate("HapticEvaluationGUIClass", "Activate", 0));
         pushButtonEntactBCalibrate->setText(QApplication::translate("HapticEvaluationGUIClass", "Calibrate", 0));
-        label_17->setText(QApplication::translate("HapticEvaluationGUIClass", "Left Entact Controls", 0));
+        label_17->setText(QApplication::translate("HapticEvaluationGUIClass", "Left Haptic Device", 0));
         label_18->setText(QApplication::translate("HapticEvaluationGUIClass", "IP", 0));
         checkBoxActiveEntactA->setText(QApplication::translate("HapticEvaluationGUIClass", "Activate", 0));
         lineEditEntactAIP->setText(QApplication::translate("HapticEvaluationGUIClass", "192.168.0.101", 0));
@@ -790,6 +832,15 @@ public:
         labelExpDelta->setText(QApplication::translate("HapticEvaluationGUIClass", "____", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("HapticEvaluationGUIClass", "Auto", 0));
         pushButtonZero->setText(QApplication::translate("HapticEvaluationGUIClass", "Zero", 0));
+        label_47->setText(QApplication::translate("HapticEvaluationGUIClass", "Remote IP", 0));
+        label_48->setText(QApplication::translate("HapticEvaluationGUIClass", "Local Port", 0));
+        label_49->setText(QApplication::translate("HapticEvaluationGUIClass", "Remote Port", 0));
+        lineEditRemIP->setText(QApplication::translate("HapticEvaluationGUIClass", "192.168.0.11", 0));
+        lineEditRemPort->setText(QApplication::translate("HapticEvaluationGUIClass", "7171", 0));
+        lineEditLocalPort->setText(QApplication::translate("HapticEvaluationGUIClass", "7172", 0));
+        pushButtonComInit->setText(QApplication::translate("HapticEvaluationGUIClass", "Initialize", 0));
+        checkBoxActiveHapticA->setText(QApplication::translate("HapticEvaluationGUIClass", "Activate Local", 0));
+        checkBoxActiveHapticB->setText(QApplication::translate("HapticEvaluationGUIClass", "Activate Remote", 0));
     } // retranslateUi
 
 };

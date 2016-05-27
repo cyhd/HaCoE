@@ -72,6 +72,7 @@ public:
 	bool getAtiBActivate();
 	bool getEntactAActivate(); //gets whether or not the user wants to turn on each entact
 	bool getEntactBActivate();
+	bool getHapticActivate();
 
 	outputSide getPref() const; //gets hand dominance
   
@@ -86,8 +87,10 @@ public slots:
 	void switchAtiB( void );
 	void switchEntactA( void );
 	void switchEntactB( void );
+	
 	void calibrateEntactA( void );
 	void calibrateEntactB( void );
+	void setRemoteComConfig( void ); //set the IP/port data for the UDP comm
 	void setExpInfo( void );
 	void setHRExpFile( void );
 	void readNextHRTrial( void );

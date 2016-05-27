@@ -6,11 +6,12 @@
 using boost::asio::ip::udp;
 
 
-ReadNetworkThread::ReadNetworkThread()    
+ReadNetworkThread::ReadNetworkThread(unsigned short port)    
 	: io_service(),
-      socket_(io_service, udp::endpoint(udp::v4(), 7171))
+      socket_(io_service, udp::endpoint(udp::v4(), port))
 {
     data_type=0;
+	std::cout<<"initialisation écriture"<<std::endl;
 	cpt=0;
 	byte_number=0;
 	run();
@@ -24,6 +25,7 @@ ReadNetworkThread::~ReadNetworkThread()
 
 void ReadNetworkThread::run()
 {
+	
 	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
 	haptDeviceB = supervisor->getHaptDeviceB();
 	
@@ -46,7 +48,7 @@ void ReadNetworkThread::run()
 		
 		usleep( sleepTime );
 	}
-
+	
 }
 
 void ReadNetworkThread::handle_receive(const boost::system::error_code& error, size_t bytes_transferred)

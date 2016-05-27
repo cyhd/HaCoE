@@ -80,7 +80,7 @@ void HapticThreadSingleHapticSlope::run()
 	rotationDamping.y = HR_GENERAL_DAMPING_ROTATION;
 	rotationDamping.z = HR_GENERAL_DAMPING_ROTATION;
 
-	outputDevice->setMode( EAPI_FORCECONTROL_MODE ); //A in Force Control. 
+	outputDevice->setMode( FORCECONTROL_MODE ); //A in Force Control. 
 	outputDevice->writeDamping( translationDamping , rotationDamping ); //sets damping to the device
 
 	// experimentType == DEPTHLINEAR) 

@@ -101,6 +101,7 @@ public:
 	QMutex * getMutex() const { return mutex; }
 	bool getHaptActiveA() const { return haptActiveA; }
 	bool getHaptActiveB() const { return haptActiveB; }
+	
 	bool getLJActiveA() const { return LJActiveA; }
 	bool getLJActiveB() const { return LJActiveB; }
 	HRExperiment getExperiment() const { return experiment; }
@@ -141,12 +142,14 @@ public:
 
 	int initDeviceA( char *filename , char *serialNumber ); //initializing Labjacks
 	int initDeviceB( char *filename , char *serialNumber );
-	int initEntactA( int index , char *ip ); //initializing Entacts
-	int initEntactB( int index , char *ip );
+	int initHapticA( int index , char *ip ); //initializing Entacts
+	int initHapticB( int index , char *ip );
 	int initOmniA();
 	int initOmniB();
-	void calibrateEntactA(); //Calibrating entacts
-	void calibrateEntactB();
+	void calibrateHapticA(); //Calibrating entacts
+	void calibrateHapticB();
+	void initUDPWrite(std::string ip, std::string port);
+	void initUDPRead(unsigned short port);
 
 	void timerEvent(QTimerEvent *event); //Timer event handler
 	void start(); //starts clocks
@@ -154,15 +157,16 @@ public:
 	
 	void closeLJConnectionA(); //close Labjack connections
 	void closeLJConnectionB();
-	void closeEntactConnectionA(); //close Entact connections
-	void closeEntactConnectionB();
+	void closeHapticConnectionA(); //close Entact connections
+	void closeHapticConnectionB();
 	void closeConnection(); //this one used at end of program to close all connections
 	void resetTimeStamp() { timestamp = 0; }
 
 	virtual void GUINotify( notifyType type );
 	
-	
 
+
+	
 protected:
 	//void setTimeStamp(time_t tps) { timestamp = tps; }
 	void setTimeStamp(int tps) { timestamp = tps; }
@@ -233,6 +237,11 @@ private:
 	static const double HR_K_FORCE;
 	static const double HR_K_TORQUE;
 
+	/*
+	std::string writeIP;
+	std::string writePort;
+	unsigned short readPort;
+	*/
 	
 };
 #endif // HAPTLINKSUPERVISOR_H

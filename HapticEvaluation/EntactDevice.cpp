@@ -33,7 +33,7 @@ EntactDevice::EntactDevice( int index , char *ip_address )
 		entactIP = ip_address;
 		connectSuccess = true;
 		
-		setModeEAPI( getEntactHandle() , EAPI_DISABLED_MODE ); //connected, but keep things off.  Method provided by Entact
+		setModeEAPI( getEntactHandle() , DISABLED_MODE ); //connected, but keep things off.  Method provided by Entact
 	}
 	else 
 		connectSuccess = false;
@@ -46,12 +46,12 @@ EntactDevice::~EntactDevice( void )  //make sure to close Entact when disconnect
 
 void EntactDevice::closeConnection( void )
 {
-	setMode( EAPI_DISABLED_MODE );
+	setMode( DISABLED_MODE );
 	handle[ getIndex() ] = 0;
 }
 
 //public setters
-int EntactDevice::setMode( int setmode ) //sets directly to the Entact
+int EntactDevice::setMode( HapticMode setmode ) //sets directly to the Entact
 {
 	return setModeEAPI( handle[ getIndex() ] , setmode );  // Method provided by Entact
 }

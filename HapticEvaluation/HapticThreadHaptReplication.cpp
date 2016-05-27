@@ -61,8 +61,8 @@ void HapticThreadHaptReplication::run()
 		replicateDevice = haptDeviceB;
 	}
 
-	outputDevice->setMode( EAPI_FORCECONTROL_MODE );
-	replicateDevice->setMode( EAPI_FORCECONTROL_MODE );
+	outputDevice->setMode( FORCECONTROL_MODE );
+	replicateDevice->setMode( FORCECONTROL_MODE );
 
 	outputForceDirection = supervisor->getHaptRepF();
 	outputForceMagnitude = sqrt( pow( outputForceDirection.x , 2 ) + pow( outputForceDirection.y , 2 ) + pow( outputForceDirection.z , 2 ) );//force magnitude calculation, to be used in unit vector calculation
