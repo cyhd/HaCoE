@@ -12,18 +12,31 @@ HDErrorInfo lastError;
 HHD phantomidLocal = HD_INVALID_HANDLE;  // Phantom declaration.
 HHD phantomidRemote = HD_INVALID_HANDLE;  // Phantom declaration.
 
+//init device data
+
+hduVector3Dd OmniDevice::posLocal(0,0,0);
+hduVector3Dd OmniDevice::forceLocal(0,0,0);
+
+
 //Scaling factor for gravity compensation to account for extra weight
 float Scale_Master = 1.5;
 
+/*
 struct DeviceDisplayStates
 {
 	HHD m_hHD;
 	hduVector3Dd position;
 	hduVector3Dd force;
-};
+};*/
+
 
 OmniDevice::OmniDevice(int index)
 {
+	/*
+	posRemote = &posRemote2;
+	forceLocal = &forceLocal2;
+	posLocal = &posLocal2;
+	*/
 	// some sensable error handling junk
     HDErrorInfo error;
 
@@ -43,8 +56,17 @@ OmniDevice::OmniDevice(int index)
 		//setMode(FORCECONTROL_MODE);
 		setMode(VIRTUAL_MODE);
 		break;
-		
 	}
+
+	hdStartScheduler();
+	if (HD_DEVICE_ERROR(error = hdGetError()))
+	{
+		hduPrintError(stderr, &error, "Failed to start scheduler");
+        	fprintf(stderr, "\nPress any key to quit.\n");
+        	getchar();
+        	exit(-1);
+	}
+
 }
 
 
@@ -53,20 +75,13 @@ OmniDevice::~OmniDevice()
 	OmniDevice::closeConnection();
 }
 
-HDCallbackCode HDCALLBACK OmniDevice::DeviceStateCallback(void *pUserData)
-{
-	DeviceDisplayStates *pDisplayState = static_cast<DeviceDisplayStates *>(pUserData);
-	
-	hdMakeCurrentDevice(pDisplayState->m_hHD);
-	hdGetDoublev(HD_CURRENT_POSITION, pDisplayState->position);
-	hdGetDoublev(HD_CURRENT_FORCE, pDisplayState->force);
-
-	return HD_CALLBACK_DONE;
-}
-
 void OmniDevice::closeConnection()
 {
-    // Shutdown the Omni
+    //Stop the scheduler
+	hdStopScheduler();
+    hdUnschedule(gSchedulerCallback);
+		
+	// Shutdown the Omni
     if (phantomidLocal != HD_INVALID_HANDLE)
     {
         hdDisableDevice(phantomidLocal);
@@ -79,21 +94,13 @@ void OmniDevice::closeConnection()
     }
 }
 
+/** update the Omni instance (deviceA) from the data read by the Omni API callback
+*/
 short OmniDevice::readData()
 {
-	hdScheduleAsynchronous(
+		
+	this->setTranslation(posLocal[0], posLocal[1], posLocal[2]);
 	
-	hdBeginFrame(phantomidLocal);
-    	
-	hdMakeCurrentDevice(phantomidLocal);
-	hdGetDoublev(HD_CURRENT_POSITION, positiond);
-	
-	this->setTranslation(positiond[0], positiond[1], positiond[2]);
-	positiond[0]=0.0;
-	positiond[1]=0.0;
-	positiond[2]=0.0;
-	//hdEndFrame(phantomidLocal);
-    
 	return SUCCESS;
 }
 
@@ -105,31 +112,51 @@ int OmniDevice::setMode(HapticMode setmode)
 	return mode;
 }
 
+/** used by the control law to update the device force
+*/
 void OmniDevice::writeForce(Vector3 force , Vector3 torque )
 {
-	forced[0]=force.x;
-	forced[1]=force.y;
-	forced[2]=force.z;
-	
-	//hdBeginFrame(phantomidLocal);
-	hdMakeCurrentDevice(phantomidLocal);
-	
-	hdSetDoublev(HD_CURRENT_FORCE, forced);
-	//hdEndFrame(phantomidLocal);
+	forceLocal[0]=force.x;
+	forceLocal[1]=force.y;
+	forceLocal[2]=force.z;	
 }
 
+/** only used to get position from the remote Omni (deviceB)
+*/
 void OmniDevice::writePosition( Vector3 position , Matrix3x3 rotation ) 
 {
-	positiond[0]=position.x;
-	positiond[1]=position.y;
-	positiond[2]=position.z;
-	//hdBeginFrame(phantomidRemote);
-	hdMakeCurrentDevice(phantomidRemote);
-	hdSetDoublev(HD_CURRENT_POSITION, positiond);
-	//hdEndFrame(phantomidRemote);
-	this->setTranslation(positiond[0], positiond[1], positiond[2]);
+	this->setTranslation(position.x, position.y, position.z);
 }
 
 void OmniDevice::writeDamping( Vector3 translation , Vector3 rotation ) 
 {
 }
+
+HDCallbackCode HDCALLBACK OmniDevice::DataManaging(void *data)
+{
+  	//**************************************************//
+	/* 	Obtain position of each device's end effector   */
+	//**************************************************//
+    hdBeginFrame(phantomidLocal);
+	hdGetDoublev(HD_CURRENT_POSITION, posLocal);
+	
+	//********************************//
+	/* 	 Output forces to each Omni   */
+	//********************************//
+
+	// Identify left haptic device.
+	hdMakeCurrentDevice(phantomidLocal);
+    hdSetDoublev(HD_CURRENT_FORCE, forceLocal);
+    
+	// Flush forces on the first device.
+    hdEndFrame(phantomidLocal);
+	
+	return HD_CALLBACK_CONTINUE;
+}
+
+int OmniDevice::calibrate()
+{
+	gSchedulerCallback = hdScheduleAsynchronous(
+		DataManaging, 0, HD_DEFAULT_SCHEDULER_PRIORITY);
+	return 1;
+}   

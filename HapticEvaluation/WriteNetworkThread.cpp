@@ -64,10 +64,10 @@ void WriteNetworkThread::send(std::string str)
 
 void WriteNetworkThread::run()
 {
-	
 	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
 	HapticDevice *haptDeviceA = supervisor->getHaptDeviceA();
-	
+	haptDeviceA->calibrate();
+
 	while( supervisor->getThreadStarted() )
 	{
 		

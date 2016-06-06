@@ -21,9 +21,7 @@ public:
 	OmniDevice(int index);
 	// Destructor
 	~OmniDevice();
-	HDCallbackCode HDCALLBACK DeviceStateCallback(void *pUserData);
-
-
+	
 	void closeConnection(void);//declared as virtual function in Device
 	short readData(void);// declared as virtual function in Device
 
@@ -38,22 +36,27 @@ public:
 	void writePosition( Vector3 position , Matrix3x3 rotation ); //sets the position to output to the Omni
 	void writeDamping( Vector3 translation , Vector3 rotation ); //sets the damping to the Omni
 
-	//calibration.  This will zero the device
-	int calibrate() {return 0;}
-
-		
+	//Starts the scheduler that handle the data processing
+	int calibrate();
+	
 protected:
 	
 private:
+	//Function that manage the communication with the robot
+	static HDCallbackCode HDCALLBACK DataManaging(void *data);
+	
+	//static hduVector3Dd posRemote;
+	static hduVector3Dd forceLocal;
+	static hduVector3Dd posLocal;
+	
+	/*
+	hduVector3Dd posRemote2;
+	hduVector3Dd forceLocal2;
+	hduVector3Dd posLocal2;
+	*/
+
 	bool connectSuccess; //see if connection was successful
 
 	HapticMode mode;
-
-	hduVector3Dd forced;
-	hduVector3Dd positiond;
-	hduVector3Dd translationd;
-	hduVector3Dd rotationd;
-
-
-	
+		
 };
