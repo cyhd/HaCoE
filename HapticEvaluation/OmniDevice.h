@@ -18,9 +18,12 @@ class OmniDevice : public HapticDevice
 {
 public:
 	// Constructor
-	OmniDevice();
+	OmniDevice(int index);
 	// Destructor
 	~OmniDevice();
+	HDCallbackCode HDCALLBACK DeviceStateCallback(void *pUserData);
+
+
 	void closeConnection(void);//declared as virtual function in Device
 	short readData(void);// declared as virtual function in Device
 
@@ -50,6 +53,7 @@ private:
 	hduVector3Dd positiond;
 	hduVector3Dd translationd;
 	hduVector3Dd rotationd;
+
 
 	
 };

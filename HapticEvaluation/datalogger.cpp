@@ -61,7 +61,7 @@ void DataLogger::update(short value)
 	if (value == HAPTIC_UPDATE_LOG)
 	{
 		int militime = HaptLinkSupervisor::getInstance()->getTimeStamp();	
-		HaptLinkSupervisor::getInstance()->getMutex()->lock();//mutex
+		HaptLinkSupervisor::getInstance()->getMutexA()->lock();//mutex
 		xml.writeStartElement( "Data" );
 		xml.writeTextElement( "TimeStamp_ms",QString::number(militime) );		
 		//WritePacket(HaptLinkSupervisor::getInstance()->getPosition(),"Position_m");
@@ -126,17 +126,17 @@ void DataLogger::update(short value)
 		}
 		
 		xml.writeEndElement();
-		HaptLinkSupervisor::getInstance()->getMutex()->unlock();//end mutex
+		HaptLinkSupervisor::getInstance()->getMutexA()->unlock();//end mutex
 	}
 	if (value == SEQ_SWITCH)
 	{
 		int militime = HaptLinkSupervisor::getInstance()->getTimeStamp();	
-		HaptLinkSupervisor::getInstance()->getMutex()->lock();//mutex
+		HaptLinkSupervisor::getInstance()->getMutexA()->lock();//mutex
 		DataLogger::getInstance()->xml.writeStartElement("HaptRepSeqSwitch" );
 		DataLogger::getInstance()->xml.writeTextElement("SeqSwitch",QString::number(militime));		
 		//DataLogger::getInstance()->WritePacket(HaptLinkSupervisor::getInstance()->getPosition(),"Position_m");
 		DataLogger::getInstance()->xml.writeEndElement();
-		HaptLinkSupervisor::getInstance()->getMutex()->unlock();//end mutex
+		HaptLinkSupervisor::getInstance()->getMutexA()->unlock();//end mutex
 	}
 	}
 }

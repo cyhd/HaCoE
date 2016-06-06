@@ -99,9 +99,9 @@ void HapticThreadSingleHapticSlope::run()
 	outputDevice->readData();
 
 	// HOME to the start position
-	supervisor->getMutex()->lock();
+	supervisor->getMutexA()->lock();
 	positionControlzero = outputDevice->getTranslation();
-	supervisor->getMutex()->unlock();
+	supervisor->getMutexA()->unlock();
 	
 	
 	timeStart = MilliSecTime::getInstance()->GetMilliCount();
@@ -110,9 +110,9 @@ void HapticThreadSingleHapticSlope::run()
 	{
 		outputDevice->readData();
 		
-		supervisor->getMutex()->lock();
+		supervisor->getMutexA()->lock();
 		positionControl = outputDevice->getTranslation();
-		supervisor->getMutex()->unlock();
+		supervisor->getMutexA()->unlock();
 	
 		outputForce.x = 0;
 		outputForce.y = 0;

@@ -13,17 +13,23 @@ using boost::asio::ip::udp;
 
 WriteNetworkThread::WriteNetworkThread(
 		std::string host,
-		std::string port
+		std::string port,
+		int sleep
 	) : io_service(),
       socket_(io_service, udp::endpoint(udp::v4(), 0))
 	{
 		io_service.run();
-		std::cout<<"initialisation lecture"<<std::endl;
-		udp::resolver resolver(io_service);
-		udp::resolver::query query((udp::v4(), host, port));
-		udp::resolver::iterator iter = resolver.resolve(query);
-		endpoint_ = *iter;
-		run();
+
+		resolver =  new udp::resolver(io_service);
+		query = new udp::resolver::query(udp::v4(), host, port);
+		iter =  new udp::resolver::iterator(resolver->resolve(*query));
+		endpoint_ = *(*iter);
+
+		//init transA
+		transA = Vector3(0.0,0.0,0.0);
+		sleepTime = sleep;
+
+		//run();
 	};
 
 WriteNetworkThread::~WriteNetworkThread()
@@ -38,23 +44,39 @@ void WriteNetworkThread::send(std::string str)
 		{
 			char_buff[i] = str[i];
 		}
-		socket_.send_to(boost::asio::buffer(&char_buff[0], char_buff.size()), endpoint_);
+
+		try 
+		{
+			socket_.send_to(boost::asio::buffer(char_buff, char_buff.size()), endpoint_);
+		}
+		catch(boost::system::system_error &e )
+		{
+			//ec.message();
+			//throw;
+			std::cerr<<"Exception RESEAU: "<<e.code()<<std::endl;
+			this->terminate();
+			
+			
+			
+		}
+
 	}
 
 void WriteNetworkThread::run()
 {
 	
 	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
-	haptDeviceA = supervisor->getHaptDeviceA();
+	HapticDevice *haptDeviceA = supervisor->getHaptDeviceA();
 	
 	while( supervisor->getThreadStarted() )
 	{
 		
-		supervisor->getMutex()->lock();
+		supervisor->getMutexA()->lock();
 		transA = haptDeviceA->getTranslation(); //get data from device A to send to the remote point
-		supervisor->getMutex()->unlock();
+		supervisor->getMutexA()->unlock();
 		
-		send("T3"); //code of data T=translation, 3=3 datas
+
+		send("T3"); //code of data T=Translation, 3=3 datas
 		send(boost::lexical_cast<std::string>(transA.x));
 		send(boost::lexical_cast<std::string>(transA.y));
 		send(boost::lexical_cast<std::string>(transA.z));

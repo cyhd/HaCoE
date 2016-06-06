@@ -835,9 +835,9 @@ public:
         label_47->setText(QApplication::translate("HapticEvaluationGUIClass", "Remote IP", 0));
         label_48->setText(QApplication::translate("HapticEvaluationGUIClass", "Local Port", 0));
         label_49->setText(QApplication::translate("HapticEvaluationGUIClass", "Remote Port", 0));
-        lineEditRemIP->setText(QApplication::translate("HapticEvaluationGUIClass", "192.168.0.11", 0));
-        lineEditRemPort->setText(QApplication::translate("HapticEvaluationGUIClass", "7171", 0));
-        lineEditLocalPort->setText(QApplication::translate("HapticEvaluationGUIClass", "7172", 0));
+        lineEditRemIP->setText(QApplication::translate("HapticEvaluationGUIClass", "169.254.194.91", 0));
+        lineEditRemPort->setText(QApplication::translate("HapticEvaluationGUIClass", "7172", 0));
+        lineEditLocalPort->setText(QApplication::translate("HapticEvaluationGUIClass", "7171", 0));
         pushButtonComInit->setText(QApplication::translate("HapticEvaluationGUIClass", "Initialize", 0));
         checkBoxActiveHapticA->setText(QApplication::translate("HapticEvaluationGUIClass", "Activate Local", 0));
         checkBoxActiveHapticB->setText(QApplication::translate("HapticEvaluationGUIClass", "Activate Remote", 0));

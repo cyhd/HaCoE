@@ -29,8 +29,7 @@
 #include "HapticThreadSingleHapticSlope.h"
 #include "datalogger.h"
 #include "HapticThreadForceToNetwork.h"
-#include "WriteNetworkThread.h"
-#include "ReadNetworkThread.h"
+
 #include <windows.h>
 
 using namespace std;
@@ -39,49 +38,8 @@ const double HaptLinkSupervisor::HR_K_FORCE = 0.075; //0.075 N/mm
 const double HaptLinkSupervisor::HR_K_TORQUE = 100;  //100N.mm/rad approximately (using small angle approximation)  Not Used
 HaptLinkSupervisor *HaptLinkSupervisor::instance = NULL;
 
-
-//setters of parameters for the UDP communication
-
-void HaptLinkSupervisor::initUDPWrite(std::string ip, std::string port)
-{
-	/*
-	writeIP=ip;
-	writePort=port;
-	*/
-	thread = new WriteNetworkThread(ip, port);
-	threadCreated = true;
-	
-}
-
-void HaptLinkSupervisor::initUDPRead(unsigned short port)
-{
-	//readPort=port;
-	
-	thread = new ReadNetworkThread(port);
-	threadCreated = true;
-	
-}
-
-/*
-void HaptLinkSupervisor::setWriteIP(std::string& newWriteIP)
-{
-	writeIP = newWriteIP;
-	//const std::string HaptLinkSupervisor::writeIP= newWriteIP;
-}
-
-void HaptLinkSupervisor::setWritePort(std::string& newWritePort)
-{
-	writePort = newWritePort;
-	//const std::string HaptLinkSupervisor::writeIP= newWriteIP;
-}
-
-void HaptLinkSupervisor::setReadPort(std::string& newReadPort)
-{
-	readPort = newReadPort;
-	//const std::string HaptLinkSupervisor::writeIP= newWriteIP;
-}
-*/
-
+QMutex * mutexA = new QMutex();
+QMutex * mutexB = new QMutex();
 
 int HaptLinkSupervisor::initDeviceA(char *filename , char *serialNumber) 
 {
@@ -98,16 +56,18 @@ int HaptLinkSupervisor::initDeviceB(char *filename , char *serialNumber)
 int HaptLinkSupervisor::initHapticA( int index , char *ip )
 {
 	//haptDeviceA = new EntactDevice( index , ip );
-	haptDeviceA = new OmniDevice();
-
+	index = 1;
+	haptDeviceA = new OmniDevice(index);
+	
 	return haptDeviceA->getConnectSuccess();
 }
 
 int HaptLinkSupervisor::initHapticB( int index , char *ip )
 {
 	//haptDeviceB = new EntactDevice( index , ip );
-	haptDeviceB = new OmniDevice();
-
+	index = 2;
+	haptDeviceB = new OmniDevice(index);
+	
 	return haptDeviceB->getConnectSuccess();
 }
 
@@ -176,9 +136,9 @@ void HaptLinkSupervisor::zeroEntactB()
 		un.z = 0.3;
 
 		haptDeviceB->writeForce( un , zero );
-		getMutex()->lock();
+		getMutexB()->lock();
 		positionControlzero = haptDeviceB->getTranslation();
-		getMutex()->unlock();
+		getMutexB()->unlock();
 	}
 }
 /*
@@ -396,15 +356,15 @@ void HaptLinkSupervisor::start()
 		threadStarted = true;
 	}
 	
-	timerForce->start( SAMPLE_RATE , this ); 
+	//timerForce->start( SAMPLE_RATE , this ); 
 }
 
 void HaptLinkSupervisor::calibrate()  {
 
 	if ( haptActiveB ) {
-		getMutex()->lock();
+		getMutexB()->lock();
 		positionControlzero = haptDeviceB->getTranslation();
-		getMutex()->unlock();
+		getMutexB()->unlock();
 
 		DataLogger::getInstance()->setLog(true);
 	}
@@ -412,7 +372,7 @@ void HaptLinkSupervisor::calibrate()  {
 
 void HaptLinkSupervisor::stop() 
 { 
-	timerForce->stop();
+	//timerForce->stop();
 	threadStarted = false;
 
 	if ( haptActiveA )
@@ -559,5 +519,15 @@ void HaptLinkSupervisor::GUINotify( notifyType type )
 		}
 		else return;
 	}
+}
+
+/** code for the Network thread
+
+*/
+
+void HaptLinkSupervisor::initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE)
+{
+	((HapticThreadForceToNetwork*)thread)->initUDPReadWrite(  portREAD, ip, portWRITE);
+		
 }
 

@@ -64,12 +64,16 @@ void HapticThreadDoubleForce::run()
 		haptDeviceA->readData();
 		haptDeviceB->readData();
 		
-		supervisor->getMutex()->lock();
+		supervisor->getMutexA()->lock();
 		transA = haptDeviceA->getTranslation();
-		transB = haptDeviceB->getTranslation();
 		rotA = haptDeviceA->getRotationMatrix();
+		supervisor->getMutexA()->unlock();//end mutex
+
+		supervisor->getMutexB()->lock();
+		transB = haptDeviceB->getTranslation();
 		rotB = haptDeviceB->getRotationMatrix();
-		supervisor->getMutex()->unlock();//end mutex
+		supervisor->getMutexB()->unlock();//end mutex
+
 
 		forceControlA.x = -DF_K_FORCE*( transA.x - transB.x ); 
 		forceControlA.y = -DF_K_FORCE*( transA.y - transB.y );

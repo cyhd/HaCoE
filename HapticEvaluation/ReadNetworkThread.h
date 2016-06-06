@@ -1,16 +1,16 @@
 #pragma once
 
 #include "datamodel.h"
-#include "HapticThread.h"
+#include <qthread.h>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 using boost::asio::ip::udp;
 
 
-class ReadNetworkThread : public HapticThread
+class ReadNetworkThread : public QThread
 {
 public:
-	ReadNetworkThread( unsigned short port );
+	ReadNetworkThread( unsigned short port, int sleepTime );
 	~ReadNetworkThread( void );
 	void run();
 	void handle_receive(const boost::system::error_code& error, size_t);
@@ -26,10 +26,5 @@ private :
 	boost::array<float, 4> rot;
 	Vector3 transB;
 	Matrix3x3 rotB;
-	
-	/*
-	char* packetID;
-	char* nbBytes;
-	char translationCom[3][8];
-	*/
+	int sleepTime;
 };

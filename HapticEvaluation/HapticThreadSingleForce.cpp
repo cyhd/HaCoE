@@ -63,13 +63,17 @@ void HapticThreadSingleForce::run()
 		haptDeviceA->readData();
 		haptDeviceB->readData();
 
-		supervisor->getMutex()->lock();
+		supervisor->getMutexA()->lock();
 		transA = haptDeviceA->getTranslation();
-		transB = haptDeviceB->getTranslation();
 		rotA = haptDeviceA->getRotationMatrix();
-		rotB = haptDeviceB->getRotationMatrix();
-		supervisor->getMutex()->unlock();		
+		supervisor->getMutexA()->unlock();		
 		
+		supervisor->getMutexB()->lock();
+		transB = haptDeviceB->getTranslation();
+		rotB = haptDeviceB->getRotationMatrix();
+		supervisor->getMutexB()->unlock();//end mutex
+
+
 		forceControlB.x = -SF_K_FORCE*( transB.x - transA.x ); //Slave follows the master
 		forceControlB.y = -SF_K_FORCE*( transB.y - transA.y );
 		forceControlB.z = -SF_K_FORCE*( transB.z - transA.z );

@@ -82,10 +82,10 @@ void HapticThreadHaptReplication::run()
 		outputDevice->readData();
 		replicateDevice->readData();
 
-		supervisor->getMutex()->lock();
+		supervisor->getMutexA()->lock();
 		trans = replicateDevice->getTranslation();
 		rot = replicateDevice->getRotationMatrix();
-		supervisor->getMutex()->unlock();
+		supervisor->getMutexA()->unlock();
 
 		replicateTorque = zero;
 		//projection of the deviation from the plane normal to the outputForce

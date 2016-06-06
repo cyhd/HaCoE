@@ -746,6 +746,8 @@ void HapticEvaluationGUI::switchEntactA()
 			DataLogger::getInstance()->setHapticActiveA( true );
 			HaptLinkSupervisor::getInstance()->setHaptActiveA( true );
 			ui.pushButtonEntactACalibrate->setEnabled( true );
+			ui.checkBoxActiveHapticB->setEnabled(true);
+			//HaptLinkSupervisor::getInstance()->calibrateHapticA();
 		}
 		else 
 		{
@@ -763,7 +765,7 @@ void HapticEvaluationGUI::switchEntactA()
 		DataLogger::getInstance()->setHapticActiveA( getEntactAActivate() );
 		HaptLinkSupervisor::getInstance()->setHaptActiveA( getEntactAActivate() );
 		ui.pushButtonEntactACalibrate->setEnabled( false );
-	}	
+	}
 }
 
 void HapticEvaluationGUI::switchEntactB()
@@ -776,6 +778,8 @@ void HapticEvaluationGUI::switchEntactB()
 			DataLogger::getInstance()->setHapticActiveB( true );
 			HaptLinkSupervisor::getInstance()->setHaptActiveB( true );
 			ui.pushButtonEntactBCalibrate->setEnabled( true );
+			ui.pushButtonComInit->setEnabled(true);
+			//HaptLinkSupervisor::getInstance()->calibrateHapticB();
 		}
 		else
 		{
@@ -802,8 +806,10 @@ void HapticEvaluationGUI::switchEntactB()
 
 void HapticEvaluationGUI::setRemoteComConfig( void )
 {
-	HaptLinkSupervisor::getInstance()->initUDPWrite(ui.lineEditRemIP->text().toStdString().data(),ui.lineEditRemPort->text().toStdString().data());
-	HaptLinkSupervisor::getInstance()->initUDPRead(ui.lineEditLocalPort->text().toUInt());
+	HaptLinkSupervisor::getInstance()->initUDPReadWrite(ui.lineEditLocalPort->text().toUInt(), ui.lineEditRemIP->text().toStdString().data(),ui.lineEditRemPort->text().toStdString().data());
+	
+	ui.pushButtonComInit->setEnabled(false);	
+	ui.pushButtonStart->setEnabled( true );
 }
 
 void HapticEvaluationGUI::calibrateEntactA( void )
@@ -825,14 +831,14 @@ void HapticEvaluationGUI::setExpInfo( void )
 	ui.frameRemCtrl->setVisible( false );
 	
 	if ( ui.radioButtonForceToNet->isChecked() )
-	{	
-		ui.pushButtonStart->setEnabled( true );
-				
+	{			
 		ui.frameRemCtrl->setVisible( true );
 		ui.frameHaptACtrl->setVisible( false );
 		ui.frameHaptBCtrl->setVisible( false );
 
-		ui.pushButtonComInit->setEnabled(true);
+		ui.checkBoxActiveHapticB->setEnabled(false);
+		//ui.pushButtonStart->setEnabled( false );
+		//ui.pushButtonComInit->setEnabled(true);
 		
 		ui.textEditExpInfo->setPlainText( "Dual Link Force Control through Network:\n"
 										  "This control scheme uses a master-master configuration.\n"

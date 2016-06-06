@@ -49,10 +49,10 @@ void HapticThreadSinglePosition::run()
 		
 		haptDeviceA->readData();  //get Master's position info
 		
-		supervisor->getMutex()->lock();
+		supervisor->getMutexA()->lock();
 		positionControlB = haptDeviceA->getTranslation();
 		rotationControlB = haptDeviceA->getRotationMatrix();
-		supervisor->getMutex()->unlock();
+		supervisor->getMutexA()->unlock();
 
 		haptDeviceB->writePosition( positionControlB , rotationControlB );
 

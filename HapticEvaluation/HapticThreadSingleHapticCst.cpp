@@ -102,9 +102,9 @@ void HapticThreadSingleHapticCst::run()
 		
 	// HOME to the start position
 	//positionControlzero = supervisor->getPositionControlzeroB();
-	supervisor->getMutex()->lock();
+	supervisor->getMutexB()->lock();
 	positionControlzero = haptDeviceB->getTranslation();
-	supervisor->getMutex()->unlock();
+	supervisor->getMutexB()->unlock();
 
 		
 	timeStart = MilliSecTime::getInstance()->GetMilliCount();
@@ -116,9 +116,9 @@ void HapticThreadSingleHapticCst::run()
 	{
 		outputDevice->readData();
 		
-		supervisor->getMutex()->lock();
+		supervisor->getMutexA()->lock();
 		positionControl = outputDevice->getTranslation();
-		supervisor->getMutex()->unlock();
+		supervisor->getMutexA()->unlock();
 	
 		positionControlzero = supervisor->getPositionControlzeroB();
 

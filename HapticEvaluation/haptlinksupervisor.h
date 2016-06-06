@@ -54,6 +54,8 @@ enum notifyType
 	HR_GOTO
 };
 
+extern QMutex * mutexA ;
+extern QMutex * mutexB ;
 
 //Start of class definition
 class HaptLinkSupervisor : public Subject , public QObject
@@ -98,7 +100,10 @@ public:
 	outputSide getSideOut() const { return sideOut; } // returns side to output force for haptic replication experiment
 	double getK_FORCE() const { return K_FORCE; }
 	double getK_TORQUE() const { return K_TORQUE; }
-	QMutex * getMutex() const { return mutex; }
+	
+	QMutex * getMutexA() { return mutexA; }
+	QMutex * getMutexB() { return mutexB; }
+	
 	bool getHaptActiveA() const { return haptActiveA; }
 	bool getHaptActiveB() const { return haptActiveB; }
 	
@@ -164,6 +169,7 @@ public:
 
 	virtual void GUINotify( notifyType type );
 	
+	void initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE);
 
 
 	
@@ -182,7 +188,10 @@ protected:
 		threadStarted = false;
 		threadCreated = false;
 		timerForce = new QBasicTimer();
-		mutex = new QMutex();
+		//mutexA = new QMutex();
+		//mutexB= new QMutex();
+		//mutex.lock();
+		//mutex.unlock();
 		dominance = RIGHT;
 		experiment = HRExperiment();
 
@@ -210,8 +219,10 @@ private:
 	
 	QBasicTimer *timerForce;
 	HapticThread *thread;
+
 	int logFlag;
-	QMutex * mutex;
+	//QMutex * mutexA;
+	//QMutex * mutexB;
 
 	//haptic replication preferences
 	Vector3 haptRepF;

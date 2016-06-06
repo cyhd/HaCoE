@@ -6,15 +6,28 @@
 using boost::asio::ip::udp;
 
 
-ReadNetworkThread::ReadNetworkThread(unsigned short port)    
+ReadNetworkThread::ReadNetworkThread(unsigned short port, int sleep)    
 	: io_service(),
       socket_(io_service, udp::endpoint(udp::v4(), port))
 {
+	sleepTime =  sleep;
     data_type=0;
-	std::cout<<"initialisation écriture"<<std::endl;
 	cpt=0;
 	byte_number=0;
-	run();
+
+	//init trans and rot
+	transB = Vector3(0.0,0.0,0.0);
+	rotB.mat11 = 0.0;
+	rotB.mat12 = 0.0;
+	rotB.mat13 = 0.0;
+	rotB.mat21 = 0.0;
+	rotB.mat22 = 0.0;
+	rotB.mat23 = 0.0;
+	rotB.mat31 = 0.0;
+	rotB.mat32 = 0.0;
+	rotB.mat33 = 0.0;
+
+	//run();
     io_service.run();
 };
 
@@ -27,7 +40,7 @@ void ReadNetworkThread::run()
 {
 	
 	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
-	haptDeviceB = supervisor->getHaptDeviceB();
+	HapticDevice *haptDeviceB = supervisor->getHaptDeviceB();
 	
 	//create a new socket for communication
 	
@@ -39,13 +52,15 @@ void ReadNetworkThread::run()
                                boost::asio::placeholders::bytes_transferred));
 	
 		transB.x=trans[0];
-		transB.x=trans[1];
-		transB.x=trans[2];
+		transB.y=trans[1];
+		transB.z=trans[2];
 
-		supervisor->getMutex()->lock();
-		haptDeviceB->writePosition(transB, rotB); //get data from device A to send to the remote point
-		supervisor->getMutex()->unlock();
 		
+		supervisor->getMutexB()->lock();
+		haptDeviceB->writePosition(transB, rotB); //Receive data from remote point and set it to HaptdeviceB
+		supervisor->getMutexB()->unlock();
+		
+
 		usleep( sleepTime );
 	}
 	
@@ -55,7 +70,7 @@ void ReadNetworkThread::handle_receive(const boost::system::error_code& error, s
 {
     switch(data_type)
 	{
-	//décodage du type de données et du nombre de paquets à recevoir
+	//getting type and number of data to receive
 	case 0:
 		{
 			if(std::string(recv_buffer.begin(), recv_buffer.begin()+1).compare("T")+1)
@@ -72,7 +87,7 @@ void ReadNetworkThread::handle_receive(const boost::system::error_code& error, s
 			}
 		}
 
-	//récupération des données de translation sur les 3 axes
+	//translation data on the 3 axis
 	case 1 :
 		{
 			if (cpt<byte_number)
@@ -89,7 +104,7 @@ void ReadNetworkThread::handle_receive(const boost::system::error_code& error, s
 			break;
 		}
 
-	//récupération des 4 données de rotation
+	//translation data on the 3 axis
 	case 2 :
 		{
 			if (cpt<byte_number)
