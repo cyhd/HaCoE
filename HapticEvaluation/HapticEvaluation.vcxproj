@@ -104,6 +104,7 @@
     <ClCompile Include="OmniDevice.cpp" />
     <ClCompile Include="ReadNetworkThread.cpp" />
     <ClCompile Include="RemoteControlLawSimple.cpp" />
+    <ClCompile Include="RemoteControlLawSimpleFiltered.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="hapticevaluationgui.cpp" />
     <ClCompile Include="datalogger.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="ReadNetworkThread.h" />
     <ClInclude Include="RemoteControlLaw.h" />
     <ClInclude Include="RemoteControlLawSimple.h" />
+    <ClInclude Include="RemoteControlLawSimpleFiltered.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="WriteNetworkThread.h" />
     <CustomBuild Include="hapticevaluationgui.h">

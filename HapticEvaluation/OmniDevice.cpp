@@ -48,6 +48,18 @@ OmniDevice::OmniDevice(int index)
 		hdEnable(HD_FORCE_RAMPING);
 		connectSuccess = true;
 		setMode(FORCECONTROL_MODE);
+
+		hdStartScheduler();
+		if (HD_DEVICE_ERROR(error = hdGetError()))
+		{
+			hduPrintError(stderr, &error, "Failed to start scheduler");
+        		fprintf(stderr, "\nPress any key to quit.\n");
+        		getchar();
+        		exit(-1);
+		}
+
+		gSchedulerCallback = hdScheduleAsynchronous(
+			DataManaging, 0, HD_DEFAULT_SCHEDULER_PRIORITY);
 		break;
 	
 	case 2:
@@ -58,14 +70,7 @@ OmniDevice::OmniDevice(int index)
 		break;
 	}
 
-	hdStartScheduler();
-	if (HD_DEVICE_ERROR(error = hdGetError()))
-	{
-		hduPrintError(stderr, &error, "Failed to start scheduler");
-        	fprintf(stderr, "\nPress any key to quit.\n");
-        	getchar();
-        	exit(-1);
-	}
+	this->setTranslation(posLocal[0],posLocal[1],posLocal[2]);
 
 }
 
@@ -156,7 +161,8 @@ HDCallbackCode HDCALLBACK OmniDevice::DataManaging(void *data)
 
 int OmniDevice::calibrate()
 {
-	gSchedulerCallback = hdScheduleAsynchronous(
-		DataManaging, 0, HD_DEFAULT_SCHEDULER_PRIORITY);
+	
+	
+	
 	return 1;
 }   

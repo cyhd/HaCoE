@@ -17,6 +17,7 @@ ReadNetworkThread::ReadNetworkThread(unsigned short port, int sleep)
 
 	//init trans and rot
 	transB = Vector3(0.0,0.0,0.0);
+
 	rotB.mat11 = 0.0;
 	rotB.mat12 = 0.0;
 	rotB.mat13 = 0.0;
@@ -42,15 +43,20 @@ void ReadNetworkThread::run()
 	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
 	HapticDevice *haptDeviceB = supervisor->getHaptDeviceB();
 	
+	supervisor->getMutexA()->lock();
+	transB = haptDeviceB->getTranslation(); //get data from device A to send to the remote point
+	supervisor->getMutexA()->unlock();
+
+	trans[0]=transB.x;
+	trans[1]=transB.y;
+	trans[2]=transB.z;
+
 	//create a new socket for communication
-	
 	while(supervisor->getThreadStarted())
 	{
-		socket_.async_receive_from(boost::asio::buffer(recv_buffer), receiver_endpoint,
-                               boost::bind(&ReadNetworkThread::handle_receive, this,
-                               boost::asio::placeholders::error,
-                               boost::asio::placeholders::bytes_transferred));
-	
+		bytes_transferred = socket_.receive_from(boost::asio::buffer(recv_buffer), receiver_endpoint);
+		handle_receive(bytes_transferred);
+
 		transB.x=trans[0];
 		transB.y=trans[1];
 		transB.z=trans[2];
@@ -61,12 +67,12 @@ void ReadNetworkThread::run()
 		supervisor->getMutexB()->unlock();
 		
 
-		usleep( sleepTime );
+		usleep( sleepTime/2 );
 	}
 	
 }
 
-void ReadNetworkThread::handle_receive(const boost::system::error_code& error, size_t bytes_transferred)
+void ReadNetworkThread::handle_receive(size_t bytes_transferred)
 {
     switch(data_type)
 	{
@@ -121,6 +127,4 @@ void ReadNetworkThread::handle_receive(const boost::system::error_code& error, s
 			break;
 		}
 	}
-    if (!error || error == boost::asio::error::message_size)
-        run();
 };

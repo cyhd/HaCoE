@@ -2,6 +2,7 @@
 #include "OmniDevice.h"
 #include "HapticThreadForceToNetwork.h"
 #include "RemoteControlLawSimple.h"
+#include "RemoteControlLawSimpleFiltered.h"
 #include "WriteNetworkThread.h"
 #include "ReadNetworkThread.h"
 
@@ -46,8 +47,11 @@ void HapticThreadForceToNetwork::run()
 	haptDeviceA = supervisor->getHaptDeviceA(); // Real haptic device
 	haptDeviceB = supervisor->getHaptDeviceB(); // Remote haptic device
 
-	RemoteControlLaw *command = new RemoteControlLawSimple(); 
-	
+	haptDeviceA->calibrate();
+
+	//RemoteControlLaw *command = new RemoteControlLawSimple(); 
+	RemoteControlLaw *command = new RemoteControlLawSimpleFiltered();
+
 	while( supervisor->getThreadStarted() )
 	{
 		//This block is for dual link control (master-master) in force mode
@@ -71,6 +75,6 @@ void HapticThreadForceToNetwork::run()
 		haptDeviceA->writeForce( forceControlA , torqueControlA );
 		//supervisor->getMutexA()->unlock();
 
-		usleep( sleepTime );
+		usleep( sleepTime/2 );
 	}
 }

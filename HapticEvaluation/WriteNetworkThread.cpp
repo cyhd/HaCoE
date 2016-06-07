@@ -66,8 +66,7 @@ void WriteNetworkThread::run()
 {
 	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
 	HapticDevice *haptDeviceA = supervisor->getHaptDeviceA();
-	haptDeviceA->calibrate();
-
+	
 	while( supervisor->getThreadStarted() )
 	{
 		
@@ -81,7 +80,7 @@ void WriteNetworkThread::run()
 		send(boost::lexical_cast<std::string>(transA.y));
 		send(boost::lexical_cast<std::string>(transA.z));
 		
-		usleep( sleepTime );
+		usleep( sleepTime/2 );
 	}
 	
 }

@@ -13,7 +13,7 @@ public:
 	ReadNetworkThread( unsigned short port, int sleepTime );
 	~ReadNetworkThread( void );
 	void run();
-	void handle_receive(const boost::system::error_code& error, size_t);
+	void handle_receive(size_t);
 	
 private :
 
@@ -27,4 +27,5 @@ private :
 	Vector3 transB;
 	Matrix3x3 rotB;
 	int sleepTime;
+	size_t bytes_transferred;
 };
