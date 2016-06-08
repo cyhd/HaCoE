@@ -49,8 +49,8 @@ void HapticThreadForceToNetwork::run()
 
 	haptDeviceA->calibrate();
 
-	//RemoteControlLaw *command = new RemoteControlLawSimple(); 
-	RemoteControlLaw *command = new RemoteControlLawSimpleFiltered();
+	RemoteControlLaw *command = new RemoteControlLawSimple(); 
+	//RemoteControlLaw *command = new RemoteControlLawSimpleFiltered();
 
 	while( supervisor->getThreadStarted() )
 	{
@@ -71,9 +71,9 @@ void HapticThreadForceToNetwork::run()
 
 		forceControlA = command->getForce(transA, transB);
 
-		//supervisor->getMutexA()->lock();
+		supervisor->getMutexA()->lock();
 		haptDeviceA->writeForce( forceControlA , torqueControlA );
-		//supervisor->getMutexA()->unlock();
+		supervisor->getMutexA()->unlock();
 
 		usleep( sleepTime/2 );
 	}

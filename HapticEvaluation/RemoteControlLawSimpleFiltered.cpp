@@ -1,8 +1,15 @@
 #include "RemoteControlLawSimpleFiltered.h"
 
+/*****************************************************************************
+Same as RemoteControlLawSimple with a filtering with mean value on the force
+*****************************************************************************/
+
+
 RemoteControlLawSimpleFiltered::RemoteControlLawSimpleFiltered()
 {
 	cpt = 0;
+
+	//Number of size to be changed to change the filtering 
 	size = 3;
 }
 
@@ -29,6 +36,8 @@ Vector3 RemoteControlLawSimpleFiltered::getForce(Vector3 transA, Vector3 transB 
 		cpt++;
 		if (cpt=size) {cpt=0;}
 		
+
+		//mean value of the forces calcuted on "size" samples of translation
 		for(int i = 0; i < size; i++) 
 		{
 			forceControlA.x += forceControl[i].x;

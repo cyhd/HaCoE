@@ -80,7 +80,7 @@ void WriteNetworkThread::run()
 		send(boost::lexical_cast<std::string>(transA.y));
 		send(boost::lexical_cast<std::string>(transA.z));
 		
-		usleep( sleepTime/2 );
+		usleep( sleepTime*10 );
 	}
 	
 }

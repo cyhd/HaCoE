@@ -54,8 +54,12 @@ void ReadNetworkThread::run()
 	//create a new socket for communication
 	while(supervisor->getThreadStarted())
 	{
-		bytes_transferred = socket_.receive_from(boost::asio::buffer(recv_buffer), receiver_endpoint);
-		handle_receive(bytes_transferred);
+		
+		for (int i = 0; i < 4; i++)
+		{
+			bytes_transferred = socket_.receive_from(boost::asio::buffer(recv_buffer), receiver_endpoint);
+			handle_receive(bytes_transferred);
+		}
 
 		transB.x=trans[0];
 		transB.y=trans[1];
@@ -96,13 +100,9 @@ void ReadNetworkThread::handle_receive(size_t bytes_transferred)
 	//translation data on the 3 axis
 	case 1 :
 		{
-			if (cpt<byte_number)
-			{
-				
-				trans[cpt] = boost::lexical_cast<float, std::string>(std::string(recv_buffer.begin(), recv_buffer.begin()+bytes_transferred));
-				cpt++;
-			}
-			else
+			trans[cpt] = boost::lexical_cast<float, std::string>(std::string(recv_buffer.begin(), recv_buffer.begin()+bytes_transferred));
+			cpt++;
+			if (cpt == byte_number)
 			{
 				cpt = 0;
 				data_type = 0;

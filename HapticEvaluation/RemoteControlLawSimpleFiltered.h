@@ -13,7 +13,10 @@ public :
 	Vector3 getForce( Vector3 transA, Vector3 transB);
 
 private :
+	//Size to be changed to change the filtering (accordingly with size in the constructor)
 	Vector3 forceControl[3];
+	
+	
 	Vector3 forceControlA;
 	int cpt;
 	int size;

@@ -1,5 +1,11 @@
 #include "RemoteControlLawSimple.h"
 
+/*****************************************************************************
+Simple control law : get the mean value between local and remote Omni and 
+gets the mean value. Then calculate the forces to flush to the local Omni
+via F2N_K_Force
+*****************************************************************************/
+
 RemoteControlLawSimple::RemoteControlLawSimple()
 {
 
@@ -21,6 +27,8 @@ Vector3 RemoteControlLawSimple::getForce(Vector3 transA, Vector3 transB )
 		forceControlA.y = -F2N_K_FORCE*( transA.y - transB.y );
 		forceControlA.z = -F2N_K_FORCE*( transA.z - transB.z );
 		
+
+		//not used since F2N_SCALERFORCE = 1
 		forceControlA.x = forceControlA.x * F2N_SCALERFORCE;
 		forceControlA.y = forceControlA.y * F2N_SCALERFORCE;
 		forceControlA.z = forceControlA.z * F2N_SCALERFORCE;

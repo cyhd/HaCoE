@@ -17,6 +17,11 @@ HHD phantomidRemote = HD_INVALID_HANDLE;  // Phantom declaration.
 hduVector3Dd OmniDevice::posLocal(0,0,0);
 hduVector3Dd OmniDevice::forceLocal(0,0,0);
 
+hduVector3Dd OmniDevice::previousForce(0,0,0);
+hduVector3Dd OmniDevice::goalForce(0,0,0);
+hduVector3Dd OmniDevice::calculatedForce(0,0,0);
+int OmniDevice::forceCpt = 0;
+
 
 //Scaling factor for gravity compensation to account for extra weight
 float Scale_Master = 1.5;
@@ -39,7 +44,7 @@ OmniDevice::OmniDevice(int index)
 	*/
 	// some sensable error handling junk
     HDErrorInfo error;
-
+	freqCpt=0;
 	switch (index)
 	{
 	case 1:
@@ -60,6 +65,7 @@ OmniDevice::OmniDevice(int index)
 
 		gSchedulerCallback = hdScheduleAsynchronous(
 			DataManaging, 0, HD_DEFAULT_SCHEDULER_PRIORITY);
+		omniErrorCheck();
 		break;
 	
 	case 2:
@@ -103,7 +109,14 @@ void OmniDevice::closeConnection()
 */
 short OmniDevice::readData()
 {
-		
+	previousPosLocal=this->getTranslation();
+
+	if(previousPosLocal.x==posLocal[0] && previousPosLocal.y==posLocal[1] && previousPosLocal.z==posLocal[2])
+	{
+		freqCpt++;
+	}
+	else freqCpt=0;
+
 	this->setTranslation(posLocal[0], posLocal[1], posLocal[2]);
 	
 	return SUCCESS;
@@ -137,6 +150,11 @@ void OmniDevice::writeDamping( Vector3 translation , Vector3 rotation )
 {
 }
 
+
+/******************************************************************************
+ Main callback.  Retrieves position from local device
+ and sets forces for local device.
+******************************************************************************/
 HDCallbackCode HDCALLBACK OmniDevice::DataManaging(void *data)
 {
   	//**************************************************//
@@ -147,8 +165,22 @@ HDCallbackCode HDCALLBACK OmniDevice::DataManaging(void *data)
 	
 	//********************************//
 	/* 	 Output forces to each Omni   */
+	/*   goalForce and previousForce are used to generate a smooth transition from 
+	2 distincts forces*/
 	//********************************//
-
+	/*
+	if (forceCpt < 10)
+	{
+		calculatedForce+=(goalForce-previousForce)/10;
+		forceCpt++;
+	}
+	else
+	{
+		forceCpt = 0;
+		previousForce = goalForce;
+		goalForce = forceLocal;
+	}
+	*/
 	// Identify left haptic device.
 	hdMakeCurrentDevice(phantomidLocal);
     hdSetDoublev(HD_CURRENT_FORCE, forceLocal);
@@ -161,8 +193,37 @@ HDCallbackCode HDCALLBACK OmniDevice::DataManaging(void *data)
 
 int OmniDevice::calibrate()
 {
-	
-	
-	
 	return 1;
 }   
+
+
+int OmniDevice::omniErrorCheck()
+{
+	HDErrorInfo error;
+    
+	if (HD_DEVICE_ERROR(error = hdGetError()))
+    {
+        hduPrintError(stderr, &error, "Error during main loop\n"); 
+
+        if (error.errorCode == HD_WARM_MOTORS &&
+            hdIsEnabled(HD_FORCE_OUTPUT))
+        {
+            fprintf(stderr, "\nTurning forces off till motors cool down...\n");
+            hdDisable(HD_FORCE_OUTPUT);
+        }
+
+        if (hduIsSchedulerError(&error))
+        {
+            /* Just quit, since the user likely unplugged the device */
+            fprintf(stderr, "A scheduler error has been detected.\n");
+            return HD_CALLBACK_DONE;
+        }
+    }
+    else if (!hdIsEnabled(HD_FORCE_OUTPUT))
+    {
+        fprintf(stderr, "\nTurning forces back on...\n");
+        hdEnable(HD_FORCE_OUTPUT);   
+    }
+	
+	return HD_CALLBACK_CONTINUE;
+}
