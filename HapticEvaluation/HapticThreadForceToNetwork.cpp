@@ -13,17 +13,17 @@ HapticThreadForceToNetworkStarted = false;
 HapticThreadForceToNetwork :: ~HapticThreadForceToNetwork( void ){}
 
 
-void HapticThreadForceToNetwork::initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE)
+void HapticThreadForceToNetwork::initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, unsigned short timeDelay)
 {
-	initUDPWrite( ip, portWRITE);
+	initUDPWrite( ip, portWRITE, timeDelay);
 	initUDPRead( portREAD);		
 	HapticThreadForceToNetworkStarted = true;
 }
 
-void HapticThreadForceToNetwork::initUDPWrite(std::string ip, std::string port)
+void HapticThreadForceToNetwork::initUDPWrite(std::string ip, std::string port,unsigned short timeDelay)
 {
 	
-	threadWrite = new WriteNetworkThread(ip, port, sleepTime);
+	threadWrite = new WriteNetworkThread(ip, port, sleepTime, timeDelay);
 	threadWrite->start( QThread::HighestPriority );
 		
 }

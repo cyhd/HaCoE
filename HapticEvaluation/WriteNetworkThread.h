@@ -13,11 +13,13 @@ public:
 	WriteNetworkThread(
 		std::string host,
 		std::string port,
-		int sleepTime
+		int sleepTime, 
+		unsigned short timeDelay
 	);
 	~WriteNetworkThread( void );
 	void run();
 	void send(std::string str);
+	Vector3 delay(Vector3);
 
 private :
 
@@ -29,5 +31,17 @@ private :
 	udp::socket socket_;
 	udp::endpoint endpoint_;
 	Vector3 transA;
+
+	//Data for the delay 
+	Vector3 transADelayed;
+	Vector3 transABuff[1024]; //size of the buffer to be changed with the value in delayValue
+	int buffCpt;
+
+	/*************************************************************
+	delay is set in sleeptimes. Initiliazed in the constructor.
+	The delay is of delay*sleeptimes milliseconds 
+	**************************************************************/
+	int delayValue; 
+
 	int sleepTime;
 };

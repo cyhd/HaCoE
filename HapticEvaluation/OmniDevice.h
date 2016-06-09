@@ -50,21 +50,6 @@ private:
 	static hduVector3Dd forceLocal;
 	static hduVector3Dd posLocal;
 
-	static hduVector3Dd previousForce;
-	static hduVector3Dd goalForce;
-	static hduVector3Dd calculatedForce;
-
-	static int forceCpt;
-	
-	/*
-	hduVector3Dd posRemote2;
-	hduVector3Dd forceLocal2;
-	hduVector3Dd posLocal2;
-	*/
-
-	Vector3 previousPosLocal;
-	int freqCpt;
-
 	bool connectSuccess; //see if connection was successful
 
 	HapticMode mode;
