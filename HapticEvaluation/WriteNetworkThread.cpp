@@ -15,7 +15,7 @@ WriteNetworkThread::WriteNetworkThread(
 		std::string host,
 		std::string port,
 		int sleep, 
-		unsigned short timeDelay
+		int timeDelay
 	) : io_service(),
       socket_(io_service, udp::endpoint(udp::v4(), 0))
 {
@@ -28,7 +28,7 @@ WriteNetworkThread::WriteNetworkThread(
 
 	//init transA
 	transA = Vector3(0.0,0.0,0.0);
-	sleepTime = (sleep/2)*10; //sleep = 2ms
+	sleepTime = sleep; //sleep = 2ms
 
 	//init the delay
 	delayValue = timeDelay/sleepTime+1;

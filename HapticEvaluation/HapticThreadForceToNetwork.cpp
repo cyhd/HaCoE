@@ -13,17 +13,17 @@ HapticThreadForceToNetworkStarted = false;
 HapticThreadForceToNetwork :: ~HapticThreadForceToNetwork( void ){}
 
 
-void HapticThreadForceToNetwork::initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, unsigned short timeDelay)
+void HapticThreadForceToNetwork::initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, int timeDelay)
 {
 	initUDPWrite( ip, portWRITE, timeDelay);
 	initUDPRead( portREAD);		
 	HapticThreadForceToNetworkStarted = true;
 }
 
-void HapticThreadForceToNetwork::initUDPWrite(std::string ip, std::string port,unsigned short timeDelay)
+void HapticThreadForceToNetwork::initUDPWrite(std::string ip, std::string port, int timeDelay)
 {
 	
-	threadWrite = new WriteNetworkThread(ip, port, sleepTime, timeDelay);
+	threadWrite = new WriteNetworkThread(ip, port, sleepTime/2*10, timeDelay);
 	threadWrite->start( QThread::HighestPriority );
 		
 }
@@ -31,15 +31,12 @@ void HapticThreadForceToNetwork::initUDPWrite(std::string ip, std::string port,u
 void HapticThreadForceToNetwork::initUDPRead(unsigned short port)
 {
 	
-	threadRead = new ReadNetworkThread(port, sleepTime);
+	threadRead = new ReadNetworkThread(port, sleepTime/2);
 	threadRead->start( QThread::HighestPriority );
 	
 }
 
-/*
-const double HapticThreadForceToNetwork::F2N_K_FORCE = 0.08; //K_FORCE and K_TORQUE are used to adjust the tightness of the control.  Higher values are more unstable
-const double HapticThreadForceToNetwork::F2N_SCALERFORCE = 1; //SCALERFORCE is used to modify the stiffness difference between the two different haptic devices
-*/
+
 void HapticThreadForceToNetwork::run()
 {
 	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();

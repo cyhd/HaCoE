@@ -71,7 +71,7 @@ void ReadNetworkThread::run()
 		supervisor->getMutexB()->unlock();
 		
 
-		usleep( sleepTime/2 );
+		usleep( sleepTime );
 	}
 	
 }

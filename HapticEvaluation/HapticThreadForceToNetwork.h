@@ -9,7 +9,7 @@ public:
 	~HapticThreadForceToNetwork( void );
 	void run();
 
-	void initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, unsigned short timeDelay);
+	void initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, int timeDelay);
 
 private:
 	Vector3 transA; //translational position of haptic device
@@ -19,7 +19,7 @@ private:
 	QThread *threadRead;
 	QThread *threadWrite;
 
-	void initUDPWrite(std::string ip, std::string port, unsigned short timeDelay);
+	void initUDPWrite(std::string ip, std::string port, int timeDelay);
 	void initUDPRead(unsigned short port);
 	
 };

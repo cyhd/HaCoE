@@ -14,7 +14,7 @@ public:
 		std::string host,
 		std::string port,
 		int sleepTime, 
-		unsigned short timeDelay
+		int timeDelay
 	);
 	~WriteNetworkThread( void );
 	void run();

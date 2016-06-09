@@ -525,7 +525,7 @@ void HaptLinkSupervisor::GUINotify( notifyType type )
 
 */
 
-void HaptLinkSupervisor::initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, unsigned short timeDelay)
+void HaptLinkSupervisor::initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, int timeDelay)
 {
 	((HapticThreadForceToNetwork*)thread)->initUDPReadWrite(  portREAD, ip, portWRITE, timeDelay);
 		

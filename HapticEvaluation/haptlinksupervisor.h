@@ -169,7 +169,7 @@ public:
 
 	virtual void GUINotify( notifyType type );
 	
-	void initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, unsigned short timeDelay);
+	void initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, int timeDelay);
 
 
 	
