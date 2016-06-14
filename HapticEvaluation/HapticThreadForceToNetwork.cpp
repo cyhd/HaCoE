@@ -1,8 +1,5 @@
 #include "haptlinksupervisor.h"
-#include "OmniDevice.h"
 #include "HapticThreadForceToNetwork.h"
-#include "RemoteControlLawSimple.h"
-#include "RemoteControlLawSimpleFiltered.h"
 #include "WriteNetworkThread.h"
 #include "ReadNetworkThread.h"
 
@@ -42,36 +39,31 @@ void HapticThreadForceToNetwork::run()
 	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
 	
 	haptDeviceA = supervisor->getHaptDeviceA(); // Real haptic device
-	haptDeviceB = supervisor->getHaptDeviceB(); // Remote haptic device
 
-	haptDeviceA->calibrate();
-
-	RemoteControlLaw *command = new RemoteControlLawSimple(); 
-	//RemoteControlLaw *command = new RemoteControlLawSimpleFiltered();
+	RemoteControlLaw *command = supervisor->getCommand(); 
 
 	while( supervisor->getThreadStarted() )
 	{
-		//This block is for dual link control (master-master) in force mode
+		//This block is for dual link control (master-master) in position mode
 		haptDeviceA->readData();
 		
-		
+		// the position of both haptic devices are taken
 		supervisor->getMutexA()->lock();
-		transA = haptDeviceA->getTranslation();
-		supervisor->getMutexA()->unlock();
-		
-		supervisor->getMutexB()->lock();
-		transB = haptDeviceB->getTranslation();
-		supervisor->getMutexB()->unlock();
-		
-
-		//supervisor->getMutex()->unlock();//end mutex
-
-		forceControlA = command->getForce(transA, transB);
-
-		supervisor->getMutexA()->lock();
-		haptDeviceA->writeForce( forceControlA , torqueControlA );
+		position = haptDeviceA->getTranslation();
+		velocity = haptDeviceA->getVelocity();
 		supervisor->getMutexA()->unlock();
 
+		supervisor->getMutexCommand()->lock();
+		command->setData(position, LOCAL_POSITION);
+		command->setData(velocity, LOCAL_VELOCITY);
+		supervisor->getMutexCommand()->unlock();
+			
+		command->compute();
+			
+		supervisor->getMutexA()->lock();
+		haptDeviceA->writeForce( command->getData(LOCAL_FORCE) , torqueControlA );
+		supervisor->getMutexA()->unlock();
+		
 		usleep( sleepTime/2 );
 	}
 }

@@ -27,6 +27,7 @@
 #include "ui_hapticevaluationgui.h"
 #include "Observer.h"
 #include "datamodel.h"
+#include "RemoteControlLaw.h"
 #include <math.h>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
@@ -87,11 +88,12 @@ public slots:
 	void switchAtiB( void );
 	void switchEntactA( void );
 	void switchEntactB( void );
-	
+	void initCmd( ControlMode mode );
 	void calibrateEntactA( void );
 	void calibrateEntactB( void );
 	void setRemoteComConfig( void ); //set the IP/port data for the UDP comm
 	void setExpInfo( void );
+	
 	void setHRExpFile( void );
 	void readNextHRTrial( void );
 	void setDominantHand( void );
@@ -107,6 +109,7 @@ private:
 	//QButtonGroup *sexgroup;
 	QButtonGroup *prefgroup;
 	QButtonGroup *expgroup;
+	QButtonGroup *cmdgroup;
 	QButtonGroup *haptrepoutputsidegroup;
 
 	QDateTime *dateTime;

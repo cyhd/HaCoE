@@ -73,6 +73,11 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 	expgroup->addButton(ui.radioButtonDepthConstant);
 	expgroup->addButton(ui.radioButtonDepthLinear);
 
+
+	cmdgroup = new QButtonGroup;
+	cmdgroup->addButton(ui.radioButtonPosition);
+	cmdgroup->addButton(ui.radioButtonScattering);
+
 	//ui.radioButtonDepthConstant->setChecked(true);
 	ui.radioButtonATIOnly->setChecked(true);
 
@@ -129,9 +134,11 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 	connect(ui.checkBoxActiveEntactB , SIGNAL(stateChanged(int)) , this , SLOT(switchEntactB()));
 
 	connect(ui.checkBoxActiveHapticA , SIGNAL(stateChanged(int)) , this , SLOT(switchEntactA()));
-	connect(ui.checkBoxActiveHapticB , SIGNAL(stateChanged(int)) , this , SLOT(switchEntactB()));
 	connect(ui.pushButtonComInit, SIGNAL(clicked()), this, SLOT(setRemoteComConfig()));
+	connect(ui.radioButtonPosition , SIGNAL(toggled(bool)) , this , SLOT(setCmdInfo()));
+	connect(ui.radioButtonScattering , SIGNAL(toggled(bool)) , this , SLOT(setCmdInfo()));
 	
+
 	connect(ui.pushButtonEntactACalibrate , SIGNAL(clicked()) , this , SLOT(calibrateEntactA()));
 	connect(ui.pushButtonEntactBCalibrate , SIGNAL(clicked()) , this , SLOT(calibrateEntactB()));
 	connect(ui.radioButtonSLPosition , SIGNAL(toggled(bool)) , this , SLOT(setExpInfo()));
@@ -316,7 +323,7 @@ bool HapticEvaluationGUI::getEntactAActivate()
 }	
 bool HapticEvaluationGUI::getEntactBActivate()
 {
-	return ui.checkBoxActiveEntactB->isChecked() || ui.checkBoxActiveHapticB->isChecked();
+	return ui.checkBoxActiveEntactB->isChecked() ;
 }
 
 bool HapticEvaluationGUI::getHapticActivate()
@@ -475,6 +482,12 @@ void HapticEvaluationGUI::setStartLog()
 	//	sex = "Male";
 	//else
 	//	sex = "Female";
+
+	if (ui.radioButtonPosition->isChecked())
+		initCmd(POSITION_MODE);
+	else if(ui.radioButtonScattering->isChecked())
+		initCmd(SCATTERING_MODE);
+
 
 	if ( ui.radioButtonRight->isChecked() )
 		pref = "Right";
@@ -747,12 +760,11 @@ void HapticEvaluationGUI::switchEntactA()
 			DataLogger::getInstance()->setHapticActiveA( true );
 			HaptLinkSupervisor::getInstance()->setHaptActiveA( true );
 			ui.pushButtonEntactACalibrate->setEnabled( true );
-			ui.checkBoxActiveHapticB->setEnabled(true);
 			//HaptLinkSupervisor::getInstance()->calibrateHapticA();
 		}
 		else 
 		{
-			setStatus("Haptic devicet A connection failed.  Please check IP is correct and Haptic device is on.  Then recheck the activate box.");
+			setStatus("Haptic device A connection failed.  Please check IP is correct and Haptic device is on.  Then recheck the activate box.");
 			ui.checkBoxActiveEntactA->setChecked( false );
 			ui.checkBoxActiveEntactA->setCheckState( Qt::Unchecked );
 			DataLogger::getInstance()->setHapticActiveA( false );
@@ -813,6 +825,11 @@ void HapticEvaluationGUI::setRemoteComConfig( void )
 	ui.pushButtonStart->setEnabled( true );
 }
 
+void HapticEvaluationGUI::initCmd(ControlMode mode)
+{
+	HaptLinkSupervisor::getInstance()->initCommand(mode);
+}
+
 void HapticEvaluationGUI::calibrateEntactA( void )
 {
 	HaptLinkSupervisor::getInstance()->calibrateHapticA();
@@ -821,6 +838,7 @@ void HapticEvaluationGUI::calibrateEntactB( void )
 {
 	HaptLinkSupervisor::getInstance()->calibrateHapticB();
 }
+
 void HapticEvaluationGUI::setExpInfo( void )
 {
 	disableHRFrame(); //disabling haptrep settings
@@ -837,7 +855,6 @@ void HapticEvaluationGUI::setExpInfo( void )
 		ui.frameHaptACtrl->setVisible( false );
 		ui.frameHaptBCtrl->setVisible( false );
 
-		ui.checkBoxActiveHapticB->setEnabled(false);
 		//ui.pushButtonStart->setEnabled( false );
 		//ui.pushButtonComInit->setEnabled(true);
 		

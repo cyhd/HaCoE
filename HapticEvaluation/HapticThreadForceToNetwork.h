@@ -12,8 +12,8 @@ public:
 	void initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, int timeDelay);
 
 private:
-	Vector3 transA; //translational position of haptic device
-	Vector3 transB;
+	Vector3 position; //translational position of haptic device
+	Vector3 velocity;
 	bool HapticThreadForceToNetworkStarted;
 
 	QThread *threadRead;

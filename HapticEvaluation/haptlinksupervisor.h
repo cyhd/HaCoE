@@ -44,6 +44,8 @@
 #include "hrexperiment.h"
 #include "experimentreader.h"
 
+#include "RemoteControlLaw.h"
+
 enum notifyType 
 {
 	HR_SEQ_SWITCH,
@@ -56,6 +58,7 @@ enum notifyType
 
 extern QMutex * mutexA ;
 extern QMutex * mutexB ;
+extern QMutex * mutexCommand; 
 
 //Start of class definition
 class HaptLinkSupervisor : public Subject , public QObject
@@ -94,6 +97,9 @@ public:
 	bool getThreadStarted() const { return this->threadStarted; } // returns true if a thread has been started
 	HapticDevice * getHaptDeviceA() const { return haptDeviceA; } //returns address of haptic devices
 	HapticDevice * getHaptDeviceB() const { return haptDeviceB; }
+
+	RemoteControlLaw * getCommand() const { return command; }
+
 	Vector3 getHaptRepF() const { return haptRepF; } //returns forces and torques set for haptic replication experiment
 	Vector3 getHaptRepT() const { return haptRepT; }
 	
@@ -103,6 +109,7 @@ public:
 	
 	QMutex * getMutexA() { return mutexA; }
 	QMutex * getMutexB() { return mutexB; }
+	QMutex * getMutexCommand() { return mutexCommand; }
 	
 	bool getHaptActiveA() const { return haptActiveA; }
 	bool getHaptActiveB() const { return haptActiveB; }
@@ -149,8 +156,9 @@ public:
 	int initDeviceB( char *filename , char *serialNumber );
 	int initHapticA( int index , char *ip ); //initializing Entacts
 	int initHapticB( int index , char *ip );
-	int initOmniA();
-	int initOmniB();
+	
+	void initCommand(ControlMode mode);
+
 	void calibrateHapticA(); //Calibrating entacts
 	void calibrateHapticB();
 	void initUDPWrite(std::string ip, std::string port);
@@ -188,10 +196,7 @@ protected:
 		threadStarted = false;
 		threadCreated = false;
 		timerForce = new QBasicTimer();
-		//mutexA = new QMutex();
-		//mutexB= new QMutex();
-		//mutex.lock();
-		//mutex.unlock();
+		
 		dominance = RIGHT;
 		experiment = HRExperiment();
 
@@ -205,6 +210,8 @@ private:
 	Device *atiB;
 	HapticDevice *haptDeviceA;
 	HapticDevice *haptDeviceB;
+
+	RemoteControlLaw *command;
 
 	bool LJActiveA;
 	bool LJActiveB;
@@ -221,9 +228,7 @@ private:
 	HapticThread *thread;
 
 	int logFlag;
-	//QMutex * mutexA;
-	//QMutex * mutexB;
-
+	
 	//haptic replication preferences
 	Vector3 haptRepF;
 	Vector3 haptRepT;

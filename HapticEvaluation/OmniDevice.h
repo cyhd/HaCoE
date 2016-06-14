@@ -18,7 +18,7 @@ class OmniDevice : public HapticDevice
 {
 public:
 	// Constructor
-	OmniDevice(int index);
+	OmniDevice();
 	// Destructor
 	~OmniDevice();
 	int OmniDevice::omniErrorCheck();
@@ -38,7 +38,7 @@ public:
 	void writeDamping( Vector3 translation , Vector3 rotation ); //sets the damping to the Omni
 
 	//Starts the scheduler that handle the data processing
-	int calibrate();
+	int calibrate(){return 1;}
 	
 protected:
 	
@@ -49,6 +49,7 @@ private:
 	//static hduVector3Dd posRemote;
 	static hduVector3Dd forceLocal;
 	static hduVector3Dd posLocal;
+	static hduVector3Dd velocityLocal;
 
 	bool connectSuccess; //see if connection was successful
 

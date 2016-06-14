@@ -82,20 +82,31 @@ void WriteNetworkThread::run()
 {
 	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
 	HapticDevice *haptDeviceA = supervisor->getHaptDeviceA();
+
+	RemoteControlLaw *command = supervisor->getCommand(); 
+
 	
 	while( supervisor->getThreadStarted() )
 	{
 		
-		supervisor->getMutexA()->lock();
-		transA = haptDeviceA->getTranslation(); //get data from device A to send to the remote point
-		supervisor->getMutexA()->unlock();
+		if (command->getType()==POSITION_MODE)
+		{
+			supervisor->getMutexA()->lock();
+			transA = haptDeviceA->getTranslation(); //get data from device A to send to the remote point
+			supervisor->getMutexA()->unlock();
 		
-		transADelayed = delay(transA);
+			transADelayed = delay(transA);
 
-		send("T3"); //code of data T=Translation, 3=3 datas
-		send(boost::lexical_cast<std::string>(transADelayed.x));
-		send(boost::lexical_cast<std::string>(transADelayed.y));
-		send(boost::lexical_cast<std::string>(transADelayed.z));
+			send("T3"); //code of data T=Translation, 3=3 datas
+			send(boost::lexical_cast<std::string>(transADelayed.x));
+			send(boost::lexical_cast<std::string>(transADelayed.y));
+			send(boost::lexical_cast<std::string>(transADelayed.z));
+		}
+		
+		else if(command->getType()==SCATTERING_MODE)
+		{
+
+		}
 		
 		usleep( sleepTime );
 	}

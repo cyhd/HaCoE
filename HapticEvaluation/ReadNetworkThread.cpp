@@ -15,19 +15,6 @@ ReadNetworkThread::ReadNetworkThread(unsigned short port, int sleep)
 	cpt=0;
 	byte_number=0;
 
-	//init trans and rot
-	transB = Vector3(0.0,0.0,0.0);
-
-	rotB.mat11 = 0.0;
-	rotB.mat12 = 0.0;
-	rotB.mat13 = 0.0;
-	rotB.mat21 = 0.0;
-	rotB.mat22 = 0.0;
-	rotB.mat23 = 0.0;
-	rotB.mat31 = 0.0;
-	rotB.mat32 = 0.0;
-	rotB.mat33 = 0.0;
-
 	//run();
     io_service.run();
 };
@@ -41,42 +28,33 @@ void ReadNetworkThread::run()
 {
 	
 	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
-	HapticDevice *haptDeviceB = supervisor->getHaptDeviceB();
 	
-	supervisor->getMutexA()->lock();
-	transB = haptDeviceB->getTranslation(); //get data from device A to send to the remote point
-	supervisor->getMutexA()->unlock();
-
-	trans[0]=transB.x;
-	trans[1]=transB.y;
-	trans[2]=transB.z;
-
+	RemoteControlLaw *command = supervisor->getCommand(); 
+	//might be some initialization pb here
+	/*nothing to initialize the data from outside*/
+	
 	//create a new socket for communication
 	while(supervisor->getThreadStarted())
 	{
-		
 		for (int i = 0; i < 4; i++)
 		{
 			bytes_transferred = socket_.receive_from(boost::asio::buffer(recv_buffer), receiver_endpoint);
-			handle_receive(bytes_transferred);
+			dataType = handle_receive(bytes_transferred);
 		}
-
-		transB.x=trans[0];
-		transB.y=trans[1];
-		transB.z=trans[2];
-
 		
-		supervisor->getMutexB()->lock();
-		haptDeviceB->writePosition(transB, rotB); //Receive data from remote point and set it to HaptdeviceB
-		supervisor->getMutexB()->unlock();
-		
+		dataControl.x=data[0];
+		dataControl.y=data[1];
+		dataControl.z=data[2];
 
+		supervisor->getMutexCommand()->lock();
+		command->setData(dataControl, dataType); //Receive data from remote point and set it to HaptdeviceB
+		supervisor->getMutexCommand()->unlock();
+		
 		usleep( sleepTime );
 	}
-	
 }
 
-void ReadNetworkThread::handle_receive(size_t bytes_transferred)
+DataType ReadNetworkThread::handle_receive(size_t bytes_transferred)
 {
     switch(data_type)
 	{
@@ -87,12 +65,29 @@ void ReadNetworkThread::handle_receive(size_t bytes_transferred)
 			{
 				data_type=1;
 				byte_number = atoi(std::string(recv_buffer.begin()+1, recv_buffer.begin()+2).c_str());
+				return REMOTE_POSITION;
 				break;
 			}
-			else if(std::string(recv_buffer.begin(), recv_buffer.begin()+1).compare("R")+1)
+			
+			else if(std::string(recv_buffer.begin(), recv_buffer.begin()+1).compare("F")+1)
 			{
 				data_type=2;
 				byte_number = atoi(std::string(recv_buffer.begin()+1, recv_buffer.begin()+2).c_str());
+				return REMOTE_FORCE;
+				break;
+			}
+			else if(std::string(recv_buffer.begin(), recv_buffer.begin()+1).compare("V")+1)
+			{
+				data_type=3;
+				byte_number = atoi(std::string(recv_buffer.begin()+1, recv_buffer.begin()+2).c_str());
+				return REMOTE_VELOCITY;
+				break;
+			}
+			else if(std::string(recv_buffer.begin(), recv_buffer.begin()+1).compare("C")+1)
+			{
+				data_type=4;
+				byte_number = atoi(std::string(recv_buffer.begin()+1, recv_buffer.begin()+2).c_str());
+				return DESIRED_REMOTE_VELOCITY;
 				break;
 			}
 		}
@@ -100,30 +95,56 @@ void ReadNetworkThread::handle_receive(size_t bytes_transferred)
 	//translation data on the 3 axis
 	case 1 :
 		{
-			trans[cpt] = boost::lexical_cast<float, std::string>(std::string(recv_buffer.begin(), recv_buffer.begin()+bytes_transferred));
+			data[cpt] = boost::lexical_cast<float, std::string>(std::string(recv_buffer.begin(), recv_buffer.begin()+bytes_transferred));
 			cpt++;
 			if (cpt == byte_number)
 			{
 				cpt = 0;
 				data_type = 0;
 			}
+			return REMOTE_POSITION;
 			break;
 		}
-
-	//translation data on the 3 axis
+	//Force applied to the remote device
 	case 2 :
 		{
-			if (cpt<byte_number)
-			{
-				
-				rot[cpt] = boost::lexical_cast<float, std::string>(std::string(recv_buffer.begin(), recv_buffer.begin()+bytes_transferred));
-				cpt++;
-			}
-			else
+			data[cpt] = boost::lexical_cast<float, std::string>(std::string(recv_buffer.begin(), recv_buffer.begin()+bytes_transferred));
+			cpt++;
+			if (cpt == byte_number)
 			{
 				cpt = 0;
 				data_type = 0;
 			}
+			return REMOTE_FORCE;
+			break;
+		}
+
+		
+	//Velocity of the remote device
+	case 3 :
+		{
+			data[cpt] = boost::lexical_cast<float, std::string>(std::string(recv_buffer.begin(), recv_buffer.begin()+bytes_transferred));
+			cpt++;
+			if (cpt == byte_number)
+			{
+				cpt = 0;
+				data_type = 0;
+			}
+			return REMOTE_VELOCITY;
+			break;
+		}
+		
+	//Desired velocity used to compute the control law for scattering theory
+	case 4 :
+		{
+			data[cpt] = boost::lexical_cast<float, std::string>(std::string(recv_buffer.begin(), recv_buffer.begin()+bytes_transferred));
+			cpt++;
+			if (cpt == byte_number)
+			{
+				cpt = 0;
+				data_type = 0;
+			}
+			return DESIRED_REMOTE_VELOCITY;
 			break;
 		}
 	}

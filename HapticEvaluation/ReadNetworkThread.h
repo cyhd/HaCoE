@@ -1,6 +1,7 @@
 #pragma once
 
 #include "datamodel.h"
+#include "RemoteControlLaw.h"
 #include <qthread.h>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
@@ -13,7 +14,7 @@ public:
 	ReadNetworkThread( unsigned short port, int sleepTime );
 	~ReadNetworkThread( void );
 	void run();
-	void handle_receive(size_t);
+	DataType handle_receive(size_t);
 	
 private :
 
@@ -22,10 +23,11 @@ private :
     udp::socket socket_;
     udp::endpoint receiver_endpoint;
 	boost::array<char, 1024> recv_buffer;
-	boost::array<float, 3> trans;
-	boost::array<float, 4> rot;
-	Vector3 transB;
-	Matrix3x3 rotB;
+
+	boost::array<float, 3> data;
+	Vector3 dataControl;
+	DataType dataType;
+
 	int sleepTime;
 	size_t bytes_transferred;
 };

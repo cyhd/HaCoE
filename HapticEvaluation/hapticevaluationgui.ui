@@ -1868,8 +1868,8 @@
     <widget class="QLabel" name="label_47">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>10</y>
+       <x>70</x>
+       <y>40</y>
        <width>61</width>
        <height>16</height>
       </rect>
@@ -1881,8 +1881,8 @@
     <widget class="QLabel" name="label_48">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>70</y>
+       <x>220</x>
+       <y>90</y>
        <width>81</width>
        <height>20</height>
       </rect>
@@ -1895,7 +1895,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>70</y>
+       <y>90</y>
        <width>81</width>
        <height>16</height>
       </rect>
@@ -1907,9 +1907,9 @@
     <widget class="QLineEdit" name="lineEditRemIP">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>30</y>
-       <width>91</width>
+       <x>40</x>
+       <y>60</y>
+       <width>101</width>
        <height>20</height>
       </rect>
      </property>
@@ -1921,7 +1921,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>90</y>
+       <y>110</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -1933,8 +1933,8 @@
     <widget class="QLineEdit" name="lineEditLocalPort">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>90</y>
+       <x>230</x>
+       <y>110</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -1946,8 +1946,8 @@
     <widget class="QPushButton" name="pushButtonComInit">
      <property name="geometry">
       <rect>
-       <x>90</x>
-       <y>110</y>
+       <x>170</x>
+       <y>60</y>
        <width>75</width>
        <height>23</height>
       </rect>
@@ -1969,25 +1969,12 @@
       <string>Activate Local</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkBoxActiveHapticB">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>40</y>
-       <width>121</width>
-       <height>18</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Activate Remote</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="lineEditDelayValue">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>50</y>
-       <width>91</width>
+       <x>130</x>
+       <y>110</y>
+       <width>41</width>
        <height>20</height>
       </rect>
      </property>
@@ -1998,14 +1985,40 @@
     <widget class="QLabel" name="label_50">
      <property name="geometry">
       <rect>
-       <x>280</x>
-       <y>30</y>
+       <x>120</x>
+       <y>90</y>
        <width>61</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
       <string>Delay (ms)</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButtonPosition">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>0</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Position Control</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButtonScattering">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>20</y>
+       <width>141</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Scattering Control</string>
      </property>
     </widget>
    </widget>

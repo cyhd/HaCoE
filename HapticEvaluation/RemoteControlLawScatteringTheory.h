@@ -2,14 +2,14 @@
 
 #include "RemoteControlLaw.h"
 
-class RemoteControlLawSimple : public RemoteControlLaw
+class RemoteControlLawScatteringTheory : public RemoteControlLaw
 {
 public : 
 	// Constructor
-	RemoteControlLawSimple();
+	RemoteControlLawScatteringTheory();
 	// Destructor
-	~RemoteControlLawSimple();
-
+	~RemoteControlLawScatteringTheory();
+	
 	void compute();
 
 private :

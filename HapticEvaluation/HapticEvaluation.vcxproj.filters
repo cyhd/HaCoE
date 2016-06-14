@@ -41,9 +41,6 @@
     <Filter Include="Header Files\general use">
       <UniqueIdentifier>{0c4c6222-ca62-4f14-9de8-1f6762225596}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\gui">
-      <UniqueIdentifier>{b428078e-a610-4ff2-8c95-71a4fc627fbc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\logger">
       <UniqueIdentifier>{f65e7c17-0f17-436b-8c1c-5c0f3d6f7121}</UniqueIdentifier>
     </Filter>
@@ -83,6 +80,9 @@
     </Filter>
     <Filter Include="Source Files\control law">
       <UniqueIdentifier>{bc1ca943-4bef-406d-beca-0f334bc4a40a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\gui">
+      <UniqueIdentifier>{b428078e-a610-4ff2-8c95-71a4fc627fbc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -191,7 +191,10 @@
     <ClCompile Include="RemoteControlLawSimple.cpp">
       <Filter>Source Files\control law</Filter>
     </ClCompile>
-    <ClCompile Include="RemoteControlLawSimpleFiltered.cpp">
+    <ClCompile Include="RemoteControlLawScatteringTheory.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteControlLaw.cpp">
       <Filter>Source Files\control law</Filter>
     </ClCompile>
   </ItemGroup>
@@ -271,7 +274,7 @@
     <ClInclude Include="RemoteControlLawSimple.h">
       <Filter>Header Files\control law</Filter>
     </ClInclude>
-    <ClInclude Include="RemoteControlLawSimpleFiltered.h">
+    <ClInclude Include="RemoteControlLawScatteringTheory.h">
       <Filter>Header Files\control law</Filter>
     </ClInclude>
   </ItemGroup>

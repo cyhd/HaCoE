@@ -8,7 +8,7 @@ Same as RemoteControlLawSimple with a filtering with mean value on the force
 RemoteControlLawSimpleFiltered::RemoteControlLawSimpleFiltered()
 {
 	cpt = 0;
-
+	this->setType(POSITION_MODE);
 	//Number of size to be changed to change the filtering 
 	size = 3;
 }
@@ -22,7 +22,7 @@ const double RemoteControlLawSimpleFiltered::F2N_K_FORCE = 0.01; //K_FORCE and K
 const double RemoteControlLawSimpleFiltered::F2N_SCALERFORCE = 1; //SCALERFORCE is used to modify the stiffness difference between the two different haptic devices
 
 
-Vector3 RemoteControlLawSimpleFiltered::getForce(Vector3 transA, Vector3 transB )
+Vector3 RemoteControlLawSimpleFiltered::getForce()
 {
 		
 		forceControl[cpt].x = -F2N_K_FORCE*( transA.x - transB.x ); 

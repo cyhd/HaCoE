@@ -29,6 +29,8 @@
 #include "HapticThreadSingleHapticSlope.h"
 #include "datalogger.h"
 #include "HapticThreadForceToNetwork.h"
+#include "RemoteControlLawSimple.h"
+#include "RemoteControlLawScatteringTheory.h"
 
 #include <windows.h>
 
@@ -40,6 +42,7 @@ HaptLinkSupervisor *HaptLinkSupervisor::instance = NULL;
 
 QMutex * mutexA = new QMutex();
 QMutex * mutexB = new QMutex();
+QMutex * mutexCommand = new QMutex();
 
 int HaptLinkSupervisor::initDeviceA(char *filename , char *serialNumber) 
 {
@@ -56,8 +59,8 @@ int HaptLinkSupervisor::initDeviceB(char *filename , char *serialNumber)
 int HaptLinkSupervisor::initHapticA( int index , char *ip )
 {
 	//haptDeviceA = new EntactDevice( index , ip );
-	index = 1;
-	haptDeviceA = new OmniDevice(index);
+
+	haptDeviceA = new OmniDevice();
 	
 	return haptDeviceA->getConnectSuccess();
 }
@@ -65,33 +68,23 @@ int HaptLinkSupervisor::initHapticA( int index , char *ip )
 int HaptLinkSupervisor::initHapticB( int index , char *ip )
 {
 	//haptDeviceB = new EntactDevice( index , ip );
-	index = 2;
-	haptDeviceB = new OmniDevice(index);
+	haptDeviceB = new OmniDevice();
 	
 	return haptDeviceB->getConnectSuccess();
 }
 
-//initialization of Omni devices
-/*
-int HaptLinkSupervisor::initOmniA()
+void HaptLinkSupervisor::initCommand(ControlMode mode)
 {
-	haptDeviceA = new OmniDevice();
-	return haptDeviceA->getConnectSuccess();
+	switch(mode)
+	{
+		case POSITION_MODE:
+			command = new RemoteControlLawSimple();
+			break;
+		case SCATTERING_MODE:
+			command = new RemoteControlLawScatteringTheory();
+			break;
+	}
 }
-
-int HaptLinkSupervisor::initOmniB()
-{
-	haptDeviceB = new OmniDevice();
-	return haptDeviceB->getConnectSuccess();
-}
-*/
-/*
-int HaptLinkSupervisor::initRemoteDevice( int index , char *ip )
-{
-	haptDeviceB = new RemoteDevice( index , ip );
-	return haptDeviceB->getConnectSuccess();
-}
-*/
 
 void HaptLinkSupervisor::calibrateHapticA()
 {
