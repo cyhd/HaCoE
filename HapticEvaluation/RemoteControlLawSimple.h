@@ -14,5 +14,4 @@ public :
 
 private :
 	static const double F2N_K_FORCE;
-	static const double F2N_SCALERFORCE;
 };

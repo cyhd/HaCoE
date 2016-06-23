@@ -14,12 +14,13 @@ public:
 	ReadNetworkThread( unsigned short port, int sleepTime );
 	~ReadNetworkThread( void );
 	void run();
-	DataType handle_receive(size_t);
+	int getDataType(size_t);
+	void handleReceive(size_t, int cpt);
 	
 private :
 
 	boost::asio::io_service io_service;
-	int data_type, cpt, byte_number;
+	int byte_number;
     udp::socket socket_;
     udp::endpoint receiver_endpoint;
 	boost::array<char, 1024> recv_buffer;

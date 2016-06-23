@@ -157,7 +157,7 @@ public:
 	int initHapticA( int index , char *ip ); //initializing Entacts
 	int initHapticB( int index , char *ip );
 	
-	void initCommand(ControlMode mode);
+	void initCommand(ControlMode mode, int timeDelay);
 
 	void calibrateHapticA(); //Calibrating entacts
 	void calibrateHapticB();

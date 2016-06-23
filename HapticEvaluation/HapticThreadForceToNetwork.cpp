@@ -20,7 +20,7 @@ void HapticThreadForceToNetwork::initUDPReadWrite(unsigned short portREAD, std::
 void HapticThreadForceToNetwork::initUDPWrite(std::string ip, std::string port, int timeDelay)
 {
 	
-	threadWrite = new WriteNetworkThread(ip, port, sleepTime/2*10, timeDelay);
+	threadWrite = new WriteNetworkThread(ip, port, sleepTime/2, timeDelay);
 	threadWrite->start( QThread::HighestPriority );
 		
 }
@@ -28,7 +28,7 @@ void HapticThreadForceToNetwork::initUDPWrite(std::string ip, std::string port, 
 void HapticThreadForceToNetwork::initUDPRead(unsigned short port)
 {
 	
-	threadRead = new ReadNetworkThread(port, sleepTime/2);
+	threadRead = new ReadNetworkThread(port, sleepTime/4);
 	threadRead->start( QThread::HighestPriority );
 	
 }
@@ -41,6 +41,7 @@ void HapticThreadForceToNetwork::run()
 	haptDeviceA = supervisor->getHaptDeviceA(); // Real haptic device
 
 	RemoteControlLaw *command = supervisor->getCommand(); 
+	command->setSampleTime(sleepTime/2); //set the sample time in us
 
 	while( supervisor->getThreadStarted() )
 	{
@@ -56,13 +57,12 @@ void HapticThreadForceToNetwork::run()
 		supervisor->getMutexCommand()->lock();
 		command->setData(position, LOCAL_POSITION);
 		command->setData(velocity, LOCAL_VELOCITY);
-		supervisor->getMutexCommand()->unlock();
-			
 		command->compute();
-			
+
 		supervisor->getMutexA()->lock();
-		haptDeviceA->writeForce( command->getData(LOCAL_FORCE) , torqueControlA );
+		haptDeviceA->writeForce( command->getData(LOCAL_APPLIED_FORCE) , torqueControlA );
 		supervisor->getMutexA()->unlock();
+		supervisor->getMutexCommand()->unlock();
 		
 		usleep( sleepTime/2 );
 	}

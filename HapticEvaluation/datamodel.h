@@ -90,4 +90,28 @@ struct Matrix3x3 {
 	double mat33;
 };
 
+//Used to choose the control law
+enum ControlMode {
+ POSITION_MODE,
+ SCATTERING_MODE,
+ VELOCITY_MODE,
+ WAVE_MODE, 
+ DELAYED_MODE
+ };
+
+//Data used by the control law
+enum DataType {
+	LOCAL_POSITION,
+	REMOTE_POSITION,
+	LOCAL_FORCE,
+	REMOTE_FORCE,
+	LOCAL_VELOCITY,
+	REMOTE_VELOCITY,
+	DESIRED_LOCAL_POSITION,
+	DESIRED_REMOTE_POSITION,
+	LOCAL_APPLIED_FORCE,
+	REMOTE_APPLIED_FORCE
+};
+
+
 #endif // DATAMODEL_H

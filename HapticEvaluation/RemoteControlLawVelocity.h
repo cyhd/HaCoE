@@ -1,0 +1,23 @@
+#pragma once
+
+#include "RemoteControlLaw.h"
+
+class RemoteControlLawVelocity : public RemoteControlLaw
+{
+public : 
+	// Constructor
+	RemoteControlLawVelocity();
+	// Destructor
+	~RemoteControlLawVelocity();
+
+	void compute();
+	
+
+private :
+	static const double F2N_K_PROPORTIONNAL;
+	static const double F2N_K_INTEGRAL;
+
+	Vector3 localVelocityOld;
+	Vector3 remoteVelocityOld;
+
+};

@@ -88,7 +88,7 @@ public slots:
 	void switchAtiB( void );
 	void switchEntactA( void );
 	void switchEntactB( void );
-	void initCmd( ControlMode mode );
+	void initCmd( ControlMode mode, int timeDelay );
 	void calibrateEntactA( void );
 	void calibrateEntactB( void );
 	void setRemoteComConfig( void ); //set the IP/port data for the UDP comm

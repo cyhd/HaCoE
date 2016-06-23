@@ -5,25 +5,6 @@
 Parent class for the control laws. 
 *****************************************************************************/
 
-enum ControlMode {
- POSITION_MODE	= 0x0000,
- SCATTERING_MODE = 0x0001,
- };
-
-enum DataType {
-	LOCAL_POSITION = 0x0000,
-	REMOTE_POSITION = 0x0001,
-
-	LOCAL_FORCE = 0x0002,
-	REMOTE_FORCE = 0x0003,
-	
-	LOCAL_VELOCITY = 0x0004,
-	REMOTE_VELOCITY = 0x0005,
-
-	DESIRED_LOCAL_VELOCITY = 0x0006,
-	DESIRED_REMOTE_VELOCITY = 0x0007,
-};
-
 
 class RemoteControlLaw
 {
@@ -34,6 +15,9 @@ public :
 	
 	void setData(Vector3 data, DataType dataType);
 	Vector3 getData(DataType dataType);
+	void setSampleTime(int echTime);
+	Vector3 saturation(Vector3 data, double saturationValue); // prevent the daata from going out of range
+	Vector3 hysteresis(Vector3 data, double hysteresisValue); //create a hysteresis of value around 0 to avoid vibration
 
 	//virtual functions that is implemented differently depending on the control law
 	virtual void compute() = 0;
@@ -48,16 +32,20 @@ protected :
 	{
 		commandType=type;
 	}
+	Vector3 localAppliedForce;
+	Vector3 remoteAppliedForce;
 
 	Vector3 localPosition;
 	Vector3 localForce;
 	Vector3 localVelocity;
-	Vector3 desiredLocalVelocity;
+	Vector3 desiredLocalPosition;
 
 	Vector3 remotePosition;
 	Vector3 remoteForce;
 	Vector3 remoteVelocity;
-	Vector3 desiredRemoteVelocity;
+	Vector3 desiredRemotePosition;
+
+	double fech;
 
 private :
 	/*****************************************************
@@ -69,5 +57,6 @@ private :
 	class.
 	*****************************************************/
 	ControlMode commandType;
+
 };
 

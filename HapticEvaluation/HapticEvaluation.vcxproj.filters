@@ -197,6 +197,15 @@
     <ClCompile Include="RemoteControlLaw.cpp">
       <Filter>Source Files\control law</Filter>
     </ClCompile>
+    <ClCompile Include="RemoteControlLawVelocity.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteControlLawWaveTheory.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteControlLawDelayed.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AtiU6.h">
@@ -275,6 +284,15 @@
       <Filter>Header Files\control law</Filter>
     </ClInclude>
     <ClInclude Include="RemoteControlLawScatteringTheory.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLawVelocity.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLawWaveTheory.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLawDelayed.h">
       <Filter>Header Files\control law</Filter>
     </ClInclude>
   </ItemGroup>

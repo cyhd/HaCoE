@@ -19,7 +19,7 @@ public:
 	~WriteNetworkThread( void );
 	void run();
 	void send(std::string str);
-	Vector3 delay(Vector3);
+	Vector3 delay(Vector3 data, DataType type);
 
 private :
 
@@ -30,16 +30,24 @@ private :
 	boost::asio::io_service io_service;
 	udp::socket socket_;
 	udp::endpoint endpoint_;
-	Vector3 transA;
+
+	Vector3 data;
+	Vector3 dataDelayed;
+	Vector3 dataBuff[1024][10];
+	/*
+	Vector3 localPositionBuff[1024];
+	Vector3 localForceBuff[1024];
+	Vector3 localVelocityBuff[1024];
+	Vector3 desiredLocalPositionBuff[1024];
+	Vector3 localAppliedForceBuff[1024];
+	*/
 
 	//Data for the delay 
-	Vector3 transADelayed;
-	Vector3 transABuff[1024]; //size of the buffer to be changed with the value in delayValue
-	int buffCpt;
-
+	int buffCpt[10];
+	DataType dataSwitch;
 	/*************************************************************
 	delay is set in sleeptimes. Initiliazed in the constructor.
-	The delay is of delay*sleeptimes milliseconds 
+	The delay is of delay*sleeptime milliseconds 
 	**************************************************************/
 	int delayValue; 
 

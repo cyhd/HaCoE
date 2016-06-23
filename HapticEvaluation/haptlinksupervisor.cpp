@@ -29,8 +29,12 @@
 #include "HapticThreadSingleHapticSlope.h"
 #include "datalogger.h"
 #include "HapticThreadForceToNetwork.h"
+
 #include "RemoteControlLawSimple.h"
+#include "RemoteControlLawVelocity.h"
 #include "RemoteControlLawScatteringTheory.h"
+#include "RemoteControlLawWaveTheory.h"
+#include "RemoteControlLawDelayed.h"
 
 #include <windows.h>
 
@@ -73,15 +77,24 @@ int HaptLinkSupervisor::initHapticB( int index , char *ip )
 	return haptDeviceB->getConnectSuccess();
 }
 
-void HaptLinkSupervisor::initCommand(ControlMode mode)
+void HaptLinkSupervisor::initCommand(ControlMode mode, int timeDelay)
 {
 	switch(mode)
 	{
-		case POSITION_MODE:
+		case POSITION_MODE :
 			command = new RemoteControlLawSimple();
 			break;
-		case SCATTERING_MODE:
+		case SCATTERING_MODE :
 			command = new RemoteControlLawScatteringTheory();
+			break;
+		case VELOCITY_MODE :
+			command = new RemoteControlLawVelocity();
+			break;
+		case WAVE_MODE : 
+			command = new RemoteControlLawWaveTheory(timeDelay*2);
+			break;
+		case DELAYED_MODE :
+			command = new RemoteControlLawDelayed(timeDelay);
 			break;
 	}
 }

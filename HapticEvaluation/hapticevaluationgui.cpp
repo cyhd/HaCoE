@@ -77,6 +77,11 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 	cmdgroup = new QButtonGroup;
 	cmdgroup->addButton(ui.radioButtonPosition);
 	cmdgroup->addButton(ui.radioButtonScattering);
+	cmdgroup->addButton(ui.radioButtonVelocity);
+	cmdgroup->addButton(ui.radioButtonWave);
+	cmdgroup->addButton(ui.radioButtonDelayed);
+	
+	
 
 	//ui.radioButtonDepthConstant->setChecked(true);
 	ui.radioButtonATIOnly->setChecked(true);
@@ -135,8 +140,8 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 
 	connect(ui.checkBoxActiveHapticA , SIGNAL(stateChanged(int)) , this , SLOT(switchEntactA()));
 	connect(ui.pushButtonComInit, SIGNAL(clicked()), this, SLOT(setRemoteComConfig()));
-	connect(ui.radioButtonPosition , SIGNAL(toggled(bool)) , this , SLOT(setCmdInfo()));
-	connect(ui.radioButtonScattering , SIGNAL(toggled(bool)) , this , SLOT(setCmdInfo()));
+	//connect(ui.radioButtonPosition , SIGNAL(toggled(bool)) , this , SLOT(setCmdInfo()));
+	//connect(ui.radioButtonScattering , SIGNAL(toggled(bool)) , this , SLOT(setCmdInfo()));
 	
 
 	connect(ui.pushButtonEntactACalibrate , SIGNAL(clicked()) , this , SLOT(calibrateEntactA()));
@@ -484,9 +489,17 @@ void HapticEvaluationGUI::setStartLog()
 	//	sex = "Female";
 
 	if (ui.radioButtonPosition->isChecked())
-		initCmd(POSITION_MODE);
+		initCmd(POSITION_MODE, ui.lineEditDelayValue->text().toInt());
 	else if(ui.radioButtonScattering->isChecked())
-		initCmd(SCATTERING_MODE);
+		initCmd(SCATTERING_MODE, ui.lineEditDelayValue->text().toInt());
+	else if(ui.radioButtonVelocity->isChecked()) 
+		initCmd(VELOCITY_MODE, ui.lineEditDelayValue->text().toInt());
+	else if(ui.radioButtonWave->isChecked()) 
+		initCmd(WAVE_MODE, ui.lineEditDelayValue->text().toInt());
+	else if(ui.radioButtonDelayed->isChecked()) 
+		initCmd(DELAYED_MODE, ui.lineEditDelayValue->text().toInt());
+	
+
 
 
 	if ( ui.radioButtonRight->isChecked() )
@@ -760,6 +773,7 @@ void HapticEvaluationGUI::switchEntactA()
 			DataLogger::getInstance()->setHapticActiveA( true );
 			HaptLinkSupervisor::getInstance()->setHaptActiveA( true );
 			ui.pushButtonEntactACalibrate->setEnabled( true );
+			ui.pushButtonComInit->setEnabled(true);
 			//HaptLinkSupervisor::getInstance()->calibrateHapticA();
 		}
 		else 
@@ -791,7 +805,6 @@ void HapticEvaluationGUI::switchEntactB()
 			DataLogger::getInstance()->setHapticActiveB( true );
 			HaptLinkSupervisor::getInstance()->setHaptActiveB( true );
 			ui.pushButtonEntactBCalibrate->setEnabled( true );
-			ui.pushButtonComInit->setEnabled(true);
 			//HaptLinkSupervisor::getInstance()->calibrateHapticB();
 		}
 		else
@@ -825,9 +838,9 @@ void HapticEvaluationGUI::setRemoteComConfig( void )
 	ui.pushButtonStart->setEnabled( true );
 }
 
-void HapticEvaluationGUI::initCmd(ControlMode mode)
+void HapticEvaluationGUI::initCmd(ControlMode mode, int timeDelay)
 {
-	HaptLinkSupervisor::getInstance()->initCommand(mode);
+	HaptLinkSupervisor::getInstance()->initCommand(mode, timeDelay);
 }
 
 void HapticEvaluationGUI::calibrateEntactA( void )

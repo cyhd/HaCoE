@@ -23,11 +23,17 @@ void RemoteControlLaw::setData(Vector3 data, DataType dataType)
 	case REMOTE_VELOCITY :
 		remoteVelocity = data;
 		break;
-	case DESIRED_LOCAL_VELOCITY :
-		desiredLocalVelocity = data;
+	case DESIRED_LOCAL_POSITION :
+		desiredLocalPosition = data;
 		break;
-	case DESIRED_REMOTE_VELOCITY :
-		desiredRemoteVelocity = data;
+	case DESIRED_REMOTE_POSITION :
+		desiredRemotePosition = data;
+		break;
+	case LOCAL_APPLIED_FORCE :
+		localAppliedForce = data;
+		break;
+	case REMOTE_APPLIED_FORCE :
+		remoteAppliedForce = data;
 		break;
 	}
 }
@@ -54,13 +60,67 @@ Vector3 RemoteControlLaw::getData(DataType dataType)
 	case REMOTE_VELOCITY :
 		return remoteVelocity;
 		break;
-	case DESIRED_LOCAL_VELOCITY :
-		return desiredLocalVelocity;
+	case DESIRED_LOCAL_POSITION :
+		return desiredLocalPosition;
 		break;
-	case DESIRED_REMOTE_VELOCITY :
-		return desiredRemoteVelocity;
+	case DESIRED_REMOTE_POSITION :
+		return desiredRemotePosition;
+		break;
+	case LOCAL_APPLIED_FORCE :
+		return localAppliedForce;
+		break;
+	case REMOTE_APPLIED_FORCE :
+		return remoteAppliedForce;
 		break;
 	}
 }
 
+void RemoteControlLaw::setSampleTime(int sampleTime)
+{
+	fech = ((double)sampleTime)/1000000.0;
+}
+
+
+Vector3 RemoteControlLaw::saturation(Vector3 data, double saturationValue)
+{
+	
+	if(data.x > saturationValue || data.x < -saturationValue)
+	{
+		data.x = ((data.x > 0) - (data.x < 0))*saturationValue;
+	}
+
+
+	if(data.y > saturationValue || data.y < -saturationValue)
+	{
+		data.y = ((data.y > 0) - (data.y < 0))*saturationValue;
+	}
+
+
+	if(data.z > saturationValue || data.z < -saturationValue)
+	{
+		data.z = ((data.z > 0) - (data.z < 0))*saturationValue;
+	}
+
+	return data;
+}
+
+Vector3 RemoteControlLaw::hysteresis(Vector3 data, double hysteresisValue)
+{
+	if(data.x < hysteresisValue && data.x > -hysteresisValue)
+	{
+		data.x = 0;
+	}
+
+	if(data.y < hysteresisValue && data.y > -hysteresisValue)
+	{
+		data.y = 0;
+	}
+
+	if(data.z < hysteresisValue && data.z > -hysteresisValue)
+	{
+		data.z = 0;
+	}
+	
+	return data;
+}
 
