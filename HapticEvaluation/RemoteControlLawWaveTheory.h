@@ -11,6 +11,7 @@ public :
 	~RemoteControlLawWaveTheory();
 	Vector3 delayData(Vector3 localForceNew); 
 	void compute();
+	DataType send();
 
 private :
 	double F2N_K_FORCE;

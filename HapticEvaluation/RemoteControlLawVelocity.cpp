@@ -27,6 +27,7 @@ void RemoteControlLawVelocity::compute()
 	localAppliedForce.x += F2N_K_PROPORTIONNAL*(remoteVelocity.x-localVelocity.x);
 	localAppliedForce.y += F2N_K_PROPORTIONNAL*(remoteVelocity.y-localVelocity.y);
 	localAppliedForce.z += F2N_K_PROPORTIONNAL*(remoteVelocity.z-localVelocity.z);
+	
 	/*
 		localForce.x =  F2N_K_PROPORTIONNAL*((1+fech*F2N_K_INTEGRAL)*
 			(remoteVelocity.x-localVelocity.x)-(remoteVelocityOld.x-localVelocityOld.x)); 
@@ -43,4 +44,10 @@ void RemoteControlLawVelocity::compute()
 		localVelocityOld.y = localVelocity.y;
 		localVelocityOld.z = localVelocity.z;
 	*/
+}
+
+DataType RemoteControlLawVelocity::send()
+{
+	sendDataType = LOCAL_VELOCITY;
+	return sendDataType;
 }

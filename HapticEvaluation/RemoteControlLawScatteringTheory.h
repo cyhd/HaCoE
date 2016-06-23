@@ -11,6 +11,7 @@ public :
 	~RemoteControlLawScatteringTheory();
 	
 	void compute();
+	DataType send();
 
 private :
 	static const double F2N_K_FORCE;

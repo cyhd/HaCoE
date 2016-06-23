@@ -44,3 +44,26 @@ void RemoteControlLawScatteringTheory::compute()
 	
 	localAppliedForce = hysteresis(localAppliedForce, 1);
 }
+
+DataType RemoteControlLawScatteringTheory::send()
+{
+	switch(sendDataType)
+			{
+			case LOCAL_POSITION :
+				sendDataType = LOCAL_APPLIED_FORCE;
+				break;
+			case LOCAL_FORCE :
+				sendDataType = LOCAL_APPLIED_FORCE;
+				break;
+			case DESIRED_LOCAL_POSITION :
+				sendDataType = LOCAL_APPLIED_FORCE;
+				break;
+			case LOCAL_APPLIED_FORCE :
+				sendDataType = LOCAL_POSITION;
+				break;
+			case LOCAL_VELOCITY :
+				sendDataType = LOCAL_APPLIED_FORCE;
+				break;
+			}	
+	return sendDataType;
+}

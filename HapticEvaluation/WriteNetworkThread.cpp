@@ -45,8 +45,6 @@ WriteNetworkThread::WriteNetworkThread(
 		}
 	}
 	dataSwitch = LOCAL_POSITION;
-
-
 };
 
 WriteNetworkThread::~WriteNetworkThread()
@@ -102,67 +100,7 @@ void WriteNetworkThread::run()
 		The data to be sent changed depending on the 
 		control law
 		****************************************************/
-		if (command->getType() == POSITION_MODE || command->getType() == WAVE_MODE|| command->getType() == DELAYED_MODE)
-		{
-			dataSwitch = LOCAL_POSITION;
-		}
-
-		else if (command->getType()==VELOCITY_MODE)
-		{
-			dataSwitch = LOCAL_VELOCITY;
-		}
-
-		
-		
-		//For the master
-		
-		else if(command->getType()==SCATTERING_MODE) 
-		{
-			switch(dataSwitch)
-			{
-			case LOCAL_POSITION :
-				dataSwitch = LOCAL_APPLIED_FORCE;
-				break;
-			case LOCAL_FORCE :
-				dataSwitch = LOCAL_APPLIED_FORCE;
-				break;
-			case DESIRED_LOCAL_POSITION :
-				dataSwitch = LOCAL_APPLIED_FORCE;
-				break;
-			case LOCAL_APPLIED_FORCE :
-				dataSwitch = LOCAL_POSITION;
-				break;
-			case LOCAL_VELOCITY :
-				dataSwitch = LOCAL_APPLIED_FORCE;
-				break;
-			}
-		}
-		
-
-		/*
-		//For the slave
-		else if(command->getType()==SCATTERING_MODE) 
-		{
-			switch(dataSwitch)
-			{
-			case LOCAL_POSITION :
-				dataSwitch = LOCAL_APPLIED_FORCE;
-				break;
-			case LOCAL_FORCE :
-				dataSwitch = LOCAL_APPLIED_FORCE;
-				break;
-			case DESIRED_LOCAL_POSITION :
-				dataSwitch = LOCAL_APPLIED_FORCE;
-				break;
-			case LOCAL_APPLIED_FORCE :
-				dataSwitch = DESIRED_LOCAL_POSITION;
-				break;
-			case LOCAL_VELOCITY :
-				dataSwitch = LOCAL_APPLIED_FORCE;
-				break;
-			}
-		}
-		*/
+		dataSwitch = command->send();
 		
 		/*********************************************************
 		The first packet sent defines the type and number of data

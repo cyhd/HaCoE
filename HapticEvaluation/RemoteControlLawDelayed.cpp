@@ -10,13 +10,6 @@ RemoteControlLawDelayed::RemoteControlLawDelayed(int timeDelay)
 {
 	this->setType(DELAYED_MODE);
 	F2N_K_FORCE = 0.04; //K_FORCE and K_TORQUE are used to adjust the tightness of the control.  Higher values are more unstable
-	delayValue = timeDelay;
-	if (delayValue == 0)
-		delayValue = 1;
-	for (int i = 0; i < delayValue; i++)
-		localPositionBuff[i]=Vector3(0.0,0.0,0.0);
-	cpt = 0;
-	
 }
 
 RemoteControlLawDelayed::~RemoteControlLawDelayed()
@@ -24,22 +17,17 @@ RemoteControlLawDelayed::~RemoteControlLawDelayed()
 
 }
 
-
-Vector3 RemoteControlLawDelayed::delayData(Vector3 localPositionNew)
-{
-	localPositionBuff[cpt] = localPositionNew;
-	cpt++;
-	if(cpt == delayValue)
-		cpt = 0;
-	return localPositionBuff[cpt];
-}
-
-
 void RemoteControlLawDelayed::compute()
 {
-		localPositionDelayed = delayData(localPosition);	
+		localPositionDelayed = delay(localPosition, LOCAL_POSITION);	
 
 		localAppliedForce.x = -F2N_K_FORCE*( localPositionDelayed.x - remotePosition.x ); 
 		localAppliedForce.y = -F2N_K_FORCE*( localPositionDelayed.y - remotePosition.y );
 		localAppliedForce.z = -F2N_K_FORCE*( localPositionDelayed.z - remotePosition.z );
+}
+
+DataType RemoteControlLawDelayed::send()
+{
+	sendDataType = LOCAL_POSITION;
+	return sendDataType;
 }

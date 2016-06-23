@@ -1,6 +1,19 @@
 
 #include "RemoteControlLaw.h"
 
+RemoteControlLaw::RemoteControlLaw()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 2000; j++)
+			delayedDataBuff[i][j] = Vector3(0.0,0.0,0.0);
+	}
+}
+
+RemoteControlLaw::~RemoteControlLaw()
+{
+}
+
 void RemoteControlLaw::setData(Vector3 data, DataType dataType)
 {
 	switch(dataType)
@@ -80,6 +93,19 @@ void RemoteControlLaw::setSampleTime(int sampleTime)
 	fech = ((double)sampleTime)/1000000.0;
 }
 
+void RemoteControlLaw::setTimeDelay (int timeDelay)
+{
+	delayValue = timeDelay;
+}
+
+Vector3 RemoteControlLaw::delay(Vector3 data, DataType type)
+{
+	delayedDataBuff[delayBuffCpt[type]][type] = data;
+	delayBuffCpt[type]++;
+	if (delayBuffCpt[type] == delayValue)
+		delayBuffCpt[type] = 0;
+	return delayedDataBuff[delayBuffCpt[type]][type];
+}
 
 Vector3 RemoteControlLaw::saturation(Vector3 data, double saturationValue)
 {

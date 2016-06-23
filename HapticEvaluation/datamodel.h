@@ -77,6 +77,7 @@ struct Vector3 {
 	double z;
 };
 
+
 struct Matrix3x3 {
 
 	double mat11;

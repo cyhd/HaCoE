@@ -48,3 +48,9 @@ void RemoteControlLawWaveTheory::compute()
 		localAppliedForce.z = localForce.z - F2N_OPPOSITE_WAVE*localForceDelayed.z - F2N_DAMPING*localVelocity.z; 
 		
 }
+
+DataType RemoteControlLawWaveTheory::send()
+{
+	sendDataType = LOCAL_POSITION;
+	return sendDataType;
+}

@@ -11,6 +11,7 @@ public :
 	~RemoteControlLawVelocity();
 
 	void compute();
+	DataType send();
 	
 
 private :

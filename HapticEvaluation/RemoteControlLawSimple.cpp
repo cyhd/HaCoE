@@ -24,3 +24,9 @@ void RemoteControlLawSimple::compute()
 		localAppliedForce.y = -F2N_K_FORCE*( localPosition.y - remotePosition.y );
 		localAppliedForce.z = -F2N_K_FORCE*( localPosition.z - remotePosition.z );
 }
+
+DataType RemoteControlLawSimple::send()
+{
+	sendDataType = LOCAL_POSITION;
+	return sendDataType;
+}
