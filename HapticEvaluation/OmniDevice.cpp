@@ -81,9 +81,10 @@ int OmniDevice::setMode(HapticMode setmode)
 */
 void OmniDevice::writeForce(Vector3 force , Vector3 torque )
 {
-	forceLocal[0]=force.x;
-	forceLocal[1]=force.y;
-	forceLocal[2]=force.z;	
+	for (int i = 0; i < 3; i++)
+	{
+		forceLocal[i]=force[i];
+	}
 }
 
 /** only used to get position from the remote Omni (deviceB)

@@ -832,8 +832,13 @@ void HapticEvaluationGUI::switchEntactB()
 
 void HapticEvaluationGUI::setRemoteComConfig( void )
 {
-	HaptLinkSupervisor::getInstance()->initUDPReadWrite(ui.lineEditLocalPort->text().toUInt(), ui.lineEditRemIP->text().toStdString().data(),ui.lineEditRemPort->text().toStdString().data(), ui.lineEditDelayValue->text().toInt());
+	if (ui.tabWidgetDevice->tabPosition() == 2) //2 = left
+		HaptLinkSupervisor::getInstance()->initUDPReadWrite(ui.lineEditLocalPortL->text().toUInt(), ui.lineEditRemIPL->text().toStdString().data(),ui.lineEditRemPortL->text().toStdString().data(), ui.lineEditDelayValue->text().toInt());
 	
+	else if (ui.tabWidgetDevice->tabPosition() == 3) // 3 = right
+		HaptLinkSupervisor::getInstance()->initUDPReadWrite(ui.lineEditLocalPortR->text().toUInt(), ui.lineEditRemIPR->text().toStdString().data(),ui.lineEditRemPortR->text().toStdString().data(), ui.lineEditDelayValue->text().toInt());
+	
+
 	ui.pushButtonComInit->setEnabled(false);	
 	ui.pushButtonStart->setEnabled( true );
 }

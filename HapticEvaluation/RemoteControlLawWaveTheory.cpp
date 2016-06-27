@@ -37,16 +37,11 @@ Vector3 RemoteControlLawWaveTheory::delayData(Vector3 localForceNew)
 
 void RemoteControlLawWaveTheory::compute()
 {
-		localForce.x = -F2N_K_FORCE*( localPosition.x - remotePosition.x );
-		localForce.y = -F2N_K_FORCE*( localPosition.y - remotePosition.y );
-		localForce.z = -F2N_K_FORCE*( localPosition.z - remotePosition.z );
-	
+		localForce = ( localPosition - remotePosition )*(-F2N_K_FORCE);
+		
 		localForceDelayed = delayData(localForce);
 
-		localAppliedForce.x = localForce.x - F2N_OPPOSITE_WAVE*localForceDelayed.x - F2N_DAMPING*localVelocity.x; 
-		localAppliedForce.y = localForce.y - F2N_OPPOSITE_WAVE*localForceDelayed.y - F2N_DAMPING*localVelocity.y; 
-		localAppliedForce.z = localForce.z - F2N_OPPOSITE_WAVE*localForceDelayed.z - F2N_DAMPING*localVelocity.z; 
-		
+		localAppliedForce = localForce - localForceDelayed*F2N_OPPOSITE_WAVE - localVelocity*F2N_DAMPING;
 }
 
 DataType RemoteControlLawWaveTheory::send()

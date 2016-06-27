@@ -109,44 +109,26 @@ Vector3 RemoteControlLaw::delay(Vector3 data, DataType type)
 
 Vector3 RemoteControlLaw::saturation(Vector3 data, double saturationValue)
 {
+	for (int i = 0; i < 3; i++)
+	{
+		if(data[i] > saturationValue || data[i] < -saturationValue)
+		{
+			data[i] = ((data[i] > 0) - (data[i] < 0))*saturationValue;
+		}
+	}
 	
-	if(data.x > saturationValue || data.x < -saturationValue)
-	{
-		data.x = ((data.x > 0) - (data.x < 0))*saturationValue;
-	}
-
-
-	if(data.y > saturationValue || data.y < -saturationValue)
-	{
-		data.y = ((data.y > 0) - (data.y < 0))*saturationValue;
-	}
-
-
-	if(data.z > saturationValue || data.z < -saturationValue)
-	{
-		data.z = ((data.z > 0) - (data.z < 0))*saturationValue;
-	}
-
 	return data;
 }
 
 Vector3 RemoteControlLaw::hysteresis(Vector3 data, double hysteresisValue)
 {
-	if(data.x < hysteresisValue && data.x > -hysteresisValue)
+	for (int i = 0; i < 3; i++)
 	{
-		data.x = 0;
+		if(data[i] < hysteresisValue && data[i] > -hysteresisValue)
+		{
+			data[i] = 0;
+		}
 	}
-
-	if(data.y < hysteresisValue && data.y > -hysteresisValue)
-	{
-		data.y = 0;
-	}
-
-	if(data.z < hysteresisValue && data.z > -hysteresisValue)
-	{
-		data.z = 0;
-	}
-	
 	return data;
 }
 

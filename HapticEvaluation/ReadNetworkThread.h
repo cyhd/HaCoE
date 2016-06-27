@@ -15,7 +15,6 @@ public:
 	~ReadNetworkThread( void );
 	void run();
 	int getDataType(size_t);
-	void handleReceive(size_t, int cpt);
 	
 private :
 
@@ -25,7 +24,6 @@ private :
     udp::endpoint receiver_endpoint;
 	boost::array<char, 1024> recv_buffer;
 
-	boost::array<float, 3> data;
 	Vector3 dataControl;
 	DataType dataType;
 

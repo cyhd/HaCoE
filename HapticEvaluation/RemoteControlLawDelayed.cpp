@@ -21,9 +21,7 @@ void RemoteControlLawDelayed::compute()
 {
 		localPositionDelayed = delay(localPosition, LOCAL_POSITION);	
 
-		localAppliedForce.x = -F2N_K_FORCE*( localPositionDelayed.x - remotePosition.x ); 
-		localAppliedForce.y = -F2N_K_FORCE*( localPositionDelayed.y - remotePosition.y );
-		localAppliedForce.z = -F2N_K_FORCE*( localPositionDelayed.z - remotePosition.z );
+		localAppliedForce = (localPositionDelayed - remotePosition)*(-F2N_K_FORCE);
 }
 
 DataType RemoteControlLawDelayed::send()

@@ -20,9 +20,7 @@ const double RemoteControlLawSimple::F2N_K_FORCE = 0.04; //K_FORCE and K_TORQUE 
 
 void RemoteControlLawSimple::compute()
 {
-		localAppliedForce.x = -F2N_K_FORCE*( localPosition.x - remotePosition.x ); 
-		localAppliedForce.y = -F2N_K_FORCE*( localPosition.y - remotePosition.y );
-		localAppliedForce.z = -F2N_K_FORCE*( localPosition.z - remotePosition.z );
+		localAppliedForce = (remotePosition - localPosition)*F2N_K_FORCE;
 }
 
 DataType RemoteControlLawSimple::send()

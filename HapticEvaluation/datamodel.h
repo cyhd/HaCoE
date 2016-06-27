@@ -67,6 +67,7 @@ enum expType
 	DEPTHLINEAR // Griffith: linear force feedback from on z=depth
 };
 
+
 struct Vector3 {
 	
 	Vector3(double xx, double yy, double zz) { x=xx; y=yy; z=zz; }
@@ -75,6 +76,51 @@ struct Vector3 {
 	double x;
 	double y;
 	double z;
+
+
+	/****************************************************************************************
+	**************  Defining "classical" operator for the struct Vector3  *******************
+	****************************************************************************************/
+	Vector3 operator+(const Vector3& a) const {return Vector3(x+a.x, y+a.y, z+a.z);}
+	void operator+=(const Vector3& a) 
+	{
+		x += a.x;
+		y += a.y;
+		z += a.z;
+	}
+	
+	Vector3 operator-(const Vector3& a) const {return Vector3(x-a.x, y-a.y, z-a.z);}
+	void operator-=(const Vector3& a) 
+	{
+		x -= a.x;
+		y -= a.y;
+		z -= a.z;
+	}
+
+	Vector3 operator*(const Vector3& a) const {return Vector3(x*a.x, y*a.y, z*a.z);}
+	Vector3 operator*(double a) const {return Vector3(x*a, y*a, z*a);}
+	
+	Vector3 operator/(const Vector3& a) const {return Vector3(x/a.x, y/a.y, z/a.z);}
+	
+	void operator=(const Vector3& a) 
+	{
+		x = a.x;
+		y = a.y;
+		z = a.z;
+	}
+	
+	double &operator[](int i)  
+	{
+		switch(i)
+		{
+		case 0 : 
+			return x;
+		case 1: 
+			return y;
+		case 2 : 
+			return z;
+		}
+	}
 };
 
 
@@ -93,11 +139,11 @@ struct Matrix3x3 {
 
 //Used to choose the control law
 enum ControlMode {
- POSITION_MODE,
- SCATTERING_MODE,
- VELOCITY_MODE,
- WAVE_MODE, 
- DELAYED_MODE
+	POSITION_MODE,
+	SCATTERING_MODE,
+	VELOCITY_MODE,
+	WAVE_MODE, 
+	DELAYED_MODE
  };
 
 //Data used by the control law

@@ -27,7 +27,7 @@ WriteNetworkThread::WriteNetworkThread(
 	endpoint_ = *(*iter);
 
 	sleepTime = sleep; //sleep = 2ms
-	Vector3 init(0.0, 0.0, 0.0);
+	
 	//init the delay
 	delayValue = timeDelay*1000/sleepTime;
 	if (delayValue == 0)
@@ -41,7 +41,7 @@ WriteNetworkThread::WriteNetworkThread(
 	{
 		for(int k = 0; k < 10; k++)
 		{
-			dataBuff[i][k] = init;
+			dataBuff[i][k] = Vector3(0.0, 0.0, 0.0);
 		}
 	}
 	dataSwitch = LOCAL_POSITION;
@@ -134,12 +134,11 @@ void WriteNetworkThread::run()
 		
 		dataDelayed = delay(data, dataSwitch);
 		
-		send(boost::lexical_cast<std::string>(dataDelayed.x));
-		send(boost::lexical_cast<std::string>(dataDelayed.y));
-		send(boost::lexical_cast<std::string>(dataDelayed.z));	
-
+		for (int i = 0; i < 3; i++)
+		{
+			send(boost::lexical_cast<std::string>(dataDelayed[i]));
+		}
 		
 		usleep( sleepTime );
 	}
-	
 }
