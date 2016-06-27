@@ -16,7 +16,7 @@ RemoteControlLawSimple::~RemoteControlLawSimple()
 
 }
 
-const double RemoteControlLawSimple::F2N_K_FORCE = 0.04; //K_FORCE and K_TORQUE are used to adjust the tightness of the control.  Higher values are more unstable
+const double RemoteControlLawSimple::F2N_K_FORCE = 0.02; //K_FORCE and K_TORQUE are used to adjust the tightness of the control.  Higher values are more unstable
 
 void RemoteControlLawSimple::compute()
 {

@@ -832,10 +832,10 @@ void HapticEvaluationGUI::switchEntactB()
 
 void HapticEvaluationGUI::setRemoteComConfig( void )
 {
-	if (ui.tabWidgetDevice->tabPosition() == 2) //2 = left
+	if (ui.tabWidgetDevice->currentIndex() == 0) //0 = left
 		HaptLinkSupervisor::getInstance()->initUDPReadWrite(ui.lineEditLocalPortL->text().toUInt(), ui.lineEditRemIPL->text().toStdString().data(),ui.lineEditRemPortL->text().toStdString().data(), ui.lineEditDelayValue->text().toInt());
 	
-	else if (ui.tabWidgetDevice->tabPosition() == 3) // 3 = right
+	else if (ui.tabWidgetDevice->currentIndex() == 1) // 1 = right
 		HaptLinkSupervisor::getInstance()->initUDPReadWrite(ui.lineEditLocalPortR->text().toUInt(), ui.lineEditRemIPR->text().toStdString().data(),ui.lineEditRemPortR->text().toStdString().data(), ui.lineEditDelayValue->text().toInt());
 	
 

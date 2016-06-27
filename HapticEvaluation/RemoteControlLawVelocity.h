@@ -17,8 +17,6 @@ public :
 private :
 	static const double F2N_K_PROPORTIONNAL;
 	static const double F2N_K_INTEGRAL;
-
-	Vector3 localVelocityOld;
-	Vector3 remoteVelocityOld;
+	Vector3 velocityIntegrator;
 
 };
