@@ -8,7 +8,8 @@ via F2N_K_Force
 
 RemoteControlLawSimple::RemoteControlLawSimple()
 {
-	this->setType(POSITION_MODE);
+	this->setType(SIMPLE_MODE);
+	this->setDataNumber(1);
 }
 
 RemoteControlLawSimple::~RemoteControlLawSimple()

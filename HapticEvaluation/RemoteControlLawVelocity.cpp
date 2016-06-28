@@ -9,6 +9,7 @@ via F2N_K_Force
 RemoteControlLawVelocity::RemoteControlLawVelocity()
 {
 	this->setType(VELOCITY_MODE);
+	this->setDataNumber(1);
 }
 
 RemoteControlLawVelocity::~RemoteControlLawVelocity()

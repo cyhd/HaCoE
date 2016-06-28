@@ -9,7 +9,8 @@ via F2N_K_Force
 RemoteControlLawDelayed::RemoteControlLawDelayed(int timeDelay)
 {
 	this->setType(DELAYED_MODE);
-	F2N_K_FORCE = 0.04; //K_FORCE and K_TORQUE are used to adjust the tightness of the control.  Higher values are more unstable
+	this->setTimeDelay(timeDelay);
+	this->setDataNumber(1);
 }
 
 RemoteControlLawDelayed::~RemoteControlLawDelayed()
@@ -17,15 +18,21 @@ RemoteControlLawDelayed::~RemoteControlLawDelayed()
 
 }
 
+const double RemoteControlLawDelayed::F2N_K_PROPORTIONNAL = 0.002; //higher value makes the device vibrate
+const double RemoteControlLawDelayed::F2N_K_INTEGRAL = 400; //higher value makes the device stiffer but can become unstable
+
 void RemoteControlLawDelayed::compute()
 {
-		localPositionDelayed = delay(localPosition, LOCAL_POSITION);	
-
-		localAppliedForce = (localPositionDelayed - remotePosition)*(-F2N_K_FORCE);
+	// the local data is delayed to compare local and remote velocity from the same time
+	localVelocityDelayed = delay(localVelocity, LOCAL_VELOCITY);
+	
+	//classical velocity loop
+	velocityIntegrator += (remoteVelocity-localVelocityDelayed)*F2N_K_INTEGRAL*fech;
+	localAppliedForce = (velocityIntegrator + remoteVelocity-localVelocityDelayed)*F2N_K_PROPORTIONNAL;
 }
 
 DataType RemoteControlLawDelayed::send()
 {
-	sendDataType = LOCAL_POSITION;
+	sendDataType = LOCAL_VELOCITY;
 	return sendDataType;
 }

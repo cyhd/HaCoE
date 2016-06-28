@@ -5,6 +5,7 @@ RemoteControlLawScatteringTheory::RemoteControlLawScatteringTheory()
 {
 	this->setType(SCATTERING_MODE);
 	sendDataType = LOCAL_APPLIED_FORCE;
+	this->setDataNumber(4);
 }
 
 RemoteControlLawScatteringTheory::~RemoteControlLawScatteringTheory()

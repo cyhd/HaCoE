@@ -7,6 +7,7 @@ RemoteControlLaw::RemoteControlLaw()
 	{
 		for (int j = 0; j < 2000; j++)
 			delayedDataBuff[i][j] = Vector3(0.0,0.0,0.0);
+		delayBuffCpt[i]=0;
 	}
 }
 
@@ -100,11 +101,11 @@ void RemoteControlLaw::setTimeDelay (int timeDelay)
 
 Vector3 RemoteControlLaw::delay(Vector3 data, DataType type)
 {
-	delayedDataBuff[delayBuffCpt[type]][type] = data;
+	delayedDataBuff[type][delayBuffCpt[type]] = data;
 	delayBuffCpt[type]++;
-	if (delayBuffCpt[type] == delayValue)
+	if (delayBuffCpt[type] >= delayValue)
 		delayBuffCpt[type] = 0;
-	return delayedDataBuff[delayBuffCpt[type]][type];
+	return delayedDataBuff[type][delayBuffCpt[type]];
 }
 
 Vector3 RemoteControlLaw::saturation(Vector3 data, double saturationValue)

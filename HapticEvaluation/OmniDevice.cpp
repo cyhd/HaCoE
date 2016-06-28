@@ -16,7 +16,7 @@ hduVector3Dd OmniDevice::forceLocal(0,0,0);
 hduVector3Dd OmniDevice::velocityLocal(0,0,0);
 
 
-OmniDevice::OmniDevice()
+OmniDevice::OmniDevice(int index)
 {
 	// some sensable error handling junk
     HDErrorInfo error;
@@ -33,11 +33,22 @@ OmniDevice::OmniDevice()
        	fprintf(stderr, "\nPress any key to quit.\n");
        	getchar();
     	exit(-1);
-		}
+	}
 
 	gSchedulerCallback = hdScheduleAsynchronous(
 		DataManaging, 0, HD_DEFAULT_SCHEDULER_PRIORITY);
 	omniErrorCheck();
+
+
+	/*//used to compensate the friction in case it's different from one to another device
+	if (index == 0) //left device
+	{
+		frictionCompensation = hduVector3Dd(0.2,0.7,0.5);
+	}
+	else if (index == 1) //right device
+	{
+		frictionCompensation = hduVector3Dd(0.5,0.9,0.5);
+	}*/
 }
 
 
@@ -82,9 +93,7 @@ int OmniDevice::setMode(HapticMode setmode)
 void OmniDevice::writeForce(Vector3 force , Vector3 torque )
 {
 	for (int i = 0; i < 3; i++)
-	{
 		forceLocal[i]=force[i];
-	}
 }
 
 /** only used to get position from the remote Omni (deviceB)
@@ -116,7 +125,7 @@ HDCallbackCode HDCALLBACK OmniDevice::DataManaging(void *data)
 	//********************************//
 	// Identify left haptic device.
 	hdMakeCurrentDevice(phantomidLocal);
-    hdSetDoublev(HD_CURRENT_FORCE, forceLocal);
+	hdSetDoublev(HD_CURRENT_FORCE, forceLocal);
     
 	// Flush forces on the first device.
     hdEndFrame(phantomidLocal);

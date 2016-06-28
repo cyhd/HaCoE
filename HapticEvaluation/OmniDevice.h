@@ -18,7 +18,7 @@ class OmniDevice : public HapticDevice
 {
 public:
 	// Constructor
-	OmniDevice();
+	OmniDevice(int index);
 	// Destructor
 	~OmniDevice();
 	int OmniDevice::omniErrorCheck();
@@ -50,6 +50,8 @@ private:
 	static hduVector3Dd forceLocal;
 	static hduVector3Dd posLocal;
 	static hduVector3Dd velocityLocal;
+	
+	//hduVector3Dd frictionCompensation;
 
 	bool connectSuccess; //see if connection was successful
 

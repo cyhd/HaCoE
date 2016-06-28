@@ -13,5 +13,7 @@ public :
 	DataType send();
 
 private :
-	double F2N_K_FORCE;
+	static const double F2N_K_PROPORTIONNAL;
+	static const double F2N_K_INTEGRAL;
+	Vector3 velocityIntegrator;
 };

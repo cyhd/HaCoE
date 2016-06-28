@@ -9,6 +9,7 @@ via F2N_K_Force
 RemoteControlLawWaveTheory::RemoteControlLawWaveTheory(int timeDelay)
 {
 	this->setType(WAVE_MODE);
+	this->setDataNumber(1);
 	delayValue = timeDelay;
 	for (int i = 0; i < delayValue; i++)
 		localForceDelayedBuff[i]=Vector3(0.0,0.0,0.0);

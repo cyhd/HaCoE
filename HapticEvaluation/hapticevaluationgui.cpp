@@ -767,7 +767,7 @@ void HapticEvaluationGUI::switchEntactA()
 {
 	if ( getEntactAActivate() )
 	{
-		if ( HaptLinkSupervisor::getInstance()->initHapticA( 0 , ui.lineEditEntactAIP->text().toLocal8Bit().data() ) == 1 )
+		if ( HaptLinkSupervisor::getInstance()->initHapticA( ui.tabWidgetDevice->currentIndex() , ui.lineEditEntactAIP->text().toLocal8Bit().data() ) == 1 )
 		{
 			setStatus("Haptic device A activated.  Press Start to start logging.");
 			DataLogger::getInstance()->setHapticActiveA( true );

@@ -206,6 +206,9 @@
     <ClCompile Include="RemoteControlLawDelayed.cpp">
       <Filter>Source Files\control law</Filter>
     </ClCompile>
+    <ClCompile Include="RemoteControlLawPosition.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AtiU6.h">
@@ -293,6 +296,9 @@
       <Filter>Header Files\control law</Filter>
     </ClInclude>
     <ClInclude Include="RemoteControlLawDelayed.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLawPosition.h">
       <Filter>Header Files\control law</Filter>
     </ClInclude>
   </ItemGroup>

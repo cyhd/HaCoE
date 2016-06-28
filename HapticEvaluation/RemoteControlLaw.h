@@ -15,6 +15,7 @@ public :
 	
 	void setData(Vector3 data, DataType dataType);
 	Vector3 getData(DataType dataType);
+	int getDataNumber(){return dataNumber;}
 	void setSampleTime(int echTime);
 	void setTimeDelay (int timeDelay);
 
@@ -31,7 +32,7 @@ public :
 protected :
 
 	void setType(ControlMode type) {commandType=type;}
-
+	void setDataNumber(int number) {dataNumber = number;}
 	//current data of the robot or received from the UDP communication
 	Vector3 localAppliedForce;
 	Vector3 localPosition;
@@ -50,6 +51,7 @@ protected :
 	Vector3 delayedDataBuff[10][2000];
 	int delayBuffCpt[10];
 	int delayValue; //Used to delay data 
+	int dataNumber;
 
 	//delayed Data
 	Vector3 localAppliedForceDelayed;

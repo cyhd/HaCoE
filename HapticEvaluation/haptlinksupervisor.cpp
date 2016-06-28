@@ -35,6 +35,7 @@
 #include "RemoteControlLawScatteringTheory.h"
 #include "RemoteControlLawWaveTheory.h"
 #include "RemoteControlLawDelayed.h"
+#include "RemoteControlLawPosition.h"
 
 #include <windows.h>
 
@@ -64,7 +65,7 @@ int HaptLinkSupervisor::initHapticA( int index , char *ip )
 {
 	//haptDeviceA = new EntactDevice( index , ip );
 
-	haptDeviceA = new OmniDevice();
+	haptDeviceA = new OmniDevice(index);
 	
 	return haptDeviceA->getConnectSuccess();
 }
@@ -72,7 +73,7 @@ int HaptLinkSupervisor::initHapticA( int index , char *ip )
 int HaptLinkSupervisor::initHapticB( int index , char *ip )
 {
 	//haptDeviceB = new EntactDevice( index , ip );
-	haptDeviceB = new OmniDevice();
+	haptDeviceB = new OmniDevice(index);
 	
 	return haptDeviceB->getConnectSuccess();
 }
@@ -81,21 +82,24 @@ void HaptLinkSupervisor::initCommand(ControlMode mode, int timeDelay)
 {
 	switch(mode)
 	{
-		case POSITION_MODE :
-			command = new RemoteControlLawSimple();
-			break;
-		case SCATTERING_MODE :
-			command = new RemoteControlLawScatteringTheory();
-			break;
-		case VELOCITY_MODE :
-			command = new RemoteControlLawVelocity();
-			break;
-		case WAVE_MODE : 
-			command = new RemoteControlLawWaveTheory(timeDelay*2);
-			break;
-		case DELAYED_MODE :
-			command = new RemoteControlLawDelayed(timeDelay);
-			break;
+	case SIMPLE_MODE :
+		command = new RemoteControlLawSimple();
+		break;	
+	case POSITION_MODE :
+		command = new RemoteControlLawPosition();
+		break;
+	case SCATTERING_MODE :
+		command = new RemoteControlLawScatteringTheory();
+		break;
+	case VELOCITY_MODE :
+		command = new RemoteControlLawVelocity();
+		break;
+	case WAVE_MODE : 
+		command = new RemoteControlLawWaveTheory(timeDelay*2);
+		break;
+	case DELAYED_MODE :
+		command = new RemoteControlLawDelayed(timeDelay);
+		break;
 	}
 }
 

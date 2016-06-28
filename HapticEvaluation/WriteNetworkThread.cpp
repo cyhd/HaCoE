@@ -34,9 +34,7 @@ WriteNetworkThread::WriteNetworkThread(
 		delayValue = 1;
 
 	//init the buffers
-	for(int j = 0; j < 10; j++)
-		buffCpt[j] = 0;
-
+	buffCpt=0;
 	for (int i = 0; i < delayValue; i++)
 	{
 		for(int k = 0; k < 10; k++)
@@ -77,13 +75,16 @@ void WriteNetworkThread::send(std::string str)
 Write the new data in a buffer place that will be read only when the buffCpt
 changed all the values of the buffer -> delayValue times
 ***************************************************************************/
-Vector3 WriteNetworkThread::delay(Vector3 data, DataType type)
+Vector3 WriteNetworkThread::delay(Vector3 data, DataType type, int cpt)
 {
-	dataBuff[buffCpt[type]][type] = data;
-	buffCpt[type]++;
-	if (buffCpt[type] == delayValue)
-		buffCpt[type] = 0;
-	return dataBuff[buffCpt[type]][type];
+	dataBuff[buffCpt][type] = data;
+	if(cpt == dataNumber-1)
+	{
+		buffCpt++;
+		if (buffCpt == delayValue)
+			buffCpt = 0;
+	}
+	return dataBuff[buffCpt][type];
 }
 
 void WriteNetworkThread::run()
@@ -92,53 +93,55 @@ void WriteNetworkThread::run()
 	HapticDevice *haptDeviceA = supervisor->getHaptDeviceA();
 
 	RemoteControlLaw *command = supervisor->getCommand(); 
-
+	dataNumber = command->getDataNumber();
 	
 	while( supervisor->getThreadStarted() )
 	{
-		/****************************************************
-		The data to be sent changed depending on the 
-		control law
-		****************************************************/
-		dataSwitch = command->send();
-		
-		/*********************************************************
-		The first packet sent defines the type and number of data
-		*********************************************************/
-		switch(dataSwitch)
-			{
-			case LOCAL_POSITION :
-				send("T3"); 
-				break;
-			case LOCAL_FORCE :
-				send("F3"); 
-				break;
-			case LOCAL_VELOCITY :
-				send("V3"); 
-				break;
-			case DESIRED_LOCAL_POSITION :
-				send("P3"); 
-				break;
-			case LOCAL_APPLIED_FORCE :
-				send("A3");
-				break;
-			}
-
-
-		/***********************************
-		The data are sent via a general path
-		***********************************/
-		supervisor->getMutexCommand()->lock();
-		data = command->getData(dataSwitch);
-		supervisor->getMutexCommand()->unlock();
-		
-		dataDelayed = delay(data, dataSwitch);
-		
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < dataNumber; i++)
 		{
-			send(boost::lexical_cast<std::string>(dataDelayed[i]));
-		}
+			/****************************************************
+			The data to be sent changed depending on the 
+			control law
+			****************************************************/
+			dataSwitch = command->send();
 		
+			/*********************************************************
+			The first packet sent defines the type and number of data
+			*********************************************************/
+			switch(dataSwitch)
+				{
+				case LOCAL_POSITION :
+					send("T3"); 
+					break;
+				case LOCAL_FORCE :
+					send("F3"); 
+					break;
+				case LOCAL_VELOCITY :
+					send("V3"); 
+					break;
+				case DESIRED_LOCAL_POSITION :
+					send("P3"); 
+					break;
+				case LOCAL_APPLIED_FORCE :
+					send("A3");
+					break;
+				}
+
+
+			/***********************************
+			The data are sent via a general path
+			***********************************/
+			supervisor->getMutexCommand()->lock();
+			data = command->getData(dataSwitch);
+			supervisor->getMutexCommand()->unlock();
+		
+			dataDelayed = delay(data, dataSwitch, i);
+		
+			for (int i = 0; i < 3; i++)
+			{
+				send(boost::lexical_cast<std::string>(dataDelayed[i]));
+			}
+		}
 		usleep( sleepTime );
 	}
 }

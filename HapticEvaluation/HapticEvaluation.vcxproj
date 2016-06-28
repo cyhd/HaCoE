@@ -105,6 +105,7 @@
     <ClCompile Include="ReadNetworkThread.cpp" />
     <ClCompile Include="RemoteControlLaw.cpp" />
     <ClCompile Include="RemoteControlLawDelayed.cpp" />
+    <ClCompile Include="RemoteControlLawPosition.cpp" />
     <ClCompile Include="RemoteControlLawScatteringTheory.cpp" />
     <ClCompile Include="RemoteControlLawSimple.cpp" />
     <ClCompile Include="RemoteControlLawVelocity.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="ReadNetworkThread.h" />
     <ClInclude Include="RemoteControlLaw.h" />
     <ClInclude Include="RemoteControlLawDelayed.h" />
+    <ClInclude Include="RemoteControlLawPosition.h" />
     <ClInclude Include="RemoteControlLawScatteringTheory.h" />
     <ClInclude Include="RemoteControlLawSimple.h" />
     <ClInclude Include="RemoteControlLawVelocity.h" />

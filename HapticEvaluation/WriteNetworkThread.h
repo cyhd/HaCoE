@@ -19,7 +19,7 @@ public:
 	~WriteNetworkThread( void );
 	void run();
 	void send(std::string str);
-	Vector3 delay(Vector3 data, DataType type);
+	Vector3 delay(Vector3 data, DataType type, int cpt);
 
 private :
 
@@ -34,17 +34,12 @@ private :
 	Vector3 data;
 	Vector3 dataDelayed;
 	Vector3 dataBuff[1024][10];
-	/*
-	Vector3 localPositionBuff[1024];
-	Vector3 localForceBuff[1024];
-	Vector3 localVelocityBuff[1024];
-	Vector3 desiredLocalPositionBuff[1024];
-	Vector3 localAppliedForceBuff[1024];
-	*/
+	
 
 	//Data for the delay 
-	int buffCpt[10];
+	int buffCpt;
 	DataType dataSwitch;
+	int dataNumber;
 	/*************************************************************
 	delay is set in sleeptimes. Initiliazed in the constructor.
 	The delay is of delay*sleeptime milliseconds 

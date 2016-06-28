@@ -140,6 +140,7 @@ struct Matrix3x3 {
 
 //Used to choose the control law
 enum ControlMode {
+	SIMPLE_MODE,
 	POSITION_MODE,
 	SCATTERING_MODE,
 	VELOCITY_MODE,
