@@ -489,7 +489,7 @@ void HapticEvaluationGUI::setStartLog()
 	//	sex = "Female";
 
 	if (ui.radioButtonPosition->isChecked())
-		initCmd(POSITION_MODE, ui.lineEditDelayValue->text().toInt());
+		initCmd(SIMPLE_MODE, ui.lineEditDelayValue->text().toInt());
 	else if(ui.radioButtonScattering->isChecked())
 		initCmd(SCATTERING_MODE, ui.lineEditDelayValue->text().toInt());
 	else if(ui.radioButtonVelocity->isChecked()) 

@@ -4,8 +4,8 @@
 RemoteControlLawScatteringTheory::RemoteControlLawScatteringTheory()
 {
 	this->setType(SCATTERING_MODE);
-	sendDataType = LOCAL_APPLIED_FORCE;
-	this->setDataNumber(4);
+	sendDataType = LOCAL_VELOCITY;
+	this->setDataNumber(3);
 }
 
 RemoteControlLawScatteringTheory::~RemoteControlLawScatteringTheory()
@@ -13,21 +13,16 @@ RemoteControlLawScatteringTheory::~RemoteControlLawScatteringTheory()
 
 }
 
-const double RemoteControlLawScatteringTheory::F2N_K_FORCE = 0.08; //K_FORCE and K_TORQUE are used to adjust the tightness of the control.  Higher values are more unstable
-const double RemoteControlLawScatteringTheory::F2N_DAMPING = 0; 
-
 const double RemoteControlLawScatteringTheory::F2N_K_PROPORTIONNAL = 0.002; //higher value makes the device vibrate
-const double RemoteControlLawScatteringTheory::F2N_K_INTEGRAL = 200; //higher value makes the device stiffer but can become unstable
+const double RemoteControlLawScatteringTheory::F2N_K_INTEGRAL = 400; //higher value makes the device stiffer but can become unstable
+const double RemoteControlLawScatteringTheory::F2N_K_SCALE = 0.1;
 
 void RemoteControlLawScatteringTheory::compute()
 {
-	
-	velocityIntegrator += (remoteVelocity-localVelocity)*F2N_K_INTEGRAL*fech;
-	localForce = (velocityIntegrator + remoteVelocity-localVelocity)*F2N_K_PROPORTIONNAL;
-	 
-	localAppliedForce = remoteForce + (localVelocity - desiredRemotePosition)*F2N_K_PROPORTIONNAL;
-	desiredLocalPosition = remoteVelocity + (remoteAppliedForce-localForce)/F2N_K_PROPORTIONNAL;
-	
+	desiredLocalPosition = remoteVelocity + (remoteAppliedForce-localAppliedForce)*F2N_K_SCALE;
+		
+	velocityIntegrator += (desiredLocalPosition-localVelocity)*F2N_K_INTEGRAL*fech;
+	localAppliedForce = (velocityIntegrator + desiredLocalPosition-localVelocity)*F2N_K_PROPORTIONNAL;
 }
 
 DataType RemoteControlLawScatteringTheory::send()
@@ -41,9 +36,6 @@ DataType RemoteControlLawScatteringTheory::send()
 				sendDataType = LOCAL_VELOCITY;
 				break;
 			case LOCAL_VELOCITY :
-				sendDataType = LOCAL_FORCE;
-				break;
-			case LOCAL_FORCE :
 				sendDataType = LOCAL_APPLIED_FORCE;
 				break;
 			}	

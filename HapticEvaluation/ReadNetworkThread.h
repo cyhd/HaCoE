@@ -26,7 +26,7 @@ private :
 
 	Vector3 dataControl;
 	DataType dataType;
-
+	int dataNumber;
 	int sleepTime;
 	size_t bytes_transferred;
 };

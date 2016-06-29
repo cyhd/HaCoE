@@ -18,7 +18,7 @@ public :
 	int getDataNumber(){return dataNumber;}
 	void setSampleTime(int echTime);
 	void setTimeDelay (int timeDelay);
-
+	void setIndex(int index){this->index = index;}
 	//particular methods used in some control laws
 	Vector3 saturation(Vector3 data, double saturationValue); // prevent the daata from going out of range
 	Vector3 hysteresis(Vector3 data, double hysteresisValue); //create a hysteresis of value around 0 to avoid vibration
@@ -68,7 +68,7 @@ protected :
 
 
 	double fech; //sample time, can be used for sample control theory 
-	
+	int index;//define the master/slave
 	DataType sendDataType; //used to manage the data sent by WriteNetworkThread
 
 private :

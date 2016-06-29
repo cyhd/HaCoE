@@ -30,7 +30,6 @@ public:
 	bool getConnectSuccess() const { return connectSuccess; }
 	int getMode() const { return mode; }  //no member variable for this one.  Grab it directly from the entact.  getModeEAPI is from Entact API
 
-
 	//setters
 	int setMode( HapticMode setmode ) ; //sets the running mode of the Omni.  We should be in force mode mostly
 	void writeForce( Vector3 force , Vector3 torque );  //sets the force to output from the Omni
@@ -54,7 +53,7 @@ private:
 	//hduVector3Dd frictionCompensation;
 
 	bool connectSuccess; //see if connection was successful
-
+	
 	HapticMode mode;
 		
 };

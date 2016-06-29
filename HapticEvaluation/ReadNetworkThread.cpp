@@ -58,23 +58,26 @@ void ReadNetworkThread::run()
 	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
 	
 	RemoteControlLaw *command = supervisor->getCommand(); 
-	
+	dataNumber = command->getDataNumber();
+
 	//create a new socket for communication
 	while(supervisor->getThreadStarted())
 	{
-		bytes_transferred = socket_.receive_from(boost::asio::buffer(recv_buffer), receiver_endpoint);
-		byte_number = getDataType(bytes_transferred); //Get the type of data to be receive and the number of data to catch
-		
-		for (int i = 0; i < byte_number; i++)
+		for (int j = 0; j < dataNumber; j++)
 		{
 			bytes_transferred = socket_.receive_from(boost::asio::buffer(recv_buffer), receiver_endpoint);
-			dataControl[i]=boost::lexical_cast<float, std::string>(std::string(recv_buffer.begin(), recv_buffer.begin()+bytes_transferred)); //receive the 3 datas to follow
+			byte_number = getDataType(bytes_transferred); //Get the type of data to be receive and the number of data to catch
+		
+			for (int i = 0; i < byte_number; i++)
+			{
+				bytes_transferred = socket_.receive_from(boost::asio::buffer(recv_buffer), receiver_endpoint);
+				dataControl[i]=boost::lexical_cast<float, std::string>(std::string(recv_buffer.begin(), recv_buffer.begin()+bytes_transferred)); //receive the 3 datas to follow
+			}
+		
+			supervisor->getMutexCommand()->lock();
+			command->setData(dataControl, dataType);
+			supervisor->getMutexCommand()->unlock();
 		}
-		
-		supervisor->getMutexCommand()->lock();
-		command->setData(dataControl, dataType);
-		supervisor->getMutexCommand()->unlock();
-		
 		usleep( sleepTime );
 	}
 }

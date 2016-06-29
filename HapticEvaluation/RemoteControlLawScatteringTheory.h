@@ -15,10 +15,9 @@ public :
 
 private :
 	
-	static const double F2N_K_FORCE;
-	static const double F2N_DAMPING;
 	static const double F2N_K_PROPORTIONNAL;
 	static const double F2N_K_INTEGRAL;
+	static const double F2N_K_SCALE;
 
 	Vector3 velocityIntegrator;
 };

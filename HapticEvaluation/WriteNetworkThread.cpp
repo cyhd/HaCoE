@@ -137,9 +137,9 @@ void WriteNetworkThread::run()
 		
 			dataDelayed = delay(data, dataSwitch, i);
 		
-			for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 3; j++)
 			{
-				send(boost::lexical_cast<std::string>(dataDelayed[i]));
+				send(boost::lexical_cast<std::string>(dataDelayed[j]));
 			}
 		}
 		usleep( sleepTime );

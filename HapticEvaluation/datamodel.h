@@ -88,6 +88,13 @@ struct Vector3 {
 		y += a.y;
 		z += a.z;
 	}
+	Vector3 operator+(double a) const {return Vector3(x+a, y+a, z+a);}
+	void operator+=(double a) 
+	{
+		x += a;
+		y += a;
+		z += a;
+	}
 	
 	Vector3 operator-(const Vector3& a) const {return Vector3(x-a.x, y-a.y, z-a.z);}
 	void operator-=(const Vector3& a) 
@@ -96,9 +103,28 @@ struct Vector3 {
 		y -= a.y;
 		z -= a.z;
 	}
-
+	Vector3 operator-(double a) const {return Vector3(x-a, y-a, z-a);}
+	void operator-=(double a) 
+	{
+		x -= a;
+		y -= a;
+		z -= a;
+	}
+	
 	Vector3 operator*(const Vector3& a) const {return Vector3(x*a.x, y*a.y, z*a.z);}
+	void operator*=(const Vector3& a)  
+	{
+		x *= a.x;
+		y *= a.y;
+		z *= a.z;
+	}
 	Vector3 operator*(double a) const {return Vector3(x*a, y*a, z*a);}
+	void operator*=(double a)
+	{
+		x *= a;
+		y *= a;
+		z *= a;
+	}
 	
 	Vector3 operator/(const Vector3& a) const {return Vector3(x/a.x, y/a.y, z/a.z);}
 	Vector3 operator/(double a) const {return Vector3(x/a, y/a, z/a);}

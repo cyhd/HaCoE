@@ -42,6 +42,7 @@ void HapticThreadForceToNetwork::run()
 
 	RemoteControlLaw *command = supervisor->getCommand(); 
 	command->setSampleTime(sleepTime/2); //set the sample time in us
+	command->setIndex(haptDeviceA->getMode());
 
 	while( supervisor->getThreadStarted() )
 	{

@@ -9,6 +9,7 @@ via F2N_K_Force
 RemoteControlLawSimple::RemoteControlLawSimple()
 {
 	this->setType(SIMPLE_MODE);
+	sendDataType = LOCAL_POSITION;
 	this->setDataNumber(1);
 }
 
@@ -22,10 +23,10 @@ const double RemoteControlLawSimple::F2N_K_FORCE = 0.02; //K_FORCE and K_TORQUE 
 void RemoteControlLawSimple::compute()
 {
 		localAppliedForce = (remotePosition - localPosition)*F2N_K_FORCE;
+		desiredLocalPosition += 1;
 }
 
 DataType RemoteControlLawSimple::send()
 {
-	sendDataType = LOCAL_POSITION;
 	return sendDataType;
 }

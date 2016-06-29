@@ -24,7 +24,13 @@ OmniDevice::OmniDevice(int index)
 	hdEnable(HD_FORCE_OUTPUT);
 	hdEnable(HD_FORCE_RAMPING);
 	connectSuccess = true;
-	setMode(FORCECONTROL_MODE);
+	
+	//can de used to define the master/slave
+	if(index == 0)
+		setMode(DISABLED_MODE); //slave
+	else if(index == 1)
+		setMode(FORCECONTROL_MODE); //master
+	
 
 	hdStartScheduler();
 	if (HD_DEVICE_ERROR(error = hdGetError()))
