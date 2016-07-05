@@ -58,6 +58,7 @@ enum expType
 	SLFORCE, // Single Link Force Control
 	DLFORCE, // Dual Link Force Control
 	FORCE2NET, //send (and receive) data to network
+	FORCE2NET_TEST, //test to compare the control laws
 	HAPTREPSIM, // Haptic Replication Experiment
 	HAPTREPSEQ,
 	HAPTREPAUTO,

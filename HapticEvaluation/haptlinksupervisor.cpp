@@ -36,6 +36,7 @@
 #include "RemoteControlLawWaveTheory.h"
 #include "RemoteControlLawDelayed.h"
 #include "RemoteControlLawPosition.h"
+#include "ExternalControl.h"
 
 #include <windows.h>
 
@@ -95,12 +96,16 @@ void HaptLinkSupervisor::initCommand(ControlMode mode, int timeDelay)
 		command = new RemoteControlLawVelocity();
 		break;
 	case WAVE_MODE : 
-		command = new RemoteControlLawWaveTheory(timeDelay*2);
+		command = new RemoteControlLawWaveTheory();
 		break;
 	case DELAYED_MODE :
 		command = new RemoteControlLawDelayed(timeDelay);
 		break;
 	}
+}
+void HaptLinkSupervisor::initExternalCommand()
+{
+	externalCommand = new ExternalControl();
 }
 
 void HaptLinkSupervisor::calibrateHapticA()
@@ -260,9 +265,12 @@ void HaptLinkSupervisor::start()
 	}
 	else if ( experimentType == FORCE2NET )
 	{
-		thread = new HapticThreadForceToNetwork();
-		//thread = new WriteNetworkThread(writeIP, writePort);
-		//thread = new ReadNetworkThread(readPort);
+		thread = new HapticThreadForceToNetwork(0);
+		threadCreated = true;
+	}
+	else if ( experimentType == FORCE2NET_TEST )
+	{
+		thread = new HapticThreadForceToNetwork(1);
 		threadCreated = true;
 	}
 	else if (experimentType == SINGLEHAPTIC) 

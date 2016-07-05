@@ -99,6 +99,7 @@ public:
 	HapticDevice * getHaptDeviceB() const { return haptDeviceB; }
 
 	RemoteControlLaw * getCommand() const { return command; }
+	RemoteControlLaw * getExternalCommand() const { return externalCommand; }
 
 	Vector3 getHaptRepF() const { return haptRepF; } //returns forces and torques set for haptic replication experiment
 	Vector3 getHaptRepT() const { return haptRepT; }
@@ -158,6 +159,7 @@ public:
 	int initHapticB( int index , char *ip );
 	
 	void initCommand(ControlMode mode, int timeDelay);
+	void initExternalCommand();
 
 	void calibrateHapticA(); //Calibrating entacts
 	void calibrateHapticB();
@@ -212,6 +214,7 @@ private:
 	HapticDevice *haptDeviceB;
 
 	RemoteControlLaw *command;
+	RemoteControlLaw *externalCommand;
 
 	bool LJActiveA;
 	bool LJActiveB;

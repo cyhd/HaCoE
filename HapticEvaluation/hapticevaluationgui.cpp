@@ -45,7 +45,8 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 : QMainWindow(parent, flags)
 {	
 	ui.setupUi(this);
-
+	ui.frame_5->setVisible(true); //graph 1
+	ui.frame_6->setVisible(false); //graph 2
 	initGraph();
     //sexgroup = new QButtonGroup;
 	//sexgroup->addButton(ui.radioButtonMale);
@@ -108,8 +109,10 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 	ui.pushButtonComInit->setEnabled( false );
 
 	hideDataA();
+	hideDataA_2();
 
 	hideDataB();
+	hideDataB_2();
 
 	ui.frameHaptRep->setVisible( false );
 	ui.frameRemCtrl->setVisible( false );
@@ -171,7 +174,8 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 	connect(ui.radioButtonLeft , SIGNAL(toggled(bool)) , this , SLOT(setDominantHand()));
 	connect(ui.radioButtonRight , SIGNAL(toggled(bool)) , this , SLOT(setDominantHand()));
 
-	
+	//graph display choice
+	connect(ui.pushButtonDisplaySwitch,SIGNAL(clicked()) , this , SLOT(switchDisplay()));
 	
 	HaptLinkSupervisor::getInstance()->attachObserver(this);	
 
@@ -236,6 +240,7 @@ void HapticEvaluationGUI::update(short value)
 	if(value == HAPTIC_UPDATE_GUI)
 	{
 		HaptLinkSupervisor *sp = HaptLinkSupervisor::getInstance();
+		RemoteControlLaw *command = sp->getCommand();
 		forceActiveA = getAtiAActivate(); //getting status of activation of each ATI
 		forceActiveB = getAtiBActivate();
 
@@ -275,6 +280,16 @@ void HapticEvaluationGUI::update(short value)
 			updateDevGraphDisplay(empty , empty);
 		}
 		
+		if(ui.frame_6->isVisible())
+		{
+			updateDevPositionDisplay(command->getData(LOCAL_POSITION),command->getData(REMOTE_POSITION));
+			updateDevForceDisplay(command->getData(LOCAL_FORCE),command->getData(REMOTE_FORCE));
+			if(ui.checkBoxFzA_2->isChecked())
+				updateDevGraphDisplay(command->getData(LOCAL_POSITION),command->getData(REMOTE_POSITION));
+			else if (ui.checkBoxFxB_2->isChecked())
+				updateDevGraphDisplay(command->getData(LOCAL_FORCE),command->getData(REMOTE_FORCE));
+		}
+
 		if ((sp->getExperimentType() == DEPTHCONST)||(sp->getExperimentType() == DEPTHLINEAR))
 			updateGriffith(sp->getPositionB(), Vector3(0,0,sp->getAddedForceB()));
 
@@ -338,102 +353,159 @@ bool HapticEvaluationGUI::getHapticActivate()
 
 void HapticEvaluationGUI::updateCheckGraph()
  {
-	state = ui.checkBoxFxA->isChecked();
-	if(state)
-		courbeFxA->setVisible(true);
-	else
-		courbeFxA->setVisible(false);
+	if (ui.frame_5->isVisible())
+	{
+		state = ui.checkBoxFxA->isChecked();
+		if(state)
+			courbeFxA->setVisible(true);
+		else
+			courbeFxA->setVisible(false);
 
 	
-	state =ui.checkBoxFyA->isChecked();
-	if(state)
-	    courbeFyA->setVisible(true);
-	else 
-		courbeFyA->setVisible(false);
+		state =ui.checkBoxFyA->isChecked();
+		if(state)
+			courbeFyA->setVisible(true);
+		else 
+			courbeFyA->setVisible(false);
 
 
-	state = ui.checkBoxFzA->isChecked();
-	if(state)
-		courbeFzA->setVisible(true);
-	else
-		courbeFzA->setVisible(false);
+		state = ui.checkBoxFzA->isChecked();
+		if(state)
+			courbeFzA->setVisible(true);
+		else
+			courbeFzA->setVisible(false);
 
-	state = ui.checkBoxFtotalA->isChecked();
-	if(state)
-		courbeFtotalA->setVisible(true);
-	else
-		courbeFtotalA->setVisible(false);
+		state = ui.checkBoxFtotalA->isChecked();
+		if(state)
+			courbeFtotalA->setVisible(true);
+		else
+			courbeFtotalA->setVisible(false);
 
-	state = ui.checkBoxFxB->isChecked();
-	if(state)
-		courbeFxB->setVisible(true);
-	else
-		courbeFxB->setVisible(false);
+		state = ui.checkBoxFxB->isChecked();
+		if(state)
+			courbeFxB->setVisible(true);
+		else
+			courbeFxB->setVisible(false);
 
 	
-	state =ui.checkBoxFyB->isChecked();
-	if(state)
-	    courbeFyB->setVisible(true);
-	else 
-		courbeFyB->setVisible(false);
+		state =ui.checkBoxFyB->isChecked();
+		if(state)
+			courbeFyB->setVisible(true);
+		else 
+			courbeFyB->setVisible(false);
 
 
-	state = ui.checkBoxFzB->isChecked();
-	if(state)
-		courbeFzB->setVisible(true);
-	else
-		courbeFzB->setVisible(false);
+		state = ui.checkBoxFzB->isChecked();
+		if(state)
+			courbeFzB->setVisible(true);
+		else
+			courbeFzB->setVisible(false);
 
-	state = ui.checkBoxFtotalB->isChecked();
-	if(state)
-		courbeFtotalB->setVisible(true);
-	else
-		courbeFtotalB->setVisible(false);
-	/*
-	state = ui.checkBoxPx->isChecked();
-	if(state)
-		courbePx->setVisible(true);
-	else
-		courbePx->setVisible(false);
-	*/
+		state = ui.checkBoxFtotalB->isChecked();
+		if(state)
+			courbeFtotalB->setVisible(true);
+		else
+			courbeFtotalB->setVisible(false);
+		/*
+		state = ui.checkBoxPx->isChecked();
+		if(state)
+			courbePx->setVisible(true);
+		else
+			courbePx->setVisible(false);
+		*/
+	}
+	else if(ui.frame_6->isVisible())
+	{
+		
+		state = ui.checkBoxFxB_2->isChecked()||ui.checkBoxFzA_2->isChecked();
+		if(state)
+		{
+			courbeFxA->setVisible(true);
+			courbeFyA->setVisible(true);
+			courbeFzA->setVisible(true);
+			courbeFxB->setVisible(true);
+			courbeFyB->setVisible(true);
+			courbeFzB->setVisible(true);
+		}
+		else
+		{
+			courbeFxA->setVisible(false);
+			courbeFyA->setVisible(false);
+			courbeFzA->setVisible(false);
+			courbeFxB->setVisible(false);
+			courbeFyB->setVisible(false);
+			courbeFzB->setVisible(false);
+		}
+	}
 }
 void HapticEvaluationGUI::updateDevForceDisplay(Vector3 f1 , Vector3 f2)
 {
+	if(ui.frame_5->isVisible())
+	{
+		QString Fx_A = QString::number(f1.x,'f',3);
+		ui.labelFx_A->setText(Fx_A);
 
-	QString Fx_A = QString::number(f1.x,'f',3);
-	ui.labelFx_A->setText(Fx_A);
+		QString Fy_A = QString::number(f1.y,'f',3);
+		ui.labelFy_A->setText(Fy_A);
 
-	QString Fy_A = QString::number(f1.y,'f',3);
-	ui.labelFy_A->setText(Fy_A);
+		QString Fz_A = QString::number(f1.z,'f',3);	
+		ui.labelFz_A->setText(Fz_A);
 
-	QString Fz_A = QString::number(f1.z,'f',3);	
-	ui.labelFz_A->setText(Fz_A);
+		QString Fx_B = QString::number(f2.x,'f',3);
+		ui.labelFx_B->setText(Fx_B);
 
-	QString Fx_B = QString::number(f2.x,'f',3);
-	ui.labelFx_B->setText(Fx_B);
+		QString Fy_B = QString::number(f2.y,'f',3);
+		ui.labelFy_B->setText(Fy_B);
 
-	QString Fy_B = QString::number(f2.y,'f',3);
-	ui.labelFy_B->setText(Fy_B);
+		QString Fz_B = QString::number(f2.z,'f',3);	
+		ui.labelFz_B->setText(Fz_B);
+	}
+	else if (ui.frame_5->isVisible())
+	{
+		QString Fx_A = QString::number(f1.x,'f',3);
+		ui.labelFx_A_2->setText(Fx_A);
 
-	QString Fz_B = QString::number(f2.z,'f',3);	
-	ui.labelFz_B->setText(Fz_B);
+		QString Fy_A = QString::number(f1.y,'f',3);
+		ui.labelFy_A_2->setText(Fy_A);
 
+		QString Fz_A = QString::number(f1.z,'f',3);	
+		ui.labelFz_A_2->setText(Fz_A);
+
+		QString Fx_B = QString::number(f2.x,'f',3);
+		ui.labelFx_B_2->setText(Fx_B);
+
+		QString Fy_B = QString::number(f2.y,'f',3);
+		ui.labelFy_B_2->setText(Fy_B);
+
+		QString Fz_B = QString::number(f2.z,'f',3);	
+		ui.labelFz_B_2->setText(Fz_B);
+	}
 }
-/*
-void HapticEvaluationGUI::updateDevPositionDisplay(Vector3 p)
+
+void HapticEvaluationGUI::updateDevPositionDisplay(Vector3 p, Vector3 g)
 {
 	
-	QString Px = QString::number(p.x,'f',3);
-	ui.labelPx->setText(Px);
+	QString Px_A = QString::number(p.x,'f',3);
+	ui.labelTx_A_2->setText(Px_A);
 		
-	QString Py = QString::number(p.y,'f',3);
-	ui.labelPy->setText(Py);
+	QString Py_A = QString::number(p.y,'f',3);
+	ui.labelTy_A_2->setText(Py_A);
     
-	QString Pz = QString::number(p.z,'f',3);
-	ui.labelPz->setText(Pz);
+	QString Pz_A = QString::number(p.z,'f',3);
+	ui.labelTz_A_2->setText(Pz_A);
 	
+	QString Px_B = QString::number(g.x,'f',3);
+	ui.labelTx_B_2->setText(Px_A);
+		
+	QString Py_B = QString::number(g.y,'f',3);
+	ui.labelTy_B_2->setText(Py_B);
+    
+	QString Pz_B = QString::number(g.z,'f',3);
+	ui.labelTz_B_2->setText(Pz_B);
+
 }
 
+/*
 void HapticEvaluationGUI::updateDevOrientationDisplay(Vector3 o)
 {
 	QString Ox = QString::number(o.x,'f',3);
@@ -499,7 +571,10 @@ void HapticEvaluationGUI::setStartLog()
 	else if(ui.radioButtonDelayed->isChecked()) 
 		initCmd(DELAYED_MODE, ui.lineEditDelayValue->text().toInt());
 	
-
+	if(ui.checkBoxInitExternalCommand->isChecked())
+	{
+		initExternalCmd();
+	}
 
 
 	if ( ui.radioButtonRight->isChecked() )
@@ -514,7 +589,15 @@ void HapticEvaluationGUI::setStartLog()
 
 	//*********
 	else if (ui.radioButtonForceToNet->isChecked()) 
-		HaptLinkSupervisor::getInstance()->setExperimentType(FORCE2NET);
+	{
+		if (ui.checkBoxInitExternalCommand->isChecked())
+			HaptLinkSupervisor::getInstance()->setExperimentType(FORCE2NET_TEST);
+		else
+			HaptLinkSupervisor::getInstance()->setExperimentType(FORCE2NET);
+	}
+
+	else if (ui.radioButtonForceToNet->isChecked()) 
+		HaptLinkSupervisor::getInstance()->setExperimentType(FORCE2NET_TEST);
 	
 	else if ( ui.radioButtonDLForce->isChecked() )
 		HaptLinkSupervisor::getInstance()->setExperimentType( DLFORCE );
@@ -846,6 +929,11 @@ void HapticEvaluationGUI::setRemoteComConfig( void )
 void HapticEvaluationGUI::initCmd(ControlMode mode, int timeDelay)
 {
 	HaptLinkSupervisor::getInstance()->initCommand(mode, timeDelay);
+}
+
+void HapticEvaluationGUI::initExternalCmd()
+{
+	HaptLinkSupervisor::getInstance()->initExternalCommand();
 }
 
 void HapticEvaluationGUI::calibrateEntactA( void )
@@ -1276,6 +1364,47 @@ void HapticEvaluationGUI::hideDataB()
 	ui.checkBoxFzB->setEnabled( false );
 	ui.checkBoxFtotalB->setEnabled( false );
 }
+
+void HapticEvaluationGUI::showDataA_2()
+{
+	ui.labelFx_A_2->setVisible( true );
+	ui.labelFy_A_2->setVisible( true );
+	ui.labelFz_A_2->setVisible( true );
+	ui.labelTx_A_2->setVisible( true );
+	ui.labelTy_A_2->setVisible( true );
+	ui.labelTz_A_2->setVisible( true );
+	ui.checkBoxFzA_2->setEnabled( true );
+}
+void HapticEvaluationGUI::hideDataA_2()
+{
+	ui.labelFx_A_2->setVisible( false );
+	ui.labelFy_A_2->setVisible( false );
+	ui.labelFz_A_2->setVisible( false );
+	ui.labelTx_A_2->setVisible( false );
+	ui.labelTy_A_2->setVisible( false );
+	ui.labelTz_A_2->setVisible( false );
+	ui.checkBoxFzA_2->setEnabled( false );
+}
+void HapticEvaluationGUI::showDataB_2()
+{
+	ui.labelFx_B_2->setVisible( true );
+	ui.labelFy_B_2->setVisible( true );
+	ui.labelFz_B_2->setVisible( true );
+	ui.labelTx_B_2->setVisible( true );
+	ui.labelTy_B_2->setVisible( true );
+	ui.labelTz_B_2->setVisible( true );
+	ui.checkBoxFxB_2->setEnabled( true );
+}
+void HapticEvaluationGUI::hideDataB_2()
+{
+	ui.labelFx_B_2->setVisible( false );
+	ui.labelFy_B_2->setVisible( false );
+	ui.labelFz_B_2->setVisible( false );
+	ui.labelTx_B_2->setVisible( false );
+	ui.labelTy_B_2->setVisible( false );
+	ui.labelTz_B_2->setVisible( false );
+	ui.checkBoxFxB_2->setEnabled( false );
+}
 void HapticEvaluationGUI::disableInterface()
 {
 	
@@ -1448,4 +1577,18 @@ void HapticEvaluationGUI::updateGriffith(Vector3 t1, Vector3 f1)
 	QString Fz_A = QString::number(f1.z,'f',3);	
 	ui.labelFz_A->setText(Fz_A);
 	ui.labelFz_A->show();
+}
+
+void HapticEvaluationGUI::switchDisplay()
+{
+	if (ui.frame_5->isVisible())
+	{
+		ui.frame_5->setVisible(false);
+		ui.frame_6->setVisible(true);
+	}
+	else if(ui.frame_6->isVisible())
+	{
+		ui.frame_5->setVisible(true);
+		ui.frame_6->setVisible(false);
+	}
 }

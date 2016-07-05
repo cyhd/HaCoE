@@ -18,7 +18,7 @@ RemoteControlLawVelocity::~RemoteControlLawVelocity()
 }
 
 const double RemoteControlLawVelocity::F2N_K_PROPORTIONNAL = 0.002; //higher value makes the device vibrate
-const double RemoteControlLawVelocity::F2N_K_INTEGRAL = 400; //higher value makes the device stiffer but can become unstable
+const double RemoteControlLawVelocity::F2N_K_INTEGRAL = 200; //higher value makes the device stiffer but can become unstable
 
 void RemoteControlLawVelocity::compute()
 {

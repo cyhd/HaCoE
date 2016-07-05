@@ -95,6 +95,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ExternalControl.cpp" />
     <ClCompile Include="HapticThreadForceToNetwork.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="AtiU6.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="AtiU6.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="EntactDevice.h" />
+    <ClInclude Include="ExternalControl.h" />
     <ClInclude Include="HapticDevice.h" />
     <ClInclude Include="datamodel.h" />
     <ClInclude Include="HapticThreadForceToNetwork.h" />

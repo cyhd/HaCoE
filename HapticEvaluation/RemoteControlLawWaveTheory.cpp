@@ -6,47 +6,34 @@ gets the mean value. Then calculate the forces to flush to the local Omni
 via F2N_K_Force
 *****************************************************************************/
 
-RemoteControlLawWaveTheory::RemoteControlLawWaveTheory(int timeDelay)
+RemoteControlLawWaveTheory::RemoteControlLawWaveTheory()
 {
 	this->setType(WAVE_MODE);
+	sendDataType = LOCAL_VELOCITY;
 	this->setDataNumber(1);
-	delayValue = timeDelay;
-	for (int i = 0; i < delayValue; i++)
-		localForceDelayedBuff[i]=Vector3(0.0,0.0,0.0);
-	cpt = 0;
-	
-	F2N_K_FORCE = 0.04; //K_FORCE is used to adjust the tightness of the control.  Higher values are more unstable
-	F2N_DAMPING = 0; //The damping factor is used to slow down the waves
-	F2N_OPPOSITE_WAVE = 1; //
-
+	//this->setTimeDelay(delayValue*2);
 }
 
 RemoteControlLawWaveTheory::~RemoteControlLawWaveTheory()
 {
 }
 
-
-Vector3 RemoteControlLawWaveTheory::delayData(Vector3 localForceNew)
-{
-	localForceDelayedBuff[cpt] = localForceNew;
-	cpt++;
-	if(cpt == delayValue)
-		cpt = 0;
-	return localForceDelayedBuff[cpt];
-}
-
+const double RemoteControlLawWaveTheory::F2N_K_PROPORTIONNAL = 0.002; //higher value makes the device vibrate
+const double RemoteControlLawWaveTheory::F2N_K_INTEGRAL = 400; //higher value makes the device stiffer but can become unstable
+const double RemoteControlLawWaveTheory::F2N_OPPOSITE_WAVE = 0.1;
 
 void RemoteControlLawWaveTheory::compute()
 {
-		localForce = ( localPosition - remotePosition )*(-F2N_K_FORCE);
-		
-		localForceDelayed = delayData(localForce);
-
-		localAppliedForce = localForce - localForceDelayed*F2N_OPPOSITE_WAVE - localVelocity*F2N_DAMPING;
+	velocityIntegrator += (remoteVelocity-localVelocity)*F2N_K_INTEGRAL*fech;
+	localForce = (velocityIntegrator + remoteVelocity-localVelocity)*F2N_K_PROPORTIONNAL;
+	
+	localForceDelayed = delay(localForce, LOCAL_FORCE);
+	
+	localAppliedForce = localForce - localForceDelayed*F2N_OPPOSITE_WAVE;
 }
 
 DataType RemoteControlLawWaveTheory::send()
 {
-	sendDataType = LOCAL_POSITION;
+	sendDataType = LOCAL_VELOCITY;
 	return sendDataType;
 }

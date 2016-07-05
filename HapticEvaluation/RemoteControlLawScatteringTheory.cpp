@@ -15,7 +15,7 @@ RemoteControlLawScatteringTheory::~RemoteControlLawScatteringTheory()
 
 const double RemoteControlLawScatteringTheory::F2N_K_PROPORTIONNAL = 0.002; //higher value makes the device vibrate
 const double RemoteControlLawScatteringTheory::F2N_K_INTEGRAL = 400; //higher value makes the device stiffer but can become unstable
-const double RemoteControlLawScatteringTheory::F2N_K_SCALE = 0.1;
+const double RemoteControlLawScatteringTheory::F2N_K_SCALE = 1;
 
 void RemoteControlLawScatteringTheory::compute()
 {
