@@ -20,6 +20,12 @@ private:
 	QThread *threadWrite;
 
 	bool testMode;
+	int cpt;
+
+	int timeStart;
+	int currentTime;
+	int TimeCpt;
+	double time;
 
 	void initUDPWrite(std::string ip, std::string port, int timeDelay);
 	void initUDPRead(unsigned short port);

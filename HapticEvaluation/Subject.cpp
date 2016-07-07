@@ -23,11 +23,10 @@
 
 Subject::Subject(void)
 {
-
+	ObserverList.clear();
 }
 
 Subject::~Subject(void)
 {
-	list.clear();
-	
+	ObserverList.clear();
 }

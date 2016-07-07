@@ -6,8 +6,8 @@ gets the mean value. Then calculate the forces to flush to the local Omni
 via F2N_K_Force
 *****************************************************************************/
 
-const double ExternalControl::F2N_K_PROPORTIONNAL = 0.08; //higher value makes the device vibrate
-const double ExternalControl::F2N_K_INTEGRAL = 0; //higher value makes the device stiffer but can become unstable
+const double ExternalControl::F2N_K_PROPORTIONNAL = 0.04; //higher value makes the device vibrate
+const double ExternalControl::F2N_K_INTEGRAL = 5; //higher value makes the device stiffer but can become unstable
 
 
 ExternalControl::ExternalControl()
@@ -26,8 +26,8 @@ ExternalControl::ExternalControl()
 	squareAngle[3] = Vector3(-80,-45,0);
 
 	referencePosition = squareAngle[0];
-	MAX_SPEED = 500;
-	MAX_ACCELERATION = 2000;
+	MAX_SPEED = 250;
+	MAX_ACCELERATION = 1000;
 	choice = 20;
 
 	/*************time init*****************/
@@ -107,6 +107,8 @@ ExternalControl::~ExternalControl()
 void ExternalControl::compute()
 {
 	trajectory();
+
+	desiredLocalPosition = referencePosition;
 
 	positionIntegrator += (referencePosition-localPosition)*F2N_K_INTEGRAL*fech;
 	localAppliedForce = (positionIntegrator + referencePosition-localPosition)*F2N_K_PROPORTIONNAL;

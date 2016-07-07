@@ -63,6 +63,7 @@ extern QMutex * mutexCommand;
 //Start of class definition
 class HaptLinkSupervisor : public Subject , public QObject
 {
+	//Q_OBJECT
 private: 
 	double addedForceB; // force added on top by Griffith xp, stored here for logging purpose
 	Vector3 positionControlzero;
@@ -94,6 +95,19 @@ public:
 	Vector3 getPositionB() const { return haptDeviceB->getTranslation(); }
 	Vector3 getOrientationA() const { return haptDeviceA->getRotation(); } //returns rotation data from Entact
 	Vector3 getOrientationB() const { return haptDeviceB->getRotation(); }
+	
+	Vector3 getExternalCommandForce() const { return externalCommand->getData(LOCAL_APPLIED_FORCE); }
+	Vector3 getExternalCommandPosition() const { return externalCommand->getData(LOCAL_POSITION); }
+	Vector3 getExternalCommandDesiredPosition() const { return externalCommand->getData(DESIRED_LOCAL_POSITION); }
+	Vector3 getExternalCommandVelocity() const { return externalCommand->getData(LOCAL_VELOCITY); }
+
+	Vector3 getCommandForce() const { return command->getData(LOCAL_APPLIED_FORCE); }
+	Vector3 getCommandPosition() const { return command->getData(LOCAL_POSITION); }
+	Vector3 getCommandVelocity() const { return command->getData(LOCAL_VELOCITY); }
+	Vector3 getCommandRemoteForce() const { return command->getData(REMOTE_APPLIED_FORCE); }
+	Vector3 getCommandRemotePosition() const { return command->getData(REMOTE_POSITION); }
+	Vector3 getCommandRemoteVelocity() const { return command->getData(REMOTE_VELOCITY); }
+	
 	bool getThreadStarted() const { return this->threadStarted; } // returns true if a thread has been started
 	HapticDevice * getHaptDeviceA() const { return haptDeviceA; } //returns address of haptic devices
 	HapticDevice * getHaptDeviceB() const { return haptDeviceB; }
@@ -166,7 +180,6 @@ public:
 	void initUDPWrite(std::string ip, std::string port);
 	void initUDPRead(unsigned short port);
 
-	void timerEvent(QTimerEvent *event); //Timer event handler
 	void start(); //starts clocks
 	void stop(); //stops clocks
 	
@@ -181,11 +194,15 @@ public:
 	
 	void initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, int timeDelay);
 
+	
 
 	
 protected:
+	void timerEvent(QTimerEvent *event); //Timer event handler
+	
 	//void setTimeStamp(time_t tps) { timestamp = tps; }
 	void setTimeStamp(int tps) { timestamp = tps; }
+
 		//methods
 	static HaptLinkSupervisor *instance;
 	HaptLinkSupervisor(QObject* parent = 0) : QObject(parent) //Constructor (private because class is Singleton)
@@ -197,7 +214,9 @@ protected:
 		logFlag = 0; 
 		threadStarted = false;
 		threadCreated = false;
-		timerForce = new QBasicTimer();
+		//timerForce = new QBasicTimer();
+		//startTimer(SAMPLE_RATE);
+		//timerForce.start( SAMPLE_RATE , this ); 
 		
 		dominance = RIGHT;
 		experiment = HRExperiment();
@@ -205,6 +224,8 @@ protected:
 		forceMin = 0.0;
 		distance = 0.0;
 		deltaDepth = 0.0;
+
+		counter = 0;
 	}			
 
 private:  
@@ -227,11 +248,12 @@ private:
 	bool threadStarted;
 	bool threadCreated;
 	
-	QBasicTimer *timerForce;
+	QBasicTimer timerForce;
 	HapticThread *thread;
 
 	int logFlag;
-	
+
+
 	//haptic replication preferences
 	Vector3 haptRepF;
 	Vector3 haptRepT;

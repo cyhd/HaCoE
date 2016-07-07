@@ -44,6 +44,7 @@ HapticEvaluationGUI* HapticEvaluationGUI::instance = NULL;
 HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 : QMainWindow(parent, flags)
 {	
+	
 	ui.setupUi(this);
 	ui.frame_5->setVisible(true); //graph 1
 	ui.frame_6->setVisible(false); //graph 2
@@ -187,6 +188,8 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 	HaptLinkSupervisor::getInstance()->setHaptActiveB(false);
 	DataLogger::getInstance()->setDataActiveA(false);
 	DataLogger::getInstance()->setDataActiveB(false);
+	DataLogger::getInstance()->setCommandActive(false);
+	DataLogger::getInstance()->setExternalCommandActive(false);
 	DataLogger::getInstance()->setHapticActiveA(false);
 	DataLogger::getInstance()->setHapticActiveB(false);
 
@@ -240,7 +243,10 @@ void HapticEvaluationGUI::update(short value)
 	if(value == HAPTIC_UPDATE_GUI)
 	{
 		HaptLinkSupervisor *sp = HaptLinkSupervisor::getInstance();
-		RemoteControlLaw *command = sp->getCommand();
+
+		//RemoteControlLaw *command = sp->getCommand();
+		//RemoteControlLaw *externalCommand = sp->getExternalCommand();
+		
 		forceActiveA = getAtiAActivate(); //getting status of activation of each ATI
 		forceActiveB = getAtiBActivate();
 
@@ -282,12 +288,12 @@ void HapticEvaluationGUI::update(short value)
 		
 		if(ui.frame_6->isVisible())
 		{
-			updateDevPositionDisplay(command->getData(LOCAL_POSITION),command->getData(REMOTE_POSITION));
-			updateDevForceDisplay(command->getData(LOCAL_FORCE),command->getData(REMOTE_FORCE));
+			updateDevPositionDisplay(sp->getCommandPosition(),empty);
+			updateDevForceDisplay(sp->getCommandForce(),empty);
 			if(ui.checkBoxFzA_2->isChecked())
-				updateDevGraphDisplay(command->getData(LOCAL_POSITION),command->getData(REMOTE_POSITION));
+				updateDevGraphDisplay(sp->getCommandPosition(),empty);
 			else if (ui.checkBoxFxB_2->isChecked())
-				updateDevGraphDisplay(command->getData(LOCAL_FORCE),command->getData(REMOTE_FORCE));
+				updateDevGraphDisplay(sp->getCommandForce(),empty);
 		}
 
 		if ((sp->getExperimentType() == DEPTHCONST)||(sp->getExperimentType() == DEPTHLINEAR))
@@ -929,11 +935,13 @@ void HapticEvaluationGUI::setRemoteComConfig( void )
 void HapticEvaluationGUI::initCmd(ControlMode mode, int timeDelay)
 {
 	HaptLinkSupervisor::getInstance()->initCommand(mode, timeDelay);
+	DataLogger::getInstance()->setCommandActive(true);
 }
 
 void HapticEvaluationGUI::initExternalCmd()
 {
 	HaptLinkSupervisor::getInstance()->initExternalCommand();
+	DataLogger::getInstance()->setExternalCommandActive(true);
 }
 
 void HapticEvaluationGUI::calibrateEntactA( void )

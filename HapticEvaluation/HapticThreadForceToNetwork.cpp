@@ -2,11 +2,14 @@
 #include "HapticThreadForceToNetwork.h"
 #include "WriteNetworkThread.h"
 #include "ReadNetworkThread.h"
+#include "millisectime.h"
 
 HapticThreadForceToNetwork :: HapticThreadForceToNetwork( bool mode ) 
 {
 	HapticThreadForceToNetworkStarted = false;
 	testMode = mode;
+	cpt = 0;
+	TimeCpt = 0;
 }
 
 HapticThreadForceToNetwork :: ~HapticThreadForceToNetwork( void ){}
@@ -38,79 +41,70 @@ void HapticThreadForceToNetwork::initUDPRead(unsigned short port)
 
 void HapticThreadForceToNetwork::run()
 {
-	if(!testMode)
-	{
-		HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
+	HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
 	
-		haptDeviceA = supervisor->getHaptDeviceA(); // Real haptic device
+	haptDeviceA = supervisor->getHaptDeviceA(); // Real haptic device
 
-		RemoteControlLaw *command = supervisor->getCommand(); 
-		command->setSampleTime(sleepTime/2); //set the sample time in us
-		command->setIndex(haptDeviceA->getMode());
-
-		while( supervisor->getThreadStarted() )
-		{
-			//This block is for dual link control (master-master) in position mode
-			haptDeviceA->readData();
-		
-			// the position of both haptic devices are taken
-			supervisor->getMutexA()->lock();
-			position = haptDeviceA->getTranslation();
-			velocity = haptDeviceA->getVelocity();
-			supervisor->getMutexA()->unlock();
-
-			supervisor->getMutexCommand()->lock();
-			command->setData(position, LOCAL_POSITION);
-			command->setData(velocity, LOCAL_VELOCITY);
-			command->compute();
-
-			supervisor->getMutexA()->lock();
-			haptDeviceA->writeForce( command->getData(LOCAL_APPLIED_FORCE) , torqueControlA );
-			supervisor->getMutexA()->unlock();
-			supervisor->getMutexCommand()->unlock();
-		
-			usleep( sleepTime/2 );
-		}
-	}
-	else
+	RemoteControlLaw *command = supervisor->getCommand();
+	RemoteControlLaw *externalCommand = NULL;
+	command->setSampleTime(sleepTime/2); //set the sample time in us
+	command->setIndex(haptDeviceA->getMode());
+	if (testMode)
 	{
-		HaptLinkSupervisor *supervisor=HaptLinkSupervisor::getInstance();
-	
-		haptDeviceA = supervisor->getHaptDeviceA(); // Real haptic device
-
-		RemoteControlLaw *command = supervisor->getCommand(); 
-		RemoteControlLaw *externalCommand = supervisor->getExternalCommand(); 
-		command->setSampleTime(sleepTime/2); //set the sample time in us
+		externalCommand = supervisor->getExternalCommand(); 
 		externalCommand->setSampleTime(sleepTime*10/2); //set the sample time in us
-		
-		while( supervisor->getThreadStarted() )
-		{
+	}
+
+	DataLogger *dataLogger = DataLogger::getInstance();
+
+	timeStart = MilliSecTime::getInstance()->GetMilliCount();
+
+	while( supervisor->getThreadStarted() )
+	{
 			//This block is for dual link control (master-master) in position mode
-			haptDeviceA->readData();
+		haptDeviceA->readData();
 		
 			// the position of both haptic devices are taken
-			supervisor->getMutexA()->lock();
-			position = haptDeviceA->getTranslation();
-			velocity = haptDeviceA->getVelocity();
-			supervisor->getMutexA()->unlock();
+		supervisor->getMutexA()->lock();
+		position = haptDeviceA->getTranslation();
+		velocity = haptDeviceA->getVelocity();
+		supervisor->getMutexA()->unlock();
 
-			supervisor->getMutexCommand()->lock();
-			command->setData(position, LOCAL_POSITION);
-			command->setData(velocity, LOCAL_VELOCITY);
-			command->compute();
+		supervisor->getMutexCommand()->lock();
+		command->setData(position, LOCAL_POSITION);
+		command->setData(velocity, LOCAL_VELOCITY);
+		command->compute();
 
+		if(testMode)
+		{
 			externalCommand->setData(position, LOCAL_POSITION);
 			externalCommand->setData(velocity, LOCAL_VELOCITY);
 			externalCommand->compute();
-
-			supervisor->getMutexA()->lock();
-
-			haptDeviceA->writeForce( command->getData(LOCAL_APPLIED_FORCE) + externalCommand->getData(LOCAL_APPLIED_FORCE), torqueControlA );
-			//haptDeviceA->writeForce( externalCommand->getData(LOCAL_APPLIED_FORCE), torqueControlA );
-			supervisor->getMutexA()->unlock();
-			supervisor->getMutexCommand()->unlock();
-		
-			usleep( sleepTime/2 );
 		}
+		supervisor->getMutexA()->lock();
+		if(testMode)
+			//haptDeviceA->writeForce( command->getData(LOCAL_APPLIED_FORCE) + externalCommand->getData(LOCAL_APPLIED_FORCE), torqueControlA );
+			haptDeviceA->writeForce( externalCommand->getData(LOCAL_APPLIED_FORCE), torqueControlA );
+		else
+			haptDeviceA->writeForce( command->getData(LOCAL_APPLIED_FORCE) , torqueControlA );
+		supervisor->getMutexA()->unlock();
+		supervisor->getMutexCommand()->unlock();
+			
+		
+		if(cpt==SAMPLE_RATE)
+		{
+			//supervisor->notify( HAPTIC_UPDATE_LOG );    HACK TODO gets to the logger without using observer
+			supervisor->readForceData();
+			//dataLogger->update(HAPTIC_UPDATE_LOG);
+			cpt = 0;
+		}
+		
+		
+		currentTime = MilliSecTime::getInstance()->GetMilliCount()-timeStart;
+		TimeCpt++;
+		time = currentTime/TimeCpt;
+		
+		cpt++;
+		usleep( sleepTime/2 );
 	}
 }

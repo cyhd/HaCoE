@@ -29,18 +29,19 @@ using std::vector;
 class Subject
 {
 
-	vector<Observer*> list;
-
 public:
 	Subject(void);
 	~Subject(void);
-	void attachObserver(Observer *obs) { list.push_back(obs); }
+	void attachObserver(Observer *obs )  { 
+		ObserverList.push_back(obs); }
 	void notify(short value=0)
 	{
-		for (int i=0; i<(int)list.size();i++) 
-		{
-			list[i]->update(value);
-		}
+		if (!ObserverList.empty()) 
+			for (unsigned int i=0; i<ObserverList.size();i++) // HACK TODO DOES NOT WORK (size goes crazy)
+			{
+				ObserverList[i]->update(value);
+			}
 	}
-
+private :
+	vector<Observer*> ObserverList;
 };

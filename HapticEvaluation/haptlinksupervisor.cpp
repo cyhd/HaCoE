@@ -102,6 +102,7 @@ void HaptLinkSupervisor::initCommand(ControlMode mode, int timeDelay)
 		command = new RemoteControlLawDelayed(timeDelay);
 		break;
 	}
+	DataLogger::getInstance()->setLog(true);
 }
 void HaptLinkSupervisor::initExternalCommand()
 {
@@ -188,8 +189,8 @@ int HaptLinkSupervisor::SuperviseConnection(char *filename , char *serialNumber 
 HaptLinkSupervisor::~HaptLinkSupervisor()
 {
 	closeConnection();
-	delete timerForce;
-	//if ( threadCreated ) delete thread;
+	//delete timerForce;
+	if ( threadCreated ) delete thread;
 }	
 
 
@@ -373,7 +374,6 @@ void HaptLinkSupervisor::start()
 		thread->start( QThread::HighestPriority );
 		threadStarted = true;
 	}
-	
 	//timerForce->start( SAMPLE_RATE , this ); 
 }
 
@@ -390,13 +390,13 @@ void HaptLinkSupervisor::calibrate()  {
 
 void HaptLinkSupervisor::stop() 
 { 
-	//timerForce->stop();
+	//timerForce.stop();
 	threadStarted = false;
 
 	if ( haptActiveA )
 		haptDeviceA->setMode( DISABLED_MODE );
-	if ( haptActiveB )
-		haptDeviceB->setMode( DISABLED_MODE );
+	//if ( haptActiveB )
+		//haptDeviceB->setMode( DISABLED_MODE );
 }
 
 void HaptLinkSupervisor::timerEvent(QTimerEvent *event) 
@@ -416,8 +416,12 @@ void HaptLinkSupervisor::readForceData()
 	}
 	
 	//record the time for XML, difference between each time instants is equal to SAMPLE_RATE
-	this->setTimeStamp(MilliSecTime::getInstance()->GetMilliSpan()); 
+	this->setTimeStamp(MilliSecTime::getInstance()->GetMilliSpan());
 	
+	
+	DataLogger::getInstance()->update(HAPTIC_UPDATE_LOG);
+	
+	/* TODO got disabled because notify does not work
 	//get value from the sensors
 	//opti->readData();
 	if ( LJActiveA )
@@ -441,6 +445,9 @@ void HaptLinkSupervisor::readForceData()
 		this->notify( HAPTIC_UPDATE_LOG );
 	}
 	counter++;
+	*/
+
+
 }
 
 void HaptLinkSupervisor::setHaptRepF( double Fx , double Fy , double Fz )
