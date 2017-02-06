@@ -22,7 +22,7 @@
 #include <iostream>
 #include "Device.h"
 #include "haptlinksupervisor.h"
-#include "hapticevaluationgui.h"
+//#include "hapticevaluationgui.h"
 #include "EntactDevice.h"
 #include "HapticThreadSingleHapticCst.h"
 #include "math.h"

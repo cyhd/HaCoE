@@ -17,9 +17,12 @@ WriteNetworkThread::WriteNetworkThread(
 		int sleep, 
 		int timeDelay
 	) : io_service(),
-      socket_(io_service, udp::endpoint(udp::v4(), 0))
+       socket_(io_service, udp::endpoint(udp::v4(), 0)) //socket_(io_service, udp::endpoint(udp::v4(), std::stoi(port))) // socket_(io_service, udp::endpoint(udp::v4(), 0))
 {
 	io_service.run();
+
+	// TODO: not used yet :      boost::asio::ip::address adr = boost::asio::ip::address::from_string(host);
+
 
 	resolver =  new udp::resolver(io_service);
 	query = new udp::resolver::query(udp::v4(), host, port);

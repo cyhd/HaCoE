@@ -212,16 +212,27 @@ void DataLogger::OpenSessionLog(QString filename,QString pref)//QString age,QStr
 	//xml.writeEndElement();
 }
 
+// TODO: Adapter constructeur pour experience HaptReptAuto
+/*
 void DataLogger::OpenSessionLog(QString filename,QString pref,QString force,QString forceSign,QString direction,QString trialNumber,QString experimentFile,QString order)//QString age,QString sex,QString pref)
 {
 	OpenSessionLog(filename,pref);
+
+	HRExperiment experiment = HaptLinkSupervisor::getInstance()->getExperiment();
+   QString::fromStdString(experiment.toString( experiment.getMagnitude())) ,
+												  QString::fromStdString(experiment.toString( experiment.getSign())) ,
+												  QString::fromStdString(experiment.toString( experiment.getDirection())) , 
+												  QString::fromStdString(experiment.toString( experiment.getIndex())) , 
+												  ui.lineEditExpFile->text() ,
+												  QString::fromStdString(experiment.toString( experiment.getOrder())) );
+	
 	xml.writeTextElement("ExperimentFile",experimentFile);
 	xml.writeTextElement("TrialIndex",trialNumber);
 	xml.writeTextElement("OutputForce",force);
 	xml.writeTextElement("OutputForceSign",forceSign);
 	xml.writeTextElement("OutputForceDirection",direction);
 	xml.writeTextElement("Order",order);
-}
+}*/
 
 //public method: Closes open file after closing all the open keys   
 void DataLogger::CloseSessionLog()

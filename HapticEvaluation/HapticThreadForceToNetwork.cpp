@@ -26,6 +26,7 @@ void HapticThreadForceToNetwork::initUDPWrite(std::string ip, std::string port, 
 {
 	
 	threadWrite = new WriteNetworkThread(ip, port, sleepTime/2*5, timeDelay);
+	printf("bug\n");
 	threadWrite->start( QThread::HighestPriority );
 		
 }

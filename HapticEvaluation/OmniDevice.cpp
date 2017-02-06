@@ -5,7 +5,7 @@ using namespace std;
 HDSchedulerHandle gSchedulerCallback = HD_INVALID_HANDLE;
 HDErrorInfo lastError;
 
-#define DEVICE_NAME	"PHANToM 1"
+#define DEVICE_NAME	"Phantom1"
 
 // SensAble device handle and scheduler declarations.
 HHD phantomidLocal = HD_INVALID_HANDLE;  // Phantom declaration.

@@ -53,8 +53,8 @@ public:
     virtual void update(short value);    //Observer class virtual function
     
 	//Log file manipulation
-	void OpenSessionLog(QString filename,QString pref);// age,QString sex,QString pref);
-	void OpenSessionLog(QString filename,QString pref,QString force,QString forceSign,QString direction,QString trialNumber,QString experimentFile,QString Order);// overloaded for writing a haptic replication experiment trial
+	void OpenSessionLog(QString filename,QString pref = "Right");// age,QString sex,QString pref);
+	// void OpenSessionLog(QString filename,QString pref,QString force,QString forceSign,QString direction,QString trialNumber,QString experimentFile,QString Order);// overloaded for writing a haptic replication experiment trial
 	
 	void CloseSessionLog();	
 	void WritePacket(Vector3 &dataPack, QString element);

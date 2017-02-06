@@ -247,9 +247,9 @@ private:
 	//bool timerStarted;
 	bool threadStarted;
 	bool threadCreated;
-	
+
 	QBasicTimer timerForce;
-	HapticThread *thread;
+	HapticThread *thread; // = NULL
 
 	int logFlag;
 
@@ -267,11 +267,11 @@ private:
 	double forceMin; // set for the purpose of the Griffith XP to set a mininam force feedback
 	double distance;
 	double deltaDepth;
-		
+
 
 	HRExperiment experiment; // holds an experiment file for automated experiment
 	int indexGoTo;
-		
+
 	//time_t timestamp;
 	int timestamp;
 
@@ -283,6 +283,6 @@ private:
 	std::string writePort;
 	unsigned short readPort;
 	*/
-	
+
 };
 #endif // HAPTLINKSUPERVISOR_H

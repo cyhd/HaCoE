@@ -22,7 +22,6 @@
 #include <iostream>
 #include "Device.h"
 #include "haptlinksupervisor.h"
-#include "hapticevaluationgui.h"
 #include "EntactDevice.h"
 #include "HapticThreadSingleHapticSlope.h"
 #include "math.h"

@@ -107,7 +107,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>192.168.1.101</string>
+      <string>192.168.0.11</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_19">
@@ -214,7 +214,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>192.168.0.101</string>
+      <string>192.168.0.10</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonEntactACalibrate">
@@ -1995,7 +1995,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>169.254.77.224</string>
+        <string>192.168.0.10</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_55">
@@ -2130,7 +2130,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>169.254.194.91</string>
+        <string>192.168.0.11</string>
        </property>
       </widget>
      </widget>

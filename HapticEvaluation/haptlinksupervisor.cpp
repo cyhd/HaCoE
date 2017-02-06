@@ -393,9 +393,9 @@ void HaptLinkSupervisor::stop()
 	//timerForce.stop();
 	threadStarted = false;
 
-	if ( haptActiveA )
+	if (haptActiveA)
 		haptDeviceA->setMode( DISABLED_MODE );
-	//if ( haptActiveB )
+	//if (haptActiveB)
 		//haptDeviceB->setMode( DISABLED_MODE );
 }
 
@@ -553,6 +553,5 @@ void HaptLinkSupervisor::GUINotify( notifyType type )
 void HaptLinkSupervisor::initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, int timeDelay)
 {
 	((HapticThreadForceToNetwork*)thread)->initUDPReadWrite(  portREAD, ip, portWRITE, timeDelay);
-		
 }
 
