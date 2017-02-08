@@ -5,26 +5,49 @@ BottomWidget::BottomWidget(NewWindow *parent) : QWidget(parent)
 {
 	newWindow = parent;
 
+	lLog = new QLabel("Log Info");
+	tLog = new QTextEdit();
 	pbGraphForce = new QPushButton("Graphe Force");
 	pbStop = new QPushButton("Stop");
 	pbStart = new QPushButton("Start");
-	pbZero = new QPushButton("Zero");
+
+	// ACTIVATE STACK
+	swActivateStack = new QStackedWidget();
+	pbActivate = new QPushButton("Activate");
+	pbDeactivate = new QPushButton("Deactivate");
+	swActivateStack->addWidget(pbActivate);
+	swActivateStack->addWidget(pbDeactivate);
+
+	// CONNECT STACK
+	swConnectStack = new QStackedWidget();
 	pbConnect = new QPushButton("Connect");
+	pbDisconnect = new QPushButton("Disconnect");
+	swConnectStack->addWidget(pbConnect);
+	swConnectStack->addWidget(pbDisconnect);
+
+	pbZero = new QPushButton("Zero");
 	pbHelp = new QPushButton("Help");
-	lay = new QHBoxLayout(this);
-	lay->addWidget(pbHelp);
-	lay->addWidget(pbGraphForce);
-	lay->addWidget(pbConnect);
-	lay->addWidget(pbStart);
-	lay->addWidget(pbZero);
-	lay->addWidget(pbStop);
+
+
+	lay = new QGridLayout(this);
+	lay->addWidget(lLog,0,0);
+	lay->addWidget(tLog,1,0,1,7);
+	lay->addWidget(pbHelp,2,0);
+	lay->addWidget(pbGraphForce,2,1);
+	lay->addWidget(swActivateStack,2,2);
+	lay->addWidget(swConnectStack,2,3);
+	lay->addWidget(pbStart,2,4);
+	lay->addWidget(pbZero,2,5);
+	lay->addWidget(pbStop,2,6);
 	setLayout(lay);
 
 	// CONNECT BUTTONS
-	
-	QObject::connect(pbStart , SIGNAL(clicked()) , this , SLOT(startProcess()));
-	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(stopProcess()));
-	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(initCommunication()));
+	connectPbActivate();
+	connectPbDeactivate();
+	connectPbConnect();
+	connectPbDisconnect();
+	connectPbStart();
+	connectPbStop();
 }
 
 
@@ -32,13 +55,17 @@ BottomWidget::~BottomWidget(void)
 {
 }
 
-void BottomWidget::initCommunication(){
-	std::cout<<"BottomWidget::initCommunication"<<std::endl;
-	ExperienceWidget* currentExp = qobject_cast<ExperienceWidget*>(newWindow->centerWidget->currentWidget());
+
+void BottomWidget::activateProcess(){
+	std::cout<<"BottomWidget::activateProcess"<<std::endl;
+ 	ExperienceWidget* currentExp = qobject_cast<ExperienceWidget*>(newWindow->centerWidget->currentWidget());
 	currentExp->applySettings();
 	activateCorrectDevice();
-	HaptLinkSupervisor::getInstance()->start();
-	
+}
+
+void BottomWidget::connectProcess(){
+	std::cout<<"BottomWidget::initCommunication"<<std::endl;
+
 	int localPort;
 	string remoteIP;
 	string remotePort;
@@ -67,26 +94,24 @@ void BottomWidget::initCommunication(){
 	std::cout<<"BottomWidget::initCommunication:remoteIP:"<<remoteIP<<std::endl;
 	std::cout<<"BottomWidget::initCommunication:delay:"<<delay<<std::endl;
 
-	std::cout<<"BottomWidget::initCommunication:initUDPReadWrite"<<std::endl;
-
-	// TODO: BUg HERE
+	HaptLinkSupervisor::getInstance()->start();
 	HaptLinkSupervisor::getInstance()->initUDPReadWrite(localPort, remoteIP, remotePort, delay);
+}
+
+void BottomWidget::disconnectProcess(){
+	std::cout<<"BottomWidget::disconnectProcess"<<std::endl;
+	
+	HaptLinkSupervisor::getInstance()->stop();
+	HaptLinkSupervisor::getInstance()->closeConnection();
 }
 
 
 void BottomWidget::startProcess(){
 	std::cout<<"BottomWidget::startProcess"<<std::endl;
-	
-	// You need to run the activate commands before the initCommunication: Search for switchAtiA
-	
-	// Set settings for selected experiment
-	
+	// HaptLinkSupervisor::getInstance()->start(); moved in init communication
 
 	startLogging();
 
-	// UI
-	this->setStyleSheet("background-color: green;");
-	repaint();
 	pbZero->setEnabled( true );
 	pbStop->setEnabled( true );
 	pbStart->setEnabled( false );
@@ -111,13 +136,6 @@ void BottomWidget::stopProcess(){
 	deactivateCorrectDevice();
 
 	stopLogging();
-
-	// UI
-	this->setStyleSheet("background-color: red;");
-	repaint();
-	pbZero->setEnabled( false );
-	pbStop->setEnabled( false );
-	pbStart->setEnabled( true );
 }
 
 void BottomWidget::stopLogging()
@@ -158,7 +176,7 @@ void BottomWidget::activateCorrectDevice() // Old switchEntactA
 	
 	QString IP;
 	int choice;
-	// Get info fro, selected user
+	// Get info from selected user
 	if (newWindow->topWidget->rbUser1->isChecked()){
 		std::cout<<"BottomWidget::activateCorrectDevice:selected user:1"<<std::endl;
 		IP = newWindow->topWidget->teIP1->text();
@@ -191,7 +209,7 @@ void BottomWidget::activateCorrectDevice() // Old switchEntactA
 
 void BottomWidget::deactivateCorrectDevice()
 {
-	std::cout<<" BottomWidget::deactivateCorrectDevice"<<std::endl;
+	std::cout<<"BottomWidget::deactivateCorrectDevice"<<std::endl;
 	HaptLinkSupervisor::getInstance()->closeHapticConnectionA(); //fix after creating method to close connections of entacts
 	// setStatus("Haptic device A deactivated.  Press Start to start logging.");
 	DataLogger::getInstance()->setHapticActiveA(false);
@@ -200,22 +218,142 @@ void BottomWidget::deactivateCorrectDevice()
 }
 
 
-void BottomWidget::enableButtons()
-{
-	std::cout<<" BottomWidget::enableButtons"<<std::endl;
-	pbGraphForce->setEnabled(true);
-	pbStop->setEnabled(true);
-	pbStart->setEnabled(true);
-	pbZero->setEnabled(true);
-	pbConnect->setEnabled(true);
-}
-
 void BottomWidget::disableButtons()
 {
 	std::cout<<"BottomWidget::disableButtons"<<std::endl;
 	pbGraphForce->setEnabled(false);
+	swActivateStack->setEnabled(false);
+	swConnectStack->setEnabled(false);
+	pbStop->setEnabled(false);
 	pbStop->setEnabled(false);
 	pbStart->setEnabled(false);
 	pbZero->setEnabled(false);
-	pbConnect->setEnabled(false);
+}
+
+
+void BottomWidget::enableActivate()
+{
+	std::cout<<"BottomWidget::enableActivate"<<std::endl;
+	swActivateStack->setEnabled(true);
+}
+
+
+void BottomWidget::enableConnect()
+{
+	std::cout<<"BottomWidget::enableConnect"<<std::endl;
+	swConnectStack->setEnabled(true);
+}
+
+
+void BottomWidget::enableStart()
+{
+	std::cout<<"BottomWidget::enableStart"<<std::endl;
+	pbStart->setEnabled(true);
+}
+
+
+void BottomWidget::enableStop()
+{
+	std::cout<<"BottomWidget::enableStop"<<std::endl;
+	pbStop->setEnabled(true);
+}
+
+
+void BottomWidget::disableActivate()
+{
+	std::cout<<"BottomWidget::disableActivate"<<std::endl;
+	swActivateStack->setEnabled(false);
+}
+
+
+void BottomWidget::disableConnect()
+{
+	std::cout<<"BottomWidget::disableConnect"<<std::endl;
+	swConnectStack->setEnabled(false);
+}
+
+
+void BottomWidget::disableStart()
+{
+	std::cout<<"BottomWidget::disableStart"<<std::endl;
+	pbStart->setEnabled(false);
+}
+
+void BottomWidget::disableStop()
+{
+	std::cout<<"BottomWidget::disableStop"<<std::endl;
+	pbStop->setEnabled(false);
+}
+
+void BottomWidget::setActivateButton()
+{
+	std::cout<<"BottomWidget::setActivateButton"<<std::endl;
+	swActivateStack->setCurrentIndex(0);
+}
+
+void BottomWidget::setDeactivateButton()
+{
+	std::cout<<"BottomWidget::setDeactivateButton"<<std::endl;
+	swActivateStack->setCurrentIndex(1);
+}
+
+void BottomWidget::setConnectButton()
+{
+	std::cout<<"BottomWidget::setConnectButton"<<std::endl;
+	swConnectStack->setCurrentIndex(0);
+}
+
+void BottomWidget::setDisconnectButton()
+{
+	std::cout<<"BottomWidget::setDisconnectButton"<<std::endl;
+	swConnectStack->setCurrentIndex(1);
+}
+
+
+
+// CONNECTS
+
+
+void BottomWidget::connectPbActivate(){
+	QObject::connect(pbActivate , SIGNAL(clicked()) , this , SLOT(activateProcess()));
+	QObject::connect(pbActivate , SIGNAL(clicked()) , this , SLOT(enableConnect()));
+	QObject::connect(pbActivate , SIGNAL(clicked()) , this , SLOT(setConnectButton()));
+	QObject::connect(pbActivate , SIGNAL(clicked()) , this , SLOT(setDeactivateButton()));
+}
+
+void BottomWidget::connectPbDeactivate(){
+	QObject::connect(pbDeactivate , SIGNAL(clicked()) , this , SLOT(deactivateCorrectDevice()));
+	QObject::connect(pbDeactivate , SIGNAL(clicked()) , this , SLOT(setActivateButton()));
+	QObject::connect(pbDeactivate , SIGNAL(clicked()) , this , SLOT(disableConnect()));
+}
+
+void BottomWidget::connectPbConnect(){
+	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(connectProcess()));
+	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(enableStart()));
+	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(disableActivate()));
+	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(setDisconnectButton()));
+}
+
+void BottomWidget::connectPbDisconnect(){
+	// TODO: Make Disconecting and reconnecting work
+	QObject::connect(pbDisconnect , SIGNAL(clicked()) , this , SLOT(disconnectProcess()));
+	QObject::connect(pbDisconnect , SIGNAL(clicked()) , this , SLOT(disableStart()));
+	QObject::connect(pbDisconnect , SIGNAL(clicked()) , this , SLOT(setConnectButton()));
+	QObject::connect(pbDisconnect , SIGNAL(clicked()) , this , SLOT(enableActivate()));
+
+}
+
+void BottomWidget::connectPbStart(){
+	QObject::connect(pbStart , SIGNAL(clicked()) , this , SLOT(startProcess()));
+	QObject::connect(pbStart , SIGNAL(clicked()) , this , SLOT(enableStop()));
+	QObject::connect(pbStart , SIGNAL(clicked()) , this , SLOT(disableStart()));
+	QObject::connect(pbStart , SIGNAL(clicked()) , this , SLOT(disableConnect()));
+}
+
+void BottomWidget::connectPbStop(){
+	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(stopProcess()));
+	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(disableButtons()));
+	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(enableActivate()));
+	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(setActivateButton()));
+	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(setConnectButton()));
 }

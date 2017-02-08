@@ -51,13 +51,12 @@ void ExperienceForceToNetwork::applySettings(){
 	} else {
 		HaptLinkSupervisor::getInstance()->setExperimentType(FORCE2NET);
 	}
-
-
 }
 
 
 void ExperienceForceToNetwork::initCmd(ControlMode mode, int timeDelay)
 {
+	//TODO UNCOMMENT THIs
 	HaptLinkSupervisor::getInstance()->initCommand(mode, timeDelay);
 	DataLogger::getInstance()->setCommandActive(true);
 }

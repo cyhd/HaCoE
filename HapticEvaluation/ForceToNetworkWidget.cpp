@@ -28,18 +28,17 @@ ForceToNetworkWidget::ForceToNetworkWidget(void)
 	layControlLawChoice->addWidget(rbDelayControl);
     gbControlLaw->setLayout(layControlLawChoice);
 
-
-
 	// QCheckBox
 	cbExternalControl = new QCheckBox("Activate external control");
 
 	// Add to layRight Widgets
-	
 	lay->addWidget(gbControlLaw,1,0);
 	lay->addWidget(lDelay,7,0);
 	lay->addWidget(teDelay,7,1,1,1);
-	
 	lay->addWidget(cbExternalControl,9,0);
+
+	// Init default law
+	rbPositionControl->setChecked(true);
 
 	// Add the layRight and layLeft to the parent layout
 	setLayout(lay);

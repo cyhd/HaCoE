@@ -66,16 +66,16 @@ void TopWidget::initUI()
 	// IP and Port and delay
 	gbConfig = new QGroupBox("5- Configuration");
 	lbIP1 = new QLabel("IP James :");
-	teIP1 = new QLineEdit();
+	teIP1 = new QLineEdit("192.168.0.12");
 	lbPort1 = new QLabel("Port James :");
-	tePort1 = new QLineEdit();
+	tePort1 = new QLineEdit("7172");
 	lbIP2 = new QLabel("IP Bond :");
-	teIP2 = new QLineEdit();
+	teIP2 = new QLineEdit("192.168.0.13");
 	lbPort2 = new QLabel("Port Bond :");
-	tePort2 = new QLineEdit();
+	tePort2 = new QLineEdit("7174");
 	// Delay text field
 	lbDelay = new QLabel("Delay:");
-	teDelay = new QLineEdit();
+	teDelay = new QLineEdit("5");
 
 	QGridLayout *layConfigIP = new QGridLayout();
 	layConfigIP->addWidget(lbIP1, 0, 0);
@@ -182,12 +182,12 @@ void TopWidget::enableConfigAndButtons(){
 	std::cout<<"TopWidget::enableConfigAndButtons"<<std::endl;
 	enableGbLog();
 	enableGbConfig();
-	enableButtons();
+	enableActivate();
 }
 
-void TopWidget::enableButtons(){
-	std::cout<<"TopWidget::enableButtons"<<std::endl;
-	newWindow->bottomWidget->enableButtons();
+void TopWidget::enableActivate(){
+	std::cout<<"TopWidget::enableActivate"<<std::endl;
+	newWindow->bottomWidget->enableActivate();
 }
 
 void TopWidget::enableGbLog(){

@@ -249,6 +249,7 @@ void HaptLinkSupervisor::closeHapticConnectionB()
 //timer functions
 void HaptLinkSupervisor::start() 
 { 
+	std::cout<<"HaptLinkSupervisor::start"<<std::endl;
 	if ( experimentType == SLPOS )
 	{
 		thread = new HapticThreadSinglePosition();
@@ -391,6 +392,7 @@ void HaptLinkSupervisor::calibrate()  {
 void HaptLinkSupervisor::stop() 
 { 
 	//timerForce.stop();
+	thread->exit(); // Added by yann
 	threadStarted = false;
 
 	if (haptActiveA)

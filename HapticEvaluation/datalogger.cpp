@@ -184,7 +184,7 @@ void DataLogger::update(short value)
 //public method: Opens file for further writing  
 //filename = XML filename, age = age of the subject, sex = sex of the subject, pref = left or right handed
 //this function is called from GUI
-void DataLogger::OpenSessionLog(QString filename,QString pref)//QString age,QString sex,QString pref)
+void DataLogger::OpenSessionLog(QString filename, QString pref)//QString age,QString sex,QString pref)
 {
 	//Date and time information of the XML log file
 	time_t TimeStamp;

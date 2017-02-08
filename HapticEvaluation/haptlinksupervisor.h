@@ -249,7 +249,7 @@ private:
 	bool threadCreated;
 
 	QBasicTimer timerForce;
-	HapticThread *thread; // = NULL
+	HapticThread *thread;// = NULL;
 
 	int logFlag;
 

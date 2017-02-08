@@ -79,7 +79,7 @@ public:
 	void disableGbConfig();
 	void disableGbLogFile();
 	void enableGbConfig();
-	void enableButtons();
+	void enableActivate();
 	void disableButtons();
 
 public slots:
