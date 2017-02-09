@@ -4,6 +4,7 @@
 
 class HapticThreadForceToNetwork : public HapticThread
 {
+	Q_OBJECT
 public:
 	HapticThreadForceToNetwork( bool mode );
 	~HapticThreadForceToNetwork( void );
@@ -29,5 +30,7 @@ private:
 
 	void initUDPWrite(std::string ip, std::string port, int timeDelay);
 	void initUDPRead(unsigned short port);
-	
+
 };
+
+

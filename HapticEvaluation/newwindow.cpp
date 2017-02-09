@@ -2,6 +2,9 @@
 
 NewWindow::NewWindow(QWidget *parent): QMainWindow(parent)
 {
+	
+	// Center Widget Stuff
+	centerWidget = new QStackedWidget();
 
 	// Bottom Widget Stuff
 	bottomWidget = new BottomWidget(this);
@@ -9,8 +12,6 @@ NewWindow::NewWindow(QWidget *parent): QMainWindow(parent)
 	// TopWidget Stuff
 	topWidget = new TopWidget(this);
 
-	// Center Widget Stuff
-	centerWidget = new QStackedWidget();
 
 	expNONE = new ExperienceNONE();
 	expATI = new ExperienceATI();
@@ -48,6 +49,7 @@ NewWindow::NewWindow(QWidget *parent): QMainWindow(parent)
 	HaptLinkSupervisor::getInstance()->setLJActiveB(false);
 	HaptLinkSupervisor::getInstance()->setHaptActiveA(false);
 	HaptLinkSupervisor::getInstance()->setHaptActiveB(false);
+
 	DataLogger::getInstance()->setDataActiveA(false);
 	DataLogger::getInstance()->setDataActiveB(false);
 	DataLogger::getInstance()->setCommandActive(false);
@@ -75,4 +77,6 @@ NewWindow::~NewWindow()
 
 }
 
-
+void NewWindow::setStatus(char *s){
+	 bottomWidget->setStatus(s);
+}

@@ -1,21 +1,19 @@
 #include "topwidget.h"
 
-
 TopWidget::TopWidget(NewWindow *parent) : QWidget(parent)
 {
 	newWindow = parent;
 	initUI();
 }
 
-void TopWidget::initUI()
-{
+void TopWidget::initUI(){
 	// Experience
 	gbExperience = new QGroupBox("1- Choose Experience");
 	QGridLayout *layExperience = new QGridLayout();
 	lbExperience = new QLabel("Experience: ");
 	cbExperience = new QComboBox();
 	cbExperience->addItems(QStringList() 
-		<< "NONE" 
+		<< "NONE"
 		<< "ATI Only" 
 		<< "Single Link Position Control"
 		<< "Single Link Force Control" 
@@ -42,17 +40,6 @@ void TopWidget::initUI()
     layRobot->addWidget(rbRobot2);
     gbRobot->setLayout(layRobot);
 
-	// Network Type
-	gbNetworkType = new QGroupBox("3- Connexion type: ");
-	rbNetworkType1 = new QRadioButton("Local");
-	rbNetworkType2 = new QRadioButton("Network");
-
-	QVBoxLayout *layNetworkType = new QVBoxLayout();
-    layNetworkType->addWidget(rbNetworkType1);
-    layNetworkType->addWidget(rbNetworkType2);
-
-    gbNetworkType->setLayout(layNetworkType);
-
 	// User choice
 	gbUserChoice = new QGroupBox("4- Who am I ?");
 	rbUser1 = new QRadioButton("James");
@@ -70,7 +57,7 @@ void TopWidget::initUI()
 	lbPort1 = new QLabel("Port James :");
 	tePort1 = new QLineEdit("7172");
 	lbIP2 = new QLabel("IP Bond :");
-	teIP2 = new QLineEdit("192.168.0.13");
+	teIP2 = new QLineEdit("192.168.0.11");
 	lbPort2 = new QLabel("Port Bond :");
 	tePort2 = new QLineEdit("7174");
 	// Delay text field
@@ -107,7 +94,6 @@ void TopWidget::initUI()
 	lay->addWidget(gbExperience, 0, 0,  1, 3);
 	
 	lay->addWidget(gbRobot, 0, 3);
-	lay->addWidget(gbNetworkType, 1, 0);
 	lay->addWidget(gbUserChoice, 1, 2);
 	lay->addWidget(gbConfig, 1, 3);
 	lay->addWidget(gbLogFile, 2, 0, 1, 4);
@@ -117,14 +103,13 @@ void TopWidget::initUI()
 
 	// CONNECTS
 	QObject::connect(cbExperience, SIGNAL(currentIndexChanged(int)), this, SLOT(experienceChosen(int)));
-	QObject::connect(rbRobot1, SIGNAL(clicked()), this, SLOT(enableGbNetworkType()));
-	QObject::connect(rbRobot2, SIGNAL(clicked()), this, SLOT(enableGbNetworkType()));
-
-	QObject::connect(rbNetworkType1, SIGNAL(clicked()), this, SLOT(enableGbUserChoice()));
-	QObject::connect(rbNetworkType2, SIGNAL(clicked()), this, SLOT(enableGbUserChoice()));
+	QObject::connect(rbRobot1, SIGNAL(clicked()), this, SLOT(enableGbUserChoice()));
+	QObject::connect(rbRobot2, SIGNAL(clicked()), this, SLOT(enableGbUserChoice()));
 
 	QObject::connect(rbUser1, SIGNAL(clicked()), this, SLOT(enableConfigAndButtons()));
 	QObject::connect(rbUser2, SIGNAL(clicked()), this, SLOT(enableConfigAndButtons()));
+	QObject::connect(rbUser1, SIGNAL(clicked()), this, SLOT(enableCenterWidget()));
+	QObject::connect(rbUser2, SIGNAL(clicked()), this, SLOT(enableCenterWidget()));
 }
 
 
@@ -140,11 +125,10 @@ void TopWidget::resetUI()
 	std::cout<<"TopWidget::resetUI"<<std::endl;
 
 	disableGbRobotType();
-	disableGbNetworkType();
 	disableGbUserChoice();
 	disableGbLogFile();
 	disableButtons();
-
+	disableCenterWidget();
 	// IP and ports stuff 
 	gbConfig->setEnabled(false);
 }
@@ -161,11 +145,6 @@ void TopWidget::experienceChosen(int index){
 void TopWidget::enableGbRobotType(){
 	std::cout<<"TopWidget::enableGbRobotType"<<std::endl;
 	gbRobot->setEnabled(true);
-}
-
-void TopWidget::enableGbNetworkType(){
-	std::cout<<"TopWidget::enableGbNetworkType"<<std::endl;
-	gbNetworkType->setEnabled(true);
 }
 
 void TopWidget::enableGbUserChoice(){
@@ -195,9 +174,14 @@ void TopWidget::enableGbLog(){
 	gbLogFile->setEnabled(true);
 }
 
+void TopWidget::enableCenterWidget(){
+	std::cout<<"TopWidget::enableCenterWidget"<<std::endl;
+	newWindow->centerWidget->setEnabled(true);
+}
+
+
 
 // DISABLES
-
 void TopWidget::disableGbRobotType(){
 	std::cout<<"TopWidget::disableGbRobotType"<<std::endl;
 	gbRobot->setEnabled(false);
@@ -211,19 +195,6 @@ void TopWidget::disableGbRobotType(){
 	rbRobot2->setAutoExclusive(true);
 }
 
-
-void TopWidget::disableGbNetworkType(){
-	std::cout<<"TopWidget::disableGbNetworkType"<<std::endl;
-	gbNetworkType->setEnabled(false);
-
-	rbNetworkType1->setAutoExclusive(false);
-	rbNetworkType1->setChecked(false);
-	rbNetworkType1->setAutoExclusive(true);
-
-	rbNetworkType2->setAutoExclusive(false);
-	rbNetworkType2->setChecked(false);
-	rbNetworkType2->setAutoExclusive(true);
-}
 
 void TopWidget::disableGbUserChoice(){
 	std::cout<<"TopWidget::disableGbUserChoice"<<std::endl;
@@ -248,10 +219,17 @@ void TopWidget::disableGbLogFile(){
 	gbLogFile->setEnabled(false);
 }
 
-
 void TopWidget::disableButtons(){
 	std::cout<<"TopWidget::disableButtons"<<std::endl;
 	newWindow->bottomWidget->disableButtons();
 }
 
+void TopWidget::disableCenterWidget(){
+	std::cout<<"TopWidget::disableCenterWidget"<<std::endl;
+	newWindow->centerWidget->setEnabled(false);
+}
 
+
+void TopWidget::setStatus(char *s){
+	newWindow->bottomWidget->setStatus(s);
+}

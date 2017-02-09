@@ -6,48 +6,40 @@ BottomWidget::BottomWidget(NewWindow *parent) : QWidget(parent)
 	newWindow = parent;
 
 	lLog = new QLabel("Log Info");
-	tLog = new QTextEdit();
+	teLog = new QTextEdit();
 	pbGraphForce = new QPushButton("Graphe Force");
 	pbStop = new QPushButton("Stop");
 	pbStart = new QPushButton("Start");
-
+	pbCalibrate = new QPushButton("Calibrate");
 	// ACTIVATE STACK
-	swActivateStack = new QStackedWidget();
 	pbActivate = new QPushButton("Activate");
-	pbDeactivate = new QPushButton("Deactivate");
-	swActivateStack->addWidget(pbActivate);
-	swActivateStack->addWidget(pbDeactivate);
 
 	// CONNECT STACK
-	swConnectStack = new QStackedWidget();
 	pbConnect = new QPushButton("Connect");
-	pbDisconnect = new QPushButton("Disconnect");
-	swConnectStack->addWidget(pbConnect);
-	swConnectStack->addWidget(pbDisconnect);
 
 	pbZero = new QPushButton("Zero");
 	pbHelp = new QPushButton("Help");
 
-
 	lay = new QGridLayout(this);
 	lay->addWidget(lLog,0,0);
-	lay->addWidget(tLog,1,0,1,7);
+	lay->addWidget(teLog,1,0,1,8);
 	lay->addWidget(pbHelp,2,0);
 	lay->addWidget(pbGraphForce,2,1);
-	lay->addWidget(swActivateStack,2,2);
-	lay->addWidget(swConnectStack,2,3);
-	lay->addWidget(pbStart,2,4);
-	lay->addWidget(pbZero,2,5);
-	lay->addWidget(pbStop,2,6);
+	lay->addWidget(pbActivate,2,2);
+	lay->addWidget(pbConnect,2,3);
+	lay->addWidget(pbCalibrate,2,4);
+	lay->addWidget(pbStart,2,5);
+	lay->addWidget(pbZero,2,6);
+	lay->addWidget(pbStop,2,7);
 	setLayout(lay);
 
 	// CONNECT BUTTONS
 	connectPbActivate();
-	connectPbDeactivate();
 	connectPbConnect();
-	connectPbDisconnect();
 	connectPbStart();
 	connectPbStop();
+	connectPbCalibrate();
+	QObject::connect(pbHelp, SIGNAL(clicked()), this, SLOT(showHelpDialog()));
 }
 
 
@@ -57,6 +49,7 @@ BottomWidget::~BottomWidget(void)
 
 
 void BottomWidget::activateProcess(){
+
 	std::cout<<"BottomWidget::activateProcess"<<std::endl;
  	ExperienceWidget* currentExp = qobject_cast<ExperienceWidget*>(newWindow->centerWidget->currentWidget());
 	currentExp->applySettings();
@@ -98,13 +91,6 @@ void BottomWidget::connectProcess(){
 	HaptLinkSupervisor::getInstance()->initUDPReadWrite(localPort, remoteIP, remotePort, delay);
 }
 
-void BottomWidget::disconnectProcess(){
-	std::cout<<"BottomWidget::disconnectProcess"<<std::endl;
-	
-	HaptLinkSupervisor::getInstance()->stop();
-	HaptLinkSupervisor::getInstance()->closeConnection();
-}
-
 
 void BottomWidget::startProcess(){
 	std::cout<<"BottomWidget::startProcess"<<std::endl;
@@ -124,8 +110,7 @@ void BottomWidget::startLogging()
 	date = dateTime->currentDateTime().toString( "yyyyMMdd_hhmmss" );
 	filename.append( date + newWindow->topWidget->teLogFile->text() + ".xml");
 	
-	// TODO
-	// setStatus("Logging.");
+	setStatus("Logging.");
 	
 	DataLogger::getInstance()->OpenSessionLog(filename);
 }
@@ -133,15 +118,15 @@ void BottomWidget::startLogging()
 void BottomWidget::stopProcess(){
 	// TODO: Check order here
 	HaptLinkSupervisor::getInstance()->stop();
-	deactivateCorrectDevice();
+	//deactivateCorrectDevice();
 
-	stopLogging();
+//	stopLogging();
 }
 
 void BottomWidget::stopLogging()
 {
 	DataLogger::getInstance()->CloseSessionLog();
-	//setStatus("Logging Complete");
+	setStatus("Logging Complete");
 }
 
 
@@ -193,7 +178,7 @@ void BottomWidget::activateCorrectDevice() // Old switchEntactA
 	if ( connexion_result == 1 ) // connexion success
 	{
 		std::cout<<"BottomWidget::activateCorrectDevice:connexion success"<<std::endl;
-		//setStatus("Haptic device A activated.  Press Start to start logging.");
+		setStatus("Haptic device A activated.  Press Start to start logging.");
 		DataLogger::getInstance()->setHapticActiveA( true );
 		HaptLinkSupervisor::getInstance()->setHaptActiveA( true );
 		// ui.pushButtonEntactACalibrate->setEnabled( true ); TODO
@@ -201,7 +186,7 @@ void BottomWidget::activateCorrectDevice() // Old switchEntactA
 	else // connexion fail
 	{
 		std::cout<<"BottomWidget::activateCorrectDevice:connexion fail"<<std::endl;
-		//setStatus("Haptic device A connection failed.  Please check IP is correct and Haptic device is on.  Then recheck the activate box.");
+		setStatus("Haptic device A connection failed.  Please check IP is correct and Haptic device is on.  Then recheck the activate box.");
 		DataLogger::getInstance()->setHapticActiveA( false );
 		HaptLinkSupervisor::getInstance()->setHaptActiveA( false );
 	}
@@ -211,10 +196,23 @@ void BottomWidget::deactivateCorrectDevice()
 {
 	std::cout<<"BottomWidget::deactivateCorrectDevice"<<std::endl;
 	HaptLinkSupervisor::getInstance()->closeHapticConnectionA(); //fix after creating method to close connections of entacts
-	// setStatus("Haptic device A deactivated.  Press Start to start logging.");
+	setStatus("Haptic device A deactivated.  Press Start to start logging.");
 	DataLogger::getInstance()->setHapticActiveA(false);
 	HaptLinkSupervisor::getInstance()->setHaptActiveA(false);
 	// TODO ui.pushButtonEntactACalibrate->setEnabled( false );
+}
+
+
+void BottomWidget::calibrateCorrectDevice()
+{
+	std::cout<<"BottomWidget::calibrateCorrectDevice"<<std::endl;
+	HaptLinkSupervisor::getInstance()->calibrateCorrectDevice();
+}
+
+void BottomWidget::setStatus(char *s){ 
+	teLog->moveCursor (QTextCursor::End);
+	teLog->insertPlainText (s);
+	teLog->insertPlainText ("\n");
 }
 
 
@@ -222,28 +220,34 @@ void BottomWidget::disableButtons()
 {
 	std::cout<<"BottomWidget::disableButtons"<<std::endl;
 	pbGraphForce->setEnabled(false);
-	swActivateStack->setEnabled(false);
-	swConnectStack->setEnabled(false);
-	pbStop->setEnabled(false);
-	pbStop->setEnabled(false);
-	pbStart->setEnabled(false);
-	pbZero->setEnabled(false);
+
+	disableActivate();
+	disableConnect();
+	disableStop();
+	disableStart();
+	disableCalibrate();
+	disableZero();
 }
 
 
 void BottomWidget::enableActivate()
 {
 	std::cout<<"BottomWidget::enableActivate"<<std::endl;
-	swActivateStack->setEnabled(true);
+	pbActivate->setEnabled(true);
 }
 
 
 void BottomWidget::enableConnect()
 {
 	std::cout<<"BottomWidget::enableConnect"<<std::endl;
-	swConnectStack->setEnabled(true);
+	pbConnect->setEnabled(true);
 }
 
+void BottomWidget::enableCalibrate()
+{
+	std::cout<<"BottomWidget::enableCalibrate"<<std::endl;
+	pbCalibrate->setEnabled(true);
+}
 
 void BottomWidget::enableStart()
 {
@@ -262,14 +266,14 @@ void BottomWidget::enableStop()
 void BottomWidget::disableActivate()
 {
 	std::cout<<"BottomWidget::disableActivate"<<std::endl;
-	swActivateStack->setEnabled(false);
+	pbActivate->setEnabled(false);
 }
 
 
 void BottomWidget::disableConnect()
 {
 	std::cout<<"BottomWidget::disableConnect"<<std::endl;
-	swConnectStack->setEnabled(false);
+	pbConnect->setEnabled(false);
 }
 
 
@@ -279,36 +283,24 @@ void BottomWidget::disableStart()
 	pbStart->setEnabled(false);
 }
 
+void BottomWidget::disableZero()
+{
+	std::cout<<"BottomWidget::disableZero"<<std::endl;
+	pbZero->setEnabled(false);
+}
+
+
+void BottomWidget::disableCalibrate()
+{
+	std::cout<<"BottomWidget::disableCalibrate"<<std::endl;
+	pbCalibrate->setEnabled(false);
+}
+
 void BottomWidget::disableStop()
 {
 	std::cout<<"BottomWidget::disableStop"<<std::endl;
 	pbStop->setEnabled(false);
 }
-
-void BottomWidget::setActivateButton()
-{
-	std::cout<<"BottomWidget::setActivateButton"<<std::endl;
-	swActivateStack->setCurrentIndex(0);
-}
-
-void BottomWidget::setDeactivateButton()
-{
-	std::cout<<"BottomWidget::setDeactivateButton"<<std::endl;
-	swActivateStack->setCurrentIndex(1);
-}
-
-void BottomWidget::setConnectButton()
-{
-	std::cout<<"BottomWidget::setConnectButton"<<std::endl;
-	swConnectStack->setCurrentIndex(0);
-}
-
-void BottomWidget::setDisconnectButton()
-{
-	std::cout<<"BottomWidget::setDisconnectButton"<<std::endl;
-	swConnectStack->setCurrentIndex(1);
-}
-
 
 
 // CONNECTS
@@ -317,30 +309,17 @@ void BottomWidget::setDisconnectButton()
 void BottomWidget::connectPbActivate(){
 	QObject::connect(pbActivate , SIGNAL(clicked()) , this , SLOT(activateProcess()));
 	QObject::connect(pbActivate , SIGNAL(clicked()) , this , SLOT(enableConnect()));
-	QObject::connect(pbActivate , SIGNAL(clicked()) , this , SLOT(setConnectButton()));
-	QObject::connect(pbActivate , SIGNAL(clicked()) , this , SLOT(setDeactivateButton()));
+	QObject::connect(pbActivate , SIGNAL(clicked()) , this , SLOT(disableActivate()));
+	QObject::connect(pbActivate , SIGNAL(clicked()) , this , SLOT(enableStop()));
+	QObject::connect(pbActivate , SIGNAL(clicked()) , this , SLOT(enableCalibrate()));
 }
 
-void BottomWidget::connectPbDeactivate(){
-	QObject::connect(pbDeactivate , SIGNAL(clicked()) , this , SLOT(deactivateCorrectDevice()));
-	QObject::connect(pbDeactivate , SIGNAL(clicked()) , this , SLOT(setActivateButton()));
-	QObject::connect(pbDeactivate , SIGNAL(clicked()) , this , SLOT(disableConnect()));
-}
 
 void BottomWidget::connectPbConnect(){
 	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(connectProcess()));
 	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(enableStart()));
-	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(disableActivate()));
-	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(setDisconnectButton()));
-}
-
-void BottomWidget::connectPbDisconnect(){
-	// TODO: Make Disconecting and reconnecting work
-	QObject::connect(pbDisconnect , SIGNAL(clicked()) , this , SLOT(disconnectProcess()));
-	QObject::connect(pbDisconnect , SIGNAL(clicked()) , this , SLOT(disableStart()));
-	QObject::connect(pbDisconnect , SIGNAL(clicked()) , this , SLOT(setConnectButton()));
-	QObject::connect(pbDisconnect , SIGNAL(clicked()) , this , SLOT(enableActivate()));
-
+	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(disableConnect()));
+	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(disableCalibrate()));
 }
 
 void BottomWidget::connectPbStart(){
@@ -349,11 +328,22 @@ void BottomWidget::connectPbStart(){
 	QObject::connect(pbStart , SIGNAL(clicked()) , this , SLOT(disableStart()));
 	QObject::connect(pbStart , SIGNAL(clicked()) , this , SLOT(disableConnect()));
 }
+void BottomWidget::connectPbCalibrate(){
+	QObject::connect(pbCalibrate , SIGNAL(clicked()) , this , SLOT(calibrateCorrectDevice()));
+}
 
 void BottomWidget::connectPbStop(){
 	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(stopProcess()));
 	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(disableButtons()));
 	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(enableActivate()));
-	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(setActivateButton()));
-	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(setConnectButton()));
+	QObject::connect(pbStop , SIGNAL(clicked()) , this , SLOT(disableStop()));
+}
+
+// QDialog
+void BottomWidget::showHelpDialog(){
+	std::cout<<"BottomWidget::showHelpDialog"<<std::endl;
+	QDialog *definition = new QDialog (this);
+	definition->setFixedSize(500,300);
+	QLabel *label_definition = new QLabel ("Follow the god damn rules !!!\n ", definition);
+	definition->exec();										  
 }

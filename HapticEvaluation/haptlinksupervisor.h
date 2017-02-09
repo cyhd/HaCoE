@@ -175,6 +175,7 @@ public:
 	void initCommand(ControlMode mode, int timeDelay);
 	void initExternalCommand();
 
+	void calibrateCorrectDevice();
 	void calibrateHapticA(); //Calibrating entacts
 	void calibrateHapticB();
 	void initUDPWrite(std::string ip, std::string port);

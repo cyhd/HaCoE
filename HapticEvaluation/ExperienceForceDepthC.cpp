@@ -6,7 +6,7 @@ ExperienceForceDepthC::ExperienceForceDepthC(void)
 	lay = new QGridLayout(this);
 
 	// Exp info widget
-	ExperienceWidget::expInfo = new ExperimentInfoWidget();
+	expInfo = new ExperimentInfoWidget();
 	expInfo->teDetails->setText("Single Haptic Force Feedback from z=depth:\nThis experiment provides a constant feedback (Force Min + delta Force).\nThe Delta Slope is used here as a measure, delta, in mm of the distance (z-delta/2; z+delta/2) where the system goes to go to Force Min.");
 
 	//Rep Widget

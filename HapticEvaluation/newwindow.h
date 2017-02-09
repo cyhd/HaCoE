@@ -5,7 +5,6 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <TopWidget.h>
-#include <CenterWidget.h>
 #include <BottomWidget.h>
 #include <QLabel>
 #include "ExperienceNONE.h"
@@ -63,7 +62,7 @@ public:
 	ExperienceForceDepthL *expFDL;
 	ExperienceForceToNetwork *expFTN;
 
-
+	void setStatus(char *s);
 };
 
 #endif // NEWWINDOW_H

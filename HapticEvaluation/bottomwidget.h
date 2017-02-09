@@ -11,6 +11,8 @@
 #include <QLabel>
 #include "newwindow.h"
 #include <qstackedwidget.h>
+#include <qdialog.h>
+
 
 class NewWindow;
 class BottomWidget : public QWidget
@@ -29,16 +31,12 @@ public:
 	QPushButton *pbStop;
 	QPushButton *pbStart;
 	QPushButton *pbActivate;
-	QPushButton *pbDeactivate;
 	QPushButton *pbZero;
+	QPushButton *pbCalibrate;
 	QPushButton *pbConnect;
-	QPushButton *pbDisconnect;
 	QPushButton *pbHelp;
 	QLabel *lLog;
-	QTextEdit *tLog;
-
-	QStackedWidget *swActivateStack;
-	QStackedWidget *swConnectStack;
+	QTextEdit *teLog;
 
 	// PREVIOUS STUFF
 	QString filename;
@@ -48,42 +46,43 @@ public:
 	// Methods
 	void startLogging();
 	void stopLogging();
-
-public slots:
+	
+	void setStatus(char *s);
+	
 	void connectPbActivate();
-	void connectPbDeactivate();
 	void connectPbConnect();
-	void connectPbDisconnect();
 	void connectPbStart();
 	void connectPbStop();
+	void connectPbCalibrate();
+
+public slots:
 
 	void activateProcess();
 	void connectProcess();
-	void disconnectProcess();
 	void startProcess();
 	void stopProcess();
 	
 	void enableActivate();
 	void enableConnect();
 	void enableStart();
+	void enableCalibrate();
 	void enableStop();
 
 	void disableActivate();
 	void disableConnect();
 	void disableStart();
+	void disableCalibrate();
 	void disableButtons();
 	void disableStop();
-
-	void setActivateButton();
-	void setDeactivateButton();
-
-	void setConnectButton();
-	void setDisconnectButton();
+	void disableZero();
 	
 	void activateCorrectDevice();
 	void deactivateCorrectDevice();
+	void calibrateCorrectDevice();
 	//void setStopLog();
 	//void zeroB();
+
+	void showHelpDialog();
 };
 
 #endif

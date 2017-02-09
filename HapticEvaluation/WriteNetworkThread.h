@@ -20,6 +20,7 @@ public:
 	void run();
 	void send(std::string str);
 	Vector3 delay(Vector3 data, DataType type, int cpt);
+	void close();
 
 private :
 

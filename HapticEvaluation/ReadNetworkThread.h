@@ -16,6 +16,8 @@ public:
 	void run();
 	int getDataType(size_t);
 	
+	void close();
+
 private :
 
 	boost::asio::io_service io_service;

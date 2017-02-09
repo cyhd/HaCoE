@@ -31,6 +31,7 @@ public:
 
 	// Methods
 	void initUI();
+	void setStatus(char *s); 
 
 	// UI STUFF
 	QGridLayout *lay;
@@ -47,8 +48,6 @@ public:
 	// RadioButtons
 	QRadioButton *rbRobot1;
 	QRadioButton *rbRobot2;
-	QRadioButton *rbNetworkType1;
-	QRadioButton *rbNetworkType2;
 	QRadioButton *rbUser1;
 	QRadioButton *rbUser2;
 
@@ -61,7 +60,6 @@ public:
 	QLineEdit *teDelay;
 
 	// QGroupBox
-	QGroupBox *gbNetworkType;
 	QGroupBox *gbRobot;
 	QGroupBox *gbUserChoice;
 	QGroupBox *gbConfig;
@@ -74,7 +72,6 @@ public:
 	void enableGbRobotType();
 	void enableGbLog();
 	void disableGbRobotType();
-	void disableGbNetworkType();
 	void disableGbUserChoice();
 	void disableGbConfig();
 	void disableGbLogFile();
@@ -82,14 +79,13 @@ public:
 	void enableActivate();
 	void disableButtons();
 
+
 public slots:
 	void experienceChosen(int);
-	void enableGbNetworkType();
 	void enableGbUserChoice();
 	void enableConfigAndButtons();
-
-	
-
+	void disableCenterWidget();
+	void enableCenterWidget();
 };
 
 #endif

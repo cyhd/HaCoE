@@ -17,6 +17,12 @@ ReadNetworkThread::ReadNetworkThread(unsigned short port, int sleep)
 
 ReadNetworkThread::~ReadNetworkThread() 
 {
+	this->close();
+	this->terminate();
+}
+
+void ReadNetworkThread::close() 
+{
 	socket_.close();
 }
 

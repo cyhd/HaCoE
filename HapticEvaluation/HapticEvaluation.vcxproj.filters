@@ -181,9 +181,6 @@
     <ClCompile Include="OmniDevice.cpp">
       <Filter>Source Files\device</Filter>
     </ClCompile>
-    <ClCompile Include="HapticThreadForceToNetwork.cpp">
-      <Filter>Source Files\threads</Filter>
-    </ClCompile>
     <ClCompile Include="ReadNetworkThread.cpp">
       <Filter>Source Files\threads</Filter>
     </ClCompile>
@@ -230,9 +227,6 @@
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="AutoWidget.cpp">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="ExperimentInfoWidget.cpp">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="ReplWidget.cpp">
@@ -313,6 +307,21 @@
     <ClCompile Include="ExperienceNONE.cpp">
       <Filter>Source Files\gui\experiences</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_HapticThreadForceToNetwork.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_HapticThreadForceToNetwork.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_HapticThreadForceToNetwork.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="HapticThreadForceToNetwork.cpp">
+      <Filter>Source Files\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentInfoWidget.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AtiU6.h">
@@ -375,9 +384,6 @@
     <ClInclude Include="OmniDevice.h">
       <Filter>Header Files\device</Filter>
     </ClInclude>
-    <ClInclude Include="HapticThreadForceToNetwork.h">
-      <Filter>Header Files\threads</Filter>
-    </ClInclude>
     <ClInclude Include="WriteNetworkThread.h">
       <Filter>Header Files\threads</Filter>
     </ClInclude>
@@ -412,9 +418,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="AutoWidget.h">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="ExperimentInfoWidget.h">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="ReplWidget.h">
@@ -459,6 +462,9 @@
     <ClInclude Include="ExperienceNONE.h">
       <Filter>Header Files\gui\experiences</Filter>
     </ClInclude>
+    <ClInclude Include="ExperimentInfoWidget.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="hapticevaluationgui.qrc">
@@ -475,6 +481,9 @@
     </CustomBuild>
     <CustomBuild Include="bottomwidget.h">
       <Filter>Header Files\gui</Filter>
+    </CustomBuild>
+    <CustomBuild Include="HapticThreadForceToNetwork.h">
+      <Filter>Header Files\threads</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

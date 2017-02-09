@@ -6,7 +6,7 @@ ExperienceForceDepthL::ExperienceForceDepthL(void)
 	lay = new QGridLayout(this);
 
 	// Exp info widget
-	ExperienceWidget::expInfo = new ExperimentInfoWidget();
+	expInfo = new ExperimentInfoWidget();
 	expInfo->teDetails->setText("Single Haptic Force Feedback from z=depth:\nThis experiment provides a linear force feedback (ForceMin + linear force= slope*distance.");
 
 	//Rep Widget

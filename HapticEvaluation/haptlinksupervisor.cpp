@@ -109,6 +109,13 @@ void HaptLinkSupervisor::initExternalCommand()
 	externalCommand = new ExternalControl();
 }
 
+
+void HaptLinkSupervisor::calibrateCorrectDevice()
+{
+	calibrateHapticA();
+	calibrateHapticB();
+}
+
 void HaptLinkSupervisor::calibrateHapticA()
 {
 	if ( haptActiveA )
@@ -190,8 +197,8 @@ HaptLinkSupervisor::~HaptLinkSupervisor()
 {
 	closeConnection();
 	//delete timerForce;
-	if ( threadCreated ) delete thread;
-}	
+	delete thread; //yann
+}
 
 
 void HaptLinkSupervisor::closeConnection()
@@ -233,7 +240,7 @@ void HaptLinkSupervisor::closeHapticConnectionA()
 	if ( haptActiveA )
 	{
 		haptDeviceA->closeConnection();
-		delete haptDeviceA;
+		//delete haptDeviceA; //Commented by Nicolas
 		haptActiveA = false;
 	}
 }
@@ -392,7 +399,10 @@ void HaptLinkSupervisor::calibrate()  {
 void HaptLinkSupervisor::stop() 
 { 
 	//timerForce.stop();
-	thread->exit(); // Added by yann
+	// yann
+
+	closeConnection();
+	delete thread; 
 	threadStarted = false;
 
 	if (haptActiveA)

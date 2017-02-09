@@ -50,6 +50,12 @@ WriteNetworkThread::WriteNetworkThread(
 
 WriteNetworkThread::~WriteNetworkThread()
 {
+	this->close();
+	this->terminate();
+
+}
+
+void WriteNetworkThread::close() {
 	socket_.close();
 }
 
