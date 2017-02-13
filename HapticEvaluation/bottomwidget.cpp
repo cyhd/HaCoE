@@ -7,6 +7,7 @@ BottomWidget::BottomWidget(NewWindow *parent) : QWidget(parent)
 
 	lLog = new QLabel("Log Info");
 	teLog = new QTextEdit();
+	teLog->setReadOnly(true);
 	pbGraphForce = new QPushButton("Graphe Force");
 	pbStop = new QPushButton("Stop");
 	pbStart = new QPushButton("Start");
@@ -54,6 +55,8 @@ void BottomWidget::activateProcess(){
  	ExperienceWidget* currentExp = qobject_cast<ExperienceWidget*>(newWindow->centerWidget->currentWidget());
 	currentExp->applySettings();
 	activateCorrectDevice();
+
+	setStatus("Activate Process");
 }
 
 void BottomWidget::connectProcess(){
@@ -89,6 +92,8 @@ void BottomWidget::connectProcess(){
 
 	HaptLinkSupervisor::getInstance()->start();
 	HaptLinkSupervisor::getInstance()->initUDPReadWrite(localPort, remoteIP, remotePort, delay);
+
+	setStatus("Connection...");
 }
 
 
@@ -110,7 +115,7 @@ void BottomWidget::startLogging()
 	date = dateTime->currentDateTime().toString( "yyyyMMdd_hhmmss" );
 	filename.append( date + newWindow->topWidget->teLogFile->text() + ".xml");
 	
-	setStatus("Logging.");
+	setStatus("Logging");
 	
 	DataLogger::getInstance()->OpenSessionLog(filename);
 }
@@ -121,6 +126,7 @@ void BottomWidget::stopProcess(){
 	//deactivateCorrectDevice();
 
 //	stopLogging();
+	setStatus("Stop Process.");
 }
 
 void BottomWidget::stopLogging()
@@ -190,6 +196,8 @@ void BottomWidget::activateCorrectDevice() // Old switchEntactA
 		DataLogger::getInstance()->setHapticActiveA( false );
 		HaptLinkSupervisor::getInstance()->setHaptActiveA( false );
 	}
+
+	setStatus("Activate device");
 }
 
 void BottomWidget::deactivateCorrectDevice()
@@ -200,6 +208,8 @@ void BottomWidget::deactivateCorrectDevice()
 	DataLogger::getInstance()->setHapticActiveA(false);
 	HaptLinkSupervisor::getInstance()->setHaptActiveA(false);
 	// TODO ui.pushButtonEntactACalibrate->setEnabled( false );
+
+	setStatus("Desactivate Device");
 }
 
 
@@ -207,11 +217,13 @@ void BottomWidget::calibrateCorrectDevice()
 {
 	std::cout<<"BottomWidget::calibrateCorrectDevice"<<std::endl;
 	HaptLinkSupervisor::getInstance()->calibrateCorrectDevice();
+
+	setStatus("Calibrate Device");
 }
 
-void BottomWidget::setStatus(char *s){ 
+void BottomWidget::setStatus(string s){ 
 	teLog->moveCursor (QTextCursor::End);
-	teLog->insertPlainText (s);
+	teLog->insertPlainText(QString::fromStdString(s));
 	teLog->insertPlainText ("\n");
 }
 
@@ -318,6 +330,7 @@ void BottomWidget::connectPbActivate(){
 void BottomWidget::connectPbConnect(){
 	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(connectProcess()));
 	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(enableStart()));
+	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(enableStop()));
 	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(disableConnect()));
 	QObject::connect(pbConnect , SIGNAL(clicked()) , this , SLOT(disableCalibrate()));
 }
@@ -344,6 +357,6 @@ void BottomWidget::showHelpDialog(){
 	std::cout<<"BottomWidget::showHelpDialog"<<std::endl;
 	QDialog *definition = new QDialog (this);
 	definition->setFixedSize(500,300);
-	QLabel *label_definition = new QLabel ("Follow the god damn rules !!!\n ", definition);
+	QLabel *label_definition = new QLabel (" 1- Choose your experience\n 2- Select your robot\n 3- Select your size for the experiment (for example for force to network, if you chose James, \nput your IP and your port in IP James and Port James in Configuration, the other user \ndo the same for him and select Bond)\n 4- Make the configuration\n\n\n Once the configuration is done: \n\n Activate -> Connect -> Start -> Stop \n\n\nIf \"Activate\" button does not work, check your Omni robot name is set to \"Phantom1\"", definition);
 	definition->exec();										  
 }

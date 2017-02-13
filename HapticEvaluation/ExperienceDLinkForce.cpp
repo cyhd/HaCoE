@@ -3,6 +3,7 @@
 
 ExperienceDLinkForce::ExperienceDLinkForce()
 {
+	name = "Dual Link Force Control";
 	ExperienceWidget::lay = new QGridLayout(this);
 
 	// Exp info widget

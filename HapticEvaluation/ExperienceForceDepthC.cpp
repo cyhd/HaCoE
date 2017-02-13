@@ -3,6 +3,7 @@
 
 ExperienceForceDepthC::ExperienceForceDepthC(void)
 {
+	name = "Force depth Constant";
 	lay = new QGridLayout(this);
 
 	// Exp info widget

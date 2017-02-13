@@ -3,6 +3,7 @@
 
 ExperienceForceToNetwork::ExperienceForceToNetwork(void)
 {
+	name = "Force to Network";
 	lay = new QGridLayout(this);
 
 	// Exp info widget

@@ -12,7 +12,7 @@ public:
 	ExperimentInfoWidget(void);
 	~ExperimentInfoWidget(void);
 
-	QGridLayout* lay;
+	QVBoxLayout* lay;
 	QLabel* expTitle;
 	QTextEdit *teDetails;
 };

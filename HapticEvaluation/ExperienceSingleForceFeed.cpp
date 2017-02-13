@@ -3,6 +3,7 @@
 
 ExperienceSingleForceFeed::ExperienceSingleForceFeed(void)
 {
+	name = "Single Force Feed";
 	lay = new QGridLayout(this);
 
 	// Exp info widget

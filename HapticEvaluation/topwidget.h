@@ -14,6 +14,7 @@
 #include <QLineEdit>
 #include <iostream>
 #include "newwindow.h"
+#include <string>
 
 class NewWindow;
 class TopWidget : public QWidget
@@ -25,13 +26,19 @@ public:
 	~TopWidget(void);
 
 	NewWindow *newWindow;
+
+	std::string user1name;
+	std::string user2name;
+
+	std::string robot1name;
+	std::string robot2name;
 	
 	// ComboBox
 	QComboBox *cbExperience;
 
 	// Methods
 	void initUI();
-	void setStatus(char *s); 
+	void setStatus(std::string s); 
 
 	// UI STUFF
 	QGridLayout *lay;
@@ -68,6 +75,7 @@ public:
 
 	// Methods
 	void resetUI();
+	
 	
 	void enableGbRobotType();
 	void enableGbLog();

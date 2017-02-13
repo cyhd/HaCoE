@@ -3,6 +3,7 @@
 
 ExperienceHapticRepSimul::ExperienceHapticRepSimul(void)
 {
+	name = "Haptic Replication Simulation";
 	lay = new QGridLayout(this);
 
 	// Exp info widget

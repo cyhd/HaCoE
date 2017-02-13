@@ -3,6 +3,7 @@
 
 ExperienceHapticRepAuto::ExperienceHapticRepAuto(void)
 {
+	name = "Haptic Replication Auto";
 	lay = new QGridLayout(this);
 
 	// Exp info widget

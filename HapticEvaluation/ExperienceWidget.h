@@ -16,6 +16,7 @@ public:
 	~ExperienceWidget(void);
 	virtual void applySettings() = 0;
 	void update(short value);	//inherited from Observer
+	string name;
 
 protected:
 	QGridLayout *lay;

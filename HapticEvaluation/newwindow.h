@@ -45,7 +45,7 @@ public:
 	QStackedWidget *centerWidget;
 
 	QWidget *window;
-	QVBoxLayout *lay;
+	QGridLayout *lay;
 	TopWidget *topWidget;
 	BottomWidget *bottomWidget;
 
@@ -62,7 +62,8 @@ public:
 	ExperienceForceDepthL *expFDL;
 	ExperienceForceToNetwork *expFTN;
 
-	void setStatus(char *s);
+	void setStatus(string s);
+	string getExperienceName(int index);
 };
 
 #endif // NEWWINDOW_H

@@ -3,7 +3,7 @@
 
 ExperienceSLinkForce::ExperienceSLinkForce()
 {
-
+	name = "Single Link Force";
 	lay = new QGridLayout(this);
 
 	// Exp info widget

@@ -6,13 +6,11 @@ NewWindow::NewWindow(QWidget *parent): QMainWindow(parent)
 	// Center Widget Stuff
 	centerWidget = new QStackedWidget();
 
+
 	// Bottom Widget Stuff
 	bottomWidget = new BottomWidget(this);
+	bottomWidget->setFixedHeight(130);
 	
-	// TopWidget Stuff
-	topWidget = new TopWidget(this);
-
-
 	expNONE = new ExperienceNONE();
 	expATI = new ExperienceATI();
 	expSLC = new ExperienceSLinkControl();
@@ -38,6 +36,10 @@ NewWindow::NewWindow(QWidget *parent): QMainWindow(parent)
 	centerWidget->addWidget(expFDC);
 	centerWidget->addWidget(expFDL);
 	centerWidget->addWidget(expFTN);
+	
+	// TopWidget Stuff
+	topWidget = new TopWidget(this);
+	topWidget->setFixedHeight(250);
 
 	QObject::connect(topWidget->cbExperience, SIGNAL(currentIndexChanged(int)), centerWidget, SLOT(setCurrentIndex(int)));
 	
@@ -59,10 +61,10 @@ NewWindow::NewWindow(QWidget *parent): QMainWindow(parent)
 	
 
 	// WINDOW WIDGET STUFF
-	lay = new QVBoxLayout();
-	lay->addWidget(topWidget);
-	lay->addWidget(centerWidget);
-	lay->addWidget(bottomWidget);
+	lay = new QGridLayout();
+	lay->addWidget(topWidget,0,0);
+	lay->addWidget(centerWidget,1,0);
+	lay->addWidget(bottomWidget,2,0);
 
 	window = new QWidget();
 	window->setLayout(lay);
@@ -77,6 +79,11 @@ NewWindow::~NewWindow()
 
 }
 
-void NewWindow::setStatus(char *s){
+void NewWindow::setStatus(string s){
 	 bottomWidget->setStatus(s);
+}
+
+string NewWindow::getExperienceName(int index){
+	ExperienceWidget* exp = qobject_cast<ExperienceWidget*>(centerWidget->widget(index));
+	return exp->name;
 }

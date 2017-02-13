@@ -399,10 +399,11 @@ void HaptLinkSupervisor::calibrate()  {
 void HaptLinkSupervisor::stop() 
 { 
 	//timerForce.stop();
-	// yann
 
 	closeConnection();
-	delete thread; 
+	if(threadStarted == true ){
+		delete thread; 
+	}
 	threadStarted = false;
 
 	if (haptActiveA)

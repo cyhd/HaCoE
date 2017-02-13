@@ -3,6 +3,7 @@
 
 ExperienceSLinkControl::ExperienceSLinkControl()
 {
+	name = "Single Link Control";
 	ExperienceWidget::lay = new QGridLayout(this);
 
 	// Exp info widget

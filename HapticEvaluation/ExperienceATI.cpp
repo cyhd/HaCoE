@@ -3,6 +3,7 @@
 
 ExperienceATI::ExperienceATI()
 {
+	name = "ATI";
 	lay = new QGridLayout(this);
 
 	// Exp info widget

@@ -3,6 +3,7 @@
 
 ExperienceNONE::ExperienceNONE(void)
 {
+	name = "NONE";
 	lay = new QGridLayout(this);
 
 	// Exp info widget

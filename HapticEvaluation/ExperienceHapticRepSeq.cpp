@@ -3,6 +3,7 @@
 
 ExperienceHapticRepSeq::ExperienceHapticRepSeq(void)
 {
+	name = "Haptic Replication Sequential";
 	lay = new QGridLayout(this);
 
 	// Exp info widget

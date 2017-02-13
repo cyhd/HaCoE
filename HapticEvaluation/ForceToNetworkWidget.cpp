@@ -5,11 +5,13 @@ ForceToNetworkWidget::ForceToNetworkWidget(void)
 {
 	lay = new QGridLayout(this);
 	
+	
 	// QLabel
 	lDelay = new QLabel("Delay (ms)");
 
 	// QTextEdit
 	teDelay = new QLineEdit();
+	
 
 	//QRadioButton
 	gbControlLaw =  new QGroupBox("Control law");
@@ -33,8 +35,8 @@ ForceToNetworkWidget::ForceToNetworkWidget(void)
 
 	// Add to layRight Widgets
 	lay->addWidget(gbControlLaw,1,0);
-	lay->addWidget(lDelay,7,0);
-	lay->addWidget(teDelay,7,1,1,1);
+	//lay->addWidget(lDelay,7,0);
+	//lay->addWidget(teDelay,7,1,1,1);
 	lay->addWidget(cbExternalControl,9,0);
 
 	// Init default law

@@ -47,7 +47,7 @@ public:
 	void startLogging();
 	void stopLogging();
 	
-	void setStatus(char *s);
+	void setStatus(std::string s);
 	
 	void connectPbActivate();
 	void connectPbConnect();
