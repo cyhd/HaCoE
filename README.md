@@ -20,15 +20,13 @@ Supported force sensor
 
 Installation
 
-- install QT 5.5 (previously 4.8.x)
-- install QWT 6.1.2 (previously 5.1)
+- install QT 5.5 (install 32 bits win32 mscv10.0 build) 
+- install QWT 6.1.2
 - install the OpenHaptics 3.4 for the Sensable Omni
-- install the Quanta network API https://www.evl.uic.edu/cavern/quanta/download.php 
 - create environment variables:
       - QTDIR pointing to the QT installation directory
       - QWTDIR pointing to QWT installation directory
       - OH_SDK_BASE to point to OpenHaptics
-      - QUANTADIR to point to Quanta
-- build with Visual C++ 2010
+- build with Visual C++ 2010 express
 
 
