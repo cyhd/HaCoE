@@ -36,6 +36,7 @@ is detected, then the thread stops.
 #pragma once
 #include <qthread.h>
 #include "datamodel.h"
+#include "HapticDevice.h"
 
 class HapticThread : public QThread
 {
@@ -63,6 +64,6 @@ protected:
 
 	static const int sleepTime = 2000; //in microseconds
 
-private:
+//private:
 
 };

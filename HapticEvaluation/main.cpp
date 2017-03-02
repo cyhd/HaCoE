@@ -19,23 +19,18 @@
 //  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 //
 
-#include <windows.h>
-#include "haptlinksupervisor.h"
-#include "hapticevaluationgui.h"
+//#include <windows.h>
+//#include "haptlinksupervisor.h"
+//#include "hapticevaluationgui.h"
+#include "NewWindow.h"
+#include <qapplication.h>
+#include <iostream>
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
-
-	HapticEvaluationGUI *gui = HapticEvaluationGUI::getInstance();
-    HaptLinkSupervisor *supervisor = HaptLinkSupervisor::getInstance();
-
-	gui->show();
-	a.exec();
+	QApplication app(argc, argv);
 	
-	delete supervisor;
-	
-	Sleep(20);
-
-	return 0;
+	NewWindow *ni = new NewWindow();
+	ni->show();
+	return app.exec();
 }

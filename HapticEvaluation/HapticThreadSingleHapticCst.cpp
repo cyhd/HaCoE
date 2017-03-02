@@ -22,7 +22,7 @@
 #include <iostream>
 #include "Device.h"
 #include "haptlinksupervisor.h"
-#include "hapticevaluationgui.h"
+//#include "hapticevaluationgui.h"
 #include "EntactDevice.h"
 #include "HapticThreadSingleHapticCst.h"
 #include "math.h"
@@ -81,7 +81,7 @@ void HapticThreadSingleHapticCst::run()
 	rotationDamping.y = HR_GENERAL_DAMPING_ROTATION;
 	rotationDamping.z = HR_GENERAL_DAMPING_ROTATION;
 
-	outputDevice->setMode( EAPI_FORCECONTROL_MODE ); //A in Force Control. 
+	outputDevice->setMode( FORCECONTROL_MODE ); //A in Force Control. 
 	outputDevice->writeDamping( translationDamping , rotationDamping ); //sets damping to the device
 
 	//(experimentType == DEPTHCONST) {
@@ -102,9 +102,9 @@ void HapticThreadSingleHapticCst::run()
 		
 	// HOME to the start position
 	//positionControlzero = supervisor->getPositionControlzeroB();
-	supervisor->getMutex()->lock();
+	supervisor->getMutexB()->lock();
 	positionControlzero = haptDeviceB->getTranslation();
-	supervisor->getMutex()->unlock();
+	supervisor->getMutexB()->unlock();
 
 		
 	timeStart = MilliSecTime::getInstance()->GetMilliCount();
@@ -116,9 +116,9 @@ void HapticThreadSingleHapticCst::run()
 	{
 		outputDevice->readData();
 		
-		supervisor->getMutex()->lock();
+		supervisor->getMutexA()->lock();
 		positionControl = outputDevice->getTranslation();
-		supervisor->getMutex()->unlock();
+		supervisor->getMutexA()->unlock();
 	
 		positionControlzero = supervisor->getPositionControlzeroB();
 

@@ -1,0 +1,6 @@
+<map id="HapticThread" name="HapticThread">
+<area shape="rect" id="node3" href="$struct_vector3.html" title="Vector3" alt="" coords="101,81,167,108"/>
+<area shape="rect" id="node4" href="$class_haptic_device.html" title="HapticDevice" alt="" coords="227,81,324,108"/>
+<area shape="rect" id="node5" href="$class_device.html" title="Device" alt="" coords="245,5,305,32"/>
+<area shape="rect" id="node6" href="$struct_matrix3x3.html" title="Matrix3x3" alt="" coords="348,81,427,108"/>
+</map>

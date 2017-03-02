@@ -22,19 +22,33 @@
 #include "haptlinksupervisor.h"
 #include "AtiU6.h"
 //#include "OptiTrack.h"
-#include <windows.h>
 #include "MilliSecTime.h"
 #include <iostream>
 #include "qthread.h"
 #include "HapticThreadSingleHapticCst.h"
 #include "HapticThreadSingleHapticSlope.h"
 #include "datalogger.h"
+#include "HapticThreadForceToNetwork.h"
+
+#include "RemoteControlLawSimple.h"
+#include "RemoteControlLawVelocity.h"
+#include "RemoteControlLawScatteringTheory.h"
+#include "RemoteControlLawWaveTheory.h"
+#include "RemoteControlLawDelayed.h"
+#include "RemoteControlLawPosition.h"
+#include "ExternalControl.h"
+
+#include <windows.h>
 
 using namespace std;
 
 const double HaptLinkSupervisor::HR_K_FORCE = 0.075; //0.075 N/mm
 const double HaptLinkSupervisor::HR_K_TORQUE = 100;  //100N.mm/rad approximately (using small angle approximation)  Not Used
 HaptLinkSupervisor *HaptLinkSupervisor::instance = NULL;
+
+QMutex * mutexA = new QMutex();
+QMutex * mutexB = new QMutex();
+QMutex * mutexCommand = new QMutex();
 
 int HaptLinkSupervisor::initDeviceA(char *filename , char *serialNumber) 
 {
@@ -48,65 +62,106 @@ int HaptLinkSupervisor::initDeviceB(char *filename , char *serialNumber)
 	return atiB->getConnectSuccess();
 }
 
-int HaptLinkSupervisor::initEntactA( int index , char *ip )
+int HaptLinkSupervisor::initHapticA( int index , char *ip )
 {
-	haptDeviceA = new EntactDevice( index , ip );
+	//haptDeviceA = new EntactDevice( index , ip );
+
+	haptDeviceA = new OmniDevice(index);
+	
 	return haptDeviceA->getConnectSuccess();
 }
 
-int HaptLinkSupervisor::initEntactB( int index , char *ip )
+int HaptLinkSupervisor::initHapticB( int index , char *ip )
 {
-	haptDeviceB = new EntactDevice( index , ip );
+	//haptDeviceB = new EntactDevice( index , ip );
+	haptDeviceB = new OmniDevice(index);
+	
 	return haptDeviceB->getConnectSuccess();
 }
 
-void HaptLinkSupervisor::calibrateEntactA()
+void HaptLinkSupervisor::initCommand(ControlMode mode, int timeDelay)
+{
+	switch(mode)
+	{
+	case SIMPLE_MODE :
+		command = new RemoteControlLawSimple();
+		break;	
+	case POSITION_MODE :
+		command = new RemoteControlLawPosition();
+		break;
+	case SCATTERING_MODE :
+		command = new RemoteControlLawScatteringTheory();
+		break;
+	case VELOCITY_MODE :
+		command = new RemoteControlLawVelocity();
+		break;
+	case WAVE_MODE : 
+		command = new RemoteControlLawWaveTheory();
+		break;
+	case DELAYED_MODE :
+		command = new RemoteControlLawDelayed(timeDelay);
+		break;
+	}
+	DataLogger::getInstance()->setLog(true);
+}
+void HaptLinkSupervisor::initExternalCommand()
+{
+	externalCommand = new ExternalControl();
+}
+
+
+void HaptLinkSupervisor::calibrateCorrectDevice()
+{
+	calibrateHapticA();
+	calibrateHapticB();
+}
+
+void HaptLinkSupervisor::calibrateHapticA()
 {
 	if ( haptActiveA )
 		haptDeviceA->calibrate();
 }
 
-void HaptLinkSupervisor::calibrateEntactB()
+void HaptLinkSupervisor::calibrateHapticB()
 {
 	if ( haptActiveB )
-	{	haptDeviceB->calibrate();
-	}
+		haptDeviceB->calibrate();
 }
 
 void HaptLinkSupervisor::zeroEntactB()
 {
-	if ( haptActiveB ) {
-	Vector3 translationDamping, rotationDamping;
+	if ( haptActiveB ) 
+	{
+		Vector3 translationDamping, rotationDamping;
 
-	const double HR_GENERAL_DAMPING_TRANSLATION = 0.0008; //damping constants
-	const double HR_GENERAL_DAMPING_ROTATION = 1.0;
+		const double HR_GENERAL_DAMPING_TRANSLATION = 0.0008; //damping constants
+		const double HR_GENERAL_DAMPING_ROTATION = 1.0;
 
-	translationDamping.x = HR_GENERAL_DAMPING_TRANSLATION; //damping constants for the Entact
-	translationDamping.y = HR_GENERAL_DAMPING_TRANSLATION;
-	translationDamping.z = HR_GENERAL_DAMPING_TRANSLATION;
-	rotationDamping.x = HR_GENERAL_DAMPING_ROTATION;
-	rotationDamping.y = HR_GENERAL_DAMPING_ROTATION;
-	rotationDamping.z = HR_GENERAL_DAMPING_ROTATION;
+		translationDamping.x = HR_GENERAL_DAMPING_TRANSLATION; //damping constants for the Entact
+		translationDamping.y = HR_GENERAL_DAMPING_TRANSLATION;
+		translationDamping.z = HR_GENERAL_DAMPING_TRANSLATION;
+		rotationDamping.x = HR_GENERAL_DAMPING_ROTATION;
+		rotationDamping.y = HR_GENERAL_DAMPING_ROTATION;
+		rotationDamping.z = HR_GENERAL_DAMPING_ROTATION;
 
-	haptDeviceB->setMode( EAPI_FORCECONTROL_MODE ); //B in Force Control. 
-	haptDeviceB->writeDamping( translationDamping , rotationDamping ); //sets damping to the device
+		haptDeviceB->setMode( FORCECONTROL_MODE ); //B in Force Control. 
+		haptDeviceB->writeDamping( translationDamping , rotationDamping ); //sets damping to the device
 	
 	// HOME to the start position
-	Vector3 zero;
-	zero.x = 0;
-	zero.y = 0;
-	zero.z = 0;
+		Vector3 zero;
+		zero.x = 0;
+		zero.y = 0;
+		zero.z = 0;
 		
-	Vector3 un;
-	un.x = 0;
-	un.y = 0;
-	un.z = 0.3;
+		Vector3 un;
+		un.x = 0;
+		un.y = 0;
+		un.z = 0.3;
 
-	haptDeviceB->writeForce( un , zero );
-	getMutex()->lock();
+		haptDeviceB->writeForce( un , zero );
+		getMutexB()->lock();
 		positionControlzero = haptDeviceB->getTranslation();
-	getMutex()->unlock();
-	
+		getMutexB()->unlock();
 	}
 }
 /*
@@ -141,9 +196,11 @@ int HaptLinkSupervisor::SuperviseConnection(char *filename , char *serialNumber 
 HaptLinkSupervisor::~HaptLinkSupervisor()
 {
 	closeConnection();
-	delete timerForce;
-	//if ( threadCreated ) delete thread;
-}	
+	//delete timerForce;
+	delete thread; //yann
+}
+
+
 void HaptLinkSupervisor::closeConnection()
 {
 	if ( LJActiveA == 1 ) 
@@ -153,10 +210,10 @@ void HaptLinkSupervisor::closeConnection()
 		closeLJConnectionB();
 	
 	if ( haptActiveA == 1 )
-		closeEntactConnectionA();
+		closeHapticConnectionA();
 
 	if ( haptActiveB == 1 )
-		closeEntactConnectionB();
+		closeHapticConnectionB();
 }
 
 void HaptLinkSupervisor::closeLJConnectionA()
@@ -178,16 +235,16 @@ void HaptLinkSupervisor::closeLJConnectionB()
 		LJActiveB = false;
 	}
 }
-void HaptLinkSupervisor::closeEntactConnectionA()
+void HaptLinkSupervisor::closeHapticConnectionA()
 {
 	if ( haptActiveA )
 	{
 		haptDeviceA->closeConnection();
-		delete haptDeviceA;
+		//delete haptDeviceA; //Commented by Nicolas
 		haptActiveA = false;
 	}
 }
-void HaptLinkSupervisor::closeEntactConnectionB()
+void HaptLinkSupervisor::closeHapticConnectionB()
 {
 	if ( haptActiveB )
 	{
@@ -199,6 +256,7 @@ void HaptLinkSupervisor::closeEntactConnectionB()
 //timer functions
 void HaptLinkSupervisor::start() 
 { 
+	std::cout<<"HaptLinkSupervisor::start"<<std::endl;
 	if ( experimentType == SLPOS )
 	{
 		thread = new HapticThreadSinglePosition();
@@ -212,6 +270,16 @@ void HaptLinkSupervisor::start()
 	else if ( experimentType == DLFORCE )
 	{
 		thread = new HapticThreadDoubleForce();
+		threadCreated = true;
+	}
+	else if ( experimentType == FORCE2NET )
+	{
+		thread = new HapticThreadForceToNetwork(0);
+		threadCreated = true;
+	}
+	else if ( experimentType == FORCE2NET_TEST )
+	{
+		thread = new HapticThreadForceToNetwork(1);
 		threadCreated = true;
 	}
 	else if (experimentType == SINGLEHAPTIC) 
@@ -314,16 +382,15 @@ void HaptLinkSupervisor::start()
 		thread->start( QThread::HighestPriority );
 		threadStarted = true;
 	}
-	
-	timerForce->start( SAMPLE_RATE , this ); 
+	//timerForce->start( SAMPLE_RATE , this ); 
 }
 
 void HaptLinkSupervisor::calibrate()  {
 
 	if ( haptActiveB ) {
-		getMutex()->lock();
+		getMutexB()->lock();
 		positionControlzero = haptDeviceB->getTranslation();
-		getMutex()->unlock();
+		getMutexB()->unlock();
 
 		DataLogger::getInstance()->setLog(true);
 	}
@@ -331,13 +398,18 @@ void HaptLinkSupervisor::calibrate()  {
 
 void HaptLinkSupervisor::stop() 
 { 
-	timerForce->stop();
+	//timerForce.stop();
+
+	closeConnection();
+	if(threadStarted == true ){
+		delete thread; 
+	}
 	threadStarted = false;
 
-	if ( haptActiveA )
-		haptDeviceA->setMode( EAPI_DISABLED_MODE );
-	if ( haptActiveB )
-		haptDeviceB->setMode( EAPI_DISABLED_MODE );
+	if (haptActiveA)
+		haptDeviceA->setMode( DISABLED_MODE );
+	//if (haptActiveB)
+		//haptDeviceB->setMode( DISABLED_MODE );
 }
 
 void HaptLinkSupervisor::timerEvent(QTimerEvent *event) 
@@ -357,8 +429,12 @@ void HaptLinkSupervisor::readForceData()
 	}
 	
 	//record the time for XML, difference between each time instants is equal to SAMPLE_RATE
-	this->setTimeStamp(MilliSecTime::getInstance()->GetMilliSpan()); 
+	this->setTimeStamp(MilliSecTime::getInstance()->GetMilliSpan());
 	
+	
+	DataLogger::getInstance()->update(HAPTIC_UPDATE_LOG);
+	
+	/* TODO got disabled because notify does not work
 	//get value from the sensors
 	//opti->readData();
 	if ( LJActiveA )
@@ -382,6 +458,9 @@ void HaptLinkSupervisor::readForceData()
 		this->notify( HAPTIC_UPDATE_LOG );
 	}
 	counter++;
+	*/
+
+
 }
 
 void HaptLinkSupervisor::setHaptRepF( double Fx , double Fy , double Fz )
@@ -478,5 +557,14 @@ void HaptLinkSupervisor::GUINotify( notifyType type )
 		}
 		else return;
 	}
+}
+
+/** code for the Network thread
+
+*/
+
+void HaptLinkSupervisor::initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, int timeDelay)
+{
+	((HapticThreadForceToNetwork*)thread)->initUDPReadWrite(  portREAD, ip, portWRITE, timeDelay);
 }
 

@@ -51,8 +51,8 @@ void HapticThreadSingleForce::run()
 	rotationDamping.x = SF_GENERAL_DAMPING_ROTATION;
 	rotationDamping.y = SF_GENERAL_DAMPING_ROTATION;
 	rotationDamping.z = SF_GENERAL_DAMPING_ROTATION;
-	haptDeviceA->setMode( EAPI_FORCECONTROL_MODE ); //A in Force Control.  This is the master.
-	haptDeviceB->setMode( EAPI_FORCECONTROL_MODE ); //B in Position Control.  This is the slave.	
+	haptDeviceA->setMode( FORCECONTROL_MODE ); //A in Force Control.  This is the master.
+	haptDeviceB->setMode( FORCECONTROL_MODE ); //B in Position Control.  This is the slave.	
 	haptDeviceA->writeDamping( translationDamping , rotationDamping ); //sets damping to the two devices.
 	haptDeviceB->writeDamping( translationDamping , rotationDamping );
 
@@ -63,13 +63,17 @@ void HapticThreadSingleForce::run()
 		haptDeviceA->readData();
 		haptDeviceB->readData();
 
-		supervisor->getMutex()->lock();
+		supervisor->getMutexA()->lock();
 		transA = haptDeviceA->getTranslation();
-		transB = haptDeviceB->getTranslation();
 		rotA = haptDeviceA->getRotationMatrix();
-		rotB = haptDeviceB->getRotationMatrix();
-		supervisor->getMutex()->unlock();		
+		supervisor->getMutexA()->unlock();		
 		
+		supervisor->getMutexB()->lock();
+		transB = haptDeviceB->getTranslation();
+		rotB = haptDeviceB->getRotationMatrix();
+		supervisor->getMutexB()->unlock();//end mutex
+
+
 		forceControlB.x = -SF_K_FORCE*( transB.x - transA.x ); //Slave follows the master
 		forceControlB.y = -SF_K_FORCE*( transB.y - transA.y );
 		forceControlB.z = -SF_K_FORCE*( transB.z - transA.z );

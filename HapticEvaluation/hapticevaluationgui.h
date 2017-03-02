@@ -23,10 +23,11 @@
 #define HAPTICEVALUATIONGUI_H
 
 //#include <QtGui/QMainWindow>
-#include <QWidget>
+#include <QtWidgets>
 #include "ui_hapticevaluationgui.h"
 #include "Observer.h"
 #include "datamodel.h"
+#include "RemoteControlLaw.h"
 #include <math.h>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
@@ -41,7 +42,7 @@ class HapticEvaluationGUI : public QMainWindow, Observer
 	Q_OBJECT
 
 public:
-	HapticEvaluationGUI(QWidget *parent = 0, Qt::WFlags flags = 0);
+	HapticEvaluationGUI(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~HapticEvaluationGUI();
 
     //QwtPlotCurve  * courbePx;
@@ -61,7 +62,7 @@ public:
 	virtual void update(short value);				//inherited from Observer
 	
 	void updateDevForceDisplay(Vector3 f1 , Vector3 f2); //One vector per ATI sensor
-	//void updateDevPositionDisplay(Vector3 p);
+	void updateDevPositionDisplay(Vector3 p, Vector3 g);
 	//void updateDevOrientationDisplay(Vector3 o);
 	void updateDevTorqueDisplay(Vector3 t1 , Vector3 t2);
 	void updateDevGraphDisplay(Vector3 g , Vector3 p);
@@ -72,6 +73,7 @@ public:
 	bool getAtiBActivate();
 	bool getEntactAActivate(); //gets whether or not the user wants to turn on each entact
 	bool getEntactBActivate();
+	bool getHapticActivate();
 
 	outputSide getPref() const; //gets hand dominance
   
@@ -86,9 +88,15 @@ public slots:
 	void switchAtiB( void );
 	void switchEntactA( void );
 	void switchEntactB( void );
+	
+	void initCmd( ControlMode mode, int timeDelay );
+	void initExternalCmd();
+	
 	void calibrateEntactA( void );
 	void calibrateEntactB( void );
+	void setRemoteComConfig( void ); //set the IP/port data for the UDP comm
 	void setExpInfo( void );
+	
 	void setHRExpFile( void );
 	void readNextHRTrial( void );
 	void setDominantHand( void );
@@ -97,6 +105,8 @@ public slots:
 	void zeroA(void );
 	void zeroB(void );
 
+	void switchDisplay(void);
+
 private:
 
 	Ui::HapticEvaluationGUIClass ui;
@@ -104,6 +114,7 @@ private:
 	//QButtonGroup *sexgroup;
 	QButtonGroup *prefgroup;
 	QButtonGroup *expgroup;
+	QButtonGroup *cmdgroup;
 	QButtonGroup *haptrepoutputsidegroup;
 
 	QDateTime *dateTime;
@@ -159,6 +170,10 @@ private:
 	void hideDataA();
 	void showDataB();
 	void hideDataB();
+	void showDataA_2();
+	void hideDataA_2();
+	void showDataB_2();
+	void hideDataB_2();
 		
 	bool forceActiveA; //A  and B activated status for ati
 	bool forceActiveB;

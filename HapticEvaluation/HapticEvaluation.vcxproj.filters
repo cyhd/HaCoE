@@ -6,16 +6,18 @@
       <Extensions>cpp;cxx;c;def</Extensions>
     </Filter>
     <Filter Include="Source Files\device">
-      <UniqueIdentifier>{62b59eea-71e1-4aa6-ad88-b81e473015da}</UniqueIdentifier>
+
+      <UniqueIdentifier>{02c819fd-b026-47d1-b42c-70a96ff70ca6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\general use">
-      <UniqueIdentifier>{0da67975-924f-4124-86b1-74d1301cfb3f}</UniqueIdentifier>
+      <UniqueIdentifier>{1f1d3a2e-cb50-4b82-9dbb-0e0c5227dbf6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\gui">
-      <UniqueIdentifier>{b9765925-e1e8-4c15-9b64-39fc6179ba89}</UniqueIdentifier>
+      <UniqueIdentifier>{a2e438a2-8d33-4907-ba94-c5047e00f56c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\logger">
-      <UniqueIdentifier>{7ebcac36-5f3d-4a5c-b8a1-2c05c7dd6f1d}</UniqueIdentifier>
+      <UniqueIdentifier>{906bddce-0da8-4768-a67c-b9aac383de13}</UniqueIdentifier>
+
     </Filter>
     <Filter Include="Source Files\Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
@@ -23,41 +25,42 @@
       <ParseFiles>false</ParseFiles>
     </Filter>
     <Filter Include="Source Files\threads">
-      <UniqueIdentifier>{3c71befa-56b0-46c5-ba7e-3f334e4ee316}</UniqueIdentifier>
+
+      <UniqueIdentifier>{ad56ecd5-1931-430a-9d7c-e88a32e274d2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\experiment">
-      <UniqueIdentifier>{56066a8e-de67-4cd5-8f93-d18575f13f2f}</UniqueIdentifier>
+      <UniqueIdentifier>{858256ca-569e-4879-a361-19d942784337}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\supervisor">
-      <UniqueIdentifier>{2053a5bd-92ed-46a1-8513-1b1fc473a3a7}</UniqueIdentifier>
+      <UniqueIdentifier>{6fa2c16b-2b8f-48ad-badd-aa32beb2852b}</UniqueIdentifier>
+
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h</Extensions>
     </Filter>
     <Filter Include="Header Files\device">
-      <UniqueIdentifier>{541a8edb-08c1-489e-9e69-c147b136b5ce}</UniqueIdentifier>
+
+      <UniqueIdentifier>{b8af56e2-6e53-4956-97ad-513f2e7698e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\general use">
-      <UniqueIdentifier>{ffcf76f1-e4d9-4108-bf76-37fcef60f43a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\gui">
-      <UniqueIdentifier>{baf3948c-336b-4fd5-a535-0cd84829d771}</UniqueIdentifier>
+      <UniqueIdentifier>{0c4c6222-ca62-4f14-9de8-1f6762225596}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\logger">
-      <UniqueIdentifier>{a2b4170e-ae67-4578-aaba-f35dbb505d6c}</UniqueIdentifier>
+      <UniqueIdentifier>{f65e7c17-0f17-436b-8c1c-5c0f3d6f7121}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\logger\log helper files">
-      <UniqueIdentifier>{8a48e5dd-865c-46bc-bf4d-fd31da2a0ed0}</UniqueIdentifier>
+      <UniqueIdentifier>{b23f19f8-3b66-4ccb-8009-3119b17d26da}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\supervisor">
-      <UniqueIdentifier>{dc52d900-1cbd-4b0b-8a60-9198e2cd78a0}</UniqueIdentifier>
+      <UniqueIdentifier>{d457860c-625d-44c3-96a0-9ebf6e860507}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\threads">
-      <UniqueIdentifier>{e0791425-6b73-442c-a6ef-af0c2ff15c78}</UniqueIdentifier>
+      <UniqueIdentifier>{14981be3-ff74-44b5-930a-1d06d913ef50}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\experiment">
-      <UniqueIdentifier>{3b474136-feab-4a68-abcc-1e4dc5f53cab}</UniqueIdentifier>
+      <UniqueIdentifier>{8be7457f-5a9a-475c-8d92-5203a0036c77}</UniqueIdentifier>
+
     </Filter>
     <Filter Include="Form Files">
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
@@ -69,14 +72,34 @@
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{fea7f3b7-c7de-47ba-a985-a4a3d2a5fed6}</UniqueIdentifier>
+      <UniqueIdentifier>{6e79cc40-1eff-459a-906e-af0e4d797c1f}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{e46b62d3-bc33-48b9-b0e9-d547b6361861}</UniqueIdentifier>
+      <UniqueIdentifier>{82f36692-858c-439c-9120-aa835d3dfe83}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Header Files\control law">
+      <UniqueIdentifier>{8fa9f21c-bb0d-4835-a250-e5365a16f18b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\control law">
+      <UniqueIdentifier>{bc1ca943-4bef-406d-beca-0f334bc4a40a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\gui">
+      <UniqueIdentifier>{b428078e-a610-4ff2-8c95-71a4fc627fbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated Files\Template">
+      <UniqueIdentifier>{d929ad9d-874d-43fd-ab02-4b000126d6b3}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Header Files\gui\experiences">
+      <UniqueIdentifier>{6ebdf197-b42f-4b39-9633-ee5b461780ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gui\experiences">
+      <UniqueIdentifier>{5aa6563d-e182-4f17-ba75-2896600863da}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -97,9 +120,6 @@
     </ClCompile>
     <ClCompile Include="Subject.cpp">
       <Filter>Source Files\general use</Filter>
-    </ClCompile>
-    <ClCompile Include="hapticevaluationgui.cpp">
-      <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="datalogger.cpp">
       <Filter>Source Files\logger</Filter>
@@ -164,11 +184,149 @@
     <ClCompile Include="GeneratedFiles\qrc_hapticevaluationgui.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_hapticevaluationgui.cpp">
+    <ClCompile Include="OmniDevice.cpp">
+      <Filter>Source Files\device</Filter>
+    </ClCompile>
+    <ClCompile Include="ReadNetworkThread.cpp">
+      <Filter>Source Files\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="WriteNetworkThread.cpp">
+      <Filter>Source Files\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteControlLawSimple.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteControlLawScatteringTheory.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteControlLaw.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteControlLawVelocity.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteControlLawWaveTheory.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteControlLawDelayed.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteControlLawPosition.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
+    <ClCompile Include="ExternalControl.cpp">
+      <Filter>Source Files\control law</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_newwindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_newwindow.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_hapticevaluationgui.cpp">
+    <ClCompile Include="GeneratedFiles\Template\moc_newwindow.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="newwindow.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthWidget.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoWidget.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="ReplWidget.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="ForceToNetworkWidget.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceATI.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceWidget.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceDLinkForce.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceForceDepthC.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceForceDepthL.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceForceToNetwork.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceHapticRepAuto.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceHapticRepSeq.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceHapticRepSimul.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceSingleForceFeed.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceSLinkControl.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceSLinkForce.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ExperienceWidget.cpp">
       <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ExperienceWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_ExperienceWidget.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_topwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_topwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_topwidget.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="topwidget.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bottomwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bottomwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_bottomwidget.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="bottomwidget.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperienceNONE.cpp">
+      <Filter>Source Files\gui\experiences</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_HapticThreadForceToNetwork.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_HapticThreadForceToNetwork.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_HapticThreadForceToNetwork.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="HapticThreadForceToNetwork.cpp">
+      <Filter>Source Files\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="ExperimentInfoWidget.cpp">
+      <Filter>Source Files\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -229,16 +387,111 @@
     <ClInclude Include="HRExperiment.h">
       <Filter>Header Files\experiment</Filter>
     </ClInclude>
+
+    <ClInclude Include="OmniDevice.h">
+      <Filter>Header Files\device</Filter>
+    </ClInclude>
+    <ClInclude Include="WriteNetworkThread.h">
+      <Filter>Header Files\threads</Filter>
+    </ClInclude>
+    <ClInclude Include="ReadNetworkThread.h">
+      <Filter>Header Files\threads</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLaw.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLawSimple.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLawScatteringTheory.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLawVelocity.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLawWaveTheory.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLawDelayed.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteControlLawPosition.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="ExternalControl.h">
+      <Filter>Header Files\control law</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthWidget.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoWidget.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="ReplWidget.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="ForceToNetworkWidget.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceDLinkForce.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceSLinkForce.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceForceDepthC.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceForceDepthL.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceForceToNetwork.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceHapticRepAuto.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceHapticRepSeq.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceHapticRepSimul.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceSingleForceFeed.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceSLinkControl.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceATI.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperienceNONE.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </ClInclude>
+    <ClInclude Include="ExperimentInfoWidget.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="hapticevaluationgui.qrc">
       <Filter>Source Files\Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="hapticevaluationgui.h">
+    <CustomBuild Include="newwindow.h">
       <Filter>Header Files\gui</Filter>
     </CustomBuild>
-    <CustomBuild Include="hapticevaluationgui.ui">
-      <Filter>Form Files</Filter>
+    <CustomBuild Include="ExperienceWidget.h">
+      <Filter>Header Files\gui\experiences</Filter>
+    </CustomBuild>
+    <CustomBuild Include="topwidget.h">
+      <Filter>Header Files\gui</Filter>
+    </CustomBuild>
+    <CustomBuild Include="bottomwidget.h">
+      <Filter>Header Files\gui</Filter>
+    </CustomBuild>
+    <CustomBuild Include="HapticThreadForceToNetwork.h">
+      <Filter>Header Files\threads</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

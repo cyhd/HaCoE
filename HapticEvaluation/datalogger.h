@@ -27,7 +27,7 @@ Author: mr.sc. Boris Takac, dipl.ing
 
 This class is used for writing real-time data from devices to .xml file. Class is implemented as singleton 
 and observer. It is attached to HaptLinkSupervisor class subject during single instance construction.
-Observer inherited update() function is reipmlemented and it executes upon getting notification from 
+Observer inherited update() function is reimplemented and it executes upon getting notification from 
 Supervisor class.
 
 Logging of data can only be done in programm after connection to devices was established in Supervisor class.
@@ -53,8 +53,8 @@ public:
     virtual void update(short value);    //Observer class virtual function
     
 	//Log file manipulation
-	void OpenSessionLog(QString filename,QString pref);// age,QString sex,QString pref);
-	void OpenSessionLog(QString filename,QString pref,QString force,QString forceSign,QString direction,QString trialNumber,QString experimentFile,QString Order);// overloaded for writing a haptic replication experiment trial
+	void OpenSessionLog(QString filename,QString pref = "Right");// age,QString sex,QString pref);
+	// void OpenSessionLog(QString filename,QString pref,QString force,QString forceSign,QString direction,QString trialNumber,QString experimentFile,QString Order);// overloaded for writing a haptic replication experiment trial
 	
 	void CloseSessionLog();	
 	void WritePacket(Vector3 &dataPack, QString element);
@@ -64,6 +64,10 @@ public:
 	void setDataActiveB( bool active ) { dataActiveB = active; }
 	void setHapticActiveA( bool active ) { hapticActiveA = active; }
 	void setHapticActiveB( bool active ) { hapticActiveB = active; }
+
+	void setCommandActive (bool active) {commandActive = active;}
+	void setExternalCommandActive (bool active) {externalCommandActive = active;}
+
 	void setInstruction( bool active ) { instruct = active; }
 
 	void setAkey(int milli) { keyA=milli; }
@@ -79,6 +83,14 @@ private:
 	QFile xmlfile;					//pointer for output file for use of QXmlStreamWriter
 	bool dataActiveA;
 	bool dataActiveB;
+
+	int milliInit, milliEnd;
+	int milliCpt;
+	int timeMilli;
+
+	bool commandActive; 
+	bool externalCommandActive;
+	
 	bool hapticActiveA;
 	bool hapticActiveB;	
 	bool instruct; // fill in parameters

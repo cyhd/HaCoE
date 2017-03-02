@@ -24,7 +24,7 @@
 
 #include "datamodel.h"
 
-enum deviceType { ATI_DEVICE , HAPTIC_DEVICE };
+enum deviceType { ATI_DEVICE , HAPTIC_DEVICE, OMNI_DEVICE };
 
 class Device
 {
@@ -33,7 +33,8 @@ public:
 	static const short FAILED = 0;
 
 	Vector3 getTranslation() const { return translation; }
-    Vector3 getRotation() const { return rotation; }
+    Vector3 getVelocity() const { return velocity; }
+	Vector3 getRotation() const { return rotation; }
 	Matrix3x3 getRotationMatrix() const { return rotationMatrix; }
 
 	virtual short readData() = 0;
@@ -55,6 +56,13 @@ protected:
 		translation.y = y;  
 		translation.z = z; 
 	} 
+
+	void setVelocity(float x, float y, float z)   // a device has properties in xyz translation
+	{ 
+		velocity.x = x;  
+		velocity.y = y;  
+		velocity.z = z; 
+	}
 
 	void setRotation(float x, float y, float z)  // a device also has properties in xyz rotation
 	{ 
@@ -84,6 +92,7 @@ private:
 	Device(){} //we never construct a device alone.  We will instantiate a type of device.
 
     Vector3 translation;
+	Vector3 velocity;
 	Vector3 rotation;
 	Matrix3x3 rotationMatrix;
 	//Vector3 rotationRow1;

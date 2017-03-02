@@ -32,6 +32,7 @@
 #include "Subject.h"
 #include "AtiU6.h"
 #include "EntactDevice.h"
+#include "OmniDevice.h"
 #include <QBasicTimer>
 #include "HapticThread.h"
 #include "HapticThreadDoubleForce.h"
@@ -43,6 +44,8 @@
 #include "hrexperiment.h"
 #include "experimentreader.h"
 
+#include "RemoteControlLaw.h"
+
 enum notifyType 
 {
 	HR_SEQ_SWITCH,
@@ -53,10 +56,14 @@ enum notifyType
 	HR_GOTO
 };
 
+extern QMutex * mutexA ;
+extern QMutex * mutexB ;
+extern QMutex * mutexCommand; 
 
 //Start of class definition
 class HaptLinkSupervisor : public Subject , public QObject
 {
+	//Q_OBJECT
 private: 
 	double addedForceB; // force added on top by Griffith xp, stored here for logging purpose
 	Vector3 positionControlzero;
@@ -88,18 +95,40 @@ public:
 	Vector3 getPositionB() const { return haptDeviceB->getTranslation(); }
 	Vector3 getOrientationA() const { return haptDeviceA->getRotation(); } //returns rotation data from Entact
 	Vector3 getOrientationB() const { return haptDeviceB->getRotation(); }
+	
+	Vector3 getExternalCommandForce() const { return externalCommand->getData(LOCAL_APPLIED_FORCE); }
+	Vector3 getExternalCommandPosition() const { return externalCommand->getData(LOCAL_POSITION); }
+	Vector3 getExternalCommandDesiredPosition() const { return externalCommand->getData(DESIRED_LOCAL_POSITION); }
+	Vector3 getExternalCommandVelocity() const { return externalCommand->getData(LOCAL_VELOCITY); }
+
+	Vector3 getCommandForce() const { return command->getData(LOCAL_APPLIED_FORCE); }
+	Vector3 getCommandPosition() const { return command->getData(LOCAL_POSITION); }
+	Vector3 getCommandVelocity() const { return command->getData(LOCAL_VELOCITY); }
+	Vector3 getCommandRemoteForce() const { return command->getData(REMOTE_APPLIED_FORCE); }
+	Vector3 getCommandRemotePosition() const { return command->getData(REMOTE_POSITION); }
+	Vector3 getCommandRemoteVelocity() const { return command->getData(REMOTE_VELOCITY); }
+	
 	bool getThreadStarted() const { return this->threadStarted; } // returns true if a thread has been started
 	HapticDevice * getHaptDeviceA() const { return haptDeviceA; } //returns address of haptic devices
 	HapticDevice * getHaptDeviceB() const { return haptDeviceB; }
+
+	RemoteControlLaw * getCommand() const { return command; }
+	RemoteControlLaw * getExternalCommand() const { return externalCommand; }
+
 	Vector3 getHaptRepF() const { return haptRepF; } //returns forces and torques set for haptic replication experiment
 	Vector3 getHaptRepT() const { return haptRepT; }
 	
 	outputSide getSideOut() const { return sideOut; } // returns side to output force for haptic replication experiment
 	double getK_FORCE() const { return K_FORCE; }
 	double getK_TORQUE() const { return K_TORQUE; }
-	QMutex * getMutex() const { return mutex; }
+	
+	QMutex * getMutexA() { return mutexA; }
+	QMutex * getMutexB() { return mutexB; }
+	QMutex * getMutexCommand() { return mutexCommand; }
+	
 	bool getHaptActiveA() const { return haptActiveA; }
 	bool getHaptActiveB() const { return haptActiveB; }
+	
 	bool getLJActiveA() const { return LJActiveA; }
 	bool getLJActiveB() const { return LJActiveB; }
 	HRExperiment getExperiment() const { return experiment; }
@@ -140,29 +169,41 @@ public:
 
 	int initDeviceA( char *filename , char *serialNumber ); //initializing Labjacks
 	int initDeviceB( char *filename , char *serialNumber );
-	int initEntactA( int index , char *ip ); //initializing Entacts
-	int initEntactB( int index , char *ip );
-	void calibrateEntactA(); //Calibrating entacts
-	void calibrateEntactB();
+	int initHapticA( int index , char *ip ); //initializing Entacts
+	int initHapticB( int index , char *ip );
+	
+	void initCommand(ControlMode mode, int timeDelay);
+	void initExternalCommand();
 
-	void timerEvent(QTimerEvent *event); //Timer event handler
+	void calibrateCorrectDevice();
+	void calibrateHapticA(); //Calibrating entacts
+	void calibrateHapticB();
+	void initUDPWrite(std::string ip, std::string port);
+	void initUDPRead(unsigned short port);
+
 	void start(); //starts clocks
 	void stop(); //stops clocks
 	
 	void closeLJConnectionA(); //close Labjack connections
 	void closeLJConnectionB();
-	void closeEntactConnectionA(); //close Entact connections
-	void closeEntactConnectionB();
+	void closeHapticConnectionA(); //close Entact connections
+	void closeHapticConnectionB();
 	void closeConnection(); //this one used at end of program to close all connections
 	void resetTimeStamp() { timestamp = 0; }
 
 	virtual void GUINotify( notifyType type );
 	
+	void initUDPReadWrite(unsigned short portREAD, std::string ip, std::string portWRITE, int timeDelay);
+
 	
 
+	
 protected:
+	void timerEvent(QTimerEvent *event); //Timer event handler
+	
 	//void setTimeStamp(time_t tps) { timestamp = tps; }
 	void setTimeStamp(int tps) { timestamp = tps; }
+
 		//methods
 	static HaptLinkSupervisor *instance;
 	HaptLinkSupervisor(QObject* parent = 0) : QObject(parent) //Constructor (private because class is Singleton)
@@ -174,14 +215,18 @@ protected:
 		logFlag = 0; 
 		threadStarted = false;
 		threadCreated = false;
-		timerForce = new QBasicTimer();
-		mutex = new QMutex();
+		//timerForce = new QBasicTimer();
+		//startTimer(SAMPLE_RATE);
+		//timerForce.start( SAMPLE_RATE , this ); 
+		
 		dominance = RIGHT;
 		experiment = HRExperiment();
 
 		forceMin = 0.0;
 		distance = 0.0;
 		deltaDepth = 0.0;
+
+		counter = 0;
 	}			
 
 private:  
@@ -189,6 +234,9 @@ private:
 	Device *atiB;
 	HapticDevice *haptDeviceA;
 	HapticDevice *haptDeviceB;
+
+	RemoteControlLaw *command;
+	RemoteControlLaw *externalCommand;
 
 	bool LJActiveA;
 	bool LJActiveB;
@@ -200,11 +248,12 @@ private:
 	//bool timerStarted;
 	bool threadStarted;
 	bool threadCreated;
-	
-	QBasicTimer *timerForce;
-	HapticThread *thread;
+
+	QBasicTimer timerForce;
+	HapticThread *thread;// = NULL;
+
 	int logFlag;
-	QMutex * mutex;
+
 
 	//haptic replication preferences
 	Vector3 haptRepF;
@@ -219,17 +268,22 @@ private:
 	double forceMin; // set for the purpose of the Griffith XP to set a mininam force feedback
 	double distance;
 	double deltaDepth;
-		
+
 
 	HRExperiment experiment; // holds an experiment file for automated experiment
 	int indexGoTo;
-		
+
 	//time_t timestamp;
 	int timestamp;
 
 	static const double HR_K_FORCE;
 	static const double HR_K_TORQUE;
 
-	
+	/*
+	std::string writeIP;
+	std::string writePort;
+	unsigned short readPort;
+	*/
+
 };
 #endif // HAPTLINKSUPERVISOR_H

@@ -35,15 +35,19 @@
 #include "qcheckbox.h"
 #include "hrexperiment.h"
 #include <string>
+#include "qwt_compat.h"
 
 using namespace std;
 #define KEEP true
 HapticEvaluationGUI* HapticEvaluationGUI::instance = NULL;
-HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WFlags flags)
+
+HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WindowFlags flags)
 : QMainWindow(parent, flags)
 {	
+	
 	ui.setupUi(this);
-
+	ui.frame_5->setVisible(true); //graph 1
+	ui.frame_6->setVisible(false); //graph 2
 	initGraph();
     //sexgroup = new QButtonGroup;
 	//sexgroup->addButton(ui.radioButtonMale);
@@ -57,6 +61,10 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WFlags flags)
 
 	expgroup = new QButtonGroup;
 	expgroup->addButton(ui.radioButtonSLPosition);
+	
+	//*******
+	expgroup->addButton(ui.radioButtonForceToNet);
+	
 	expgroup->addButton(ui.radioButtonSLForce);
 	expgroup->addButton(ui.radioButtonDLForce);
 	expgroup->addButton(ui.radioButtonHaptRep);
@@ -66,6 +74,16 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WFlags flags)
 	expgroup->addButton(ui.radioButtonSingleHaptic);
 	expgroup->addButton(ui.radioButtonDepthConstant);
 	expgroup->addButton(ui.radioButtonDepthLinear);
+
+
+	cmdgroup = new QButtonGroup;
+	cmdgroup->addButton(ui.radioButtonPosition);
+	cmdgroup->addButton(ui.radioButtonScattering);
+	cmdgroup->addButton(ui.radioButtonVelocity);
+	cmdgroup->addButton(ui.radioButtonWave);
+	cmdgroup->addButton(ui.radioButtonDelayed);
+	
+	
 
 	//ui.radioButtonDepthConstant->setChecked(true);
 	ui.radioButtonATIOnly->setChecked(true);
@@ -89,12 +107,16 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WFlags flags)
 
 	ui.pushButtonEntactACalibrate->setEnabled( false );
 	ui.pushButtonEntactBCalibrate->setEnabled( false );
+	ui.pushButtonComInit->setEnabled( false );
 
 	hideDataA();
+	hideDataA_2();
 
 	hideDataB();
+	hideDataB_2();
 
 	ui.frameHaptRep->setVisible( false );
+	ui.frameRemCtrl->setVisible( false );
 	ui.frameHaptRepAuto->setVisible( false );
 	ui.pushButtonReadNextTrial->setEnabled( false );
 	/*
@@ -119,9 +141,20 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WFlags flags)
 	connect(ui.checkBoxAtiActivateB , SIGNAL(stateChanged(int)) , this , SLOT(switchAtiB()));
 	connect(ui.checkBoxActiveEntactA , SIGNAL(stateChanged(int)) , this , SLOT(switchEntactA()));
 	connect(ui.checkBoxActiveEntactB , SIGNAL(stateChanged(int)) , this , SLOT(switchEntactB()));
+
+	connect(ui.checkBoxActiveHapticA , SIGNAL(stateChanged(int)) , this , SLOT(switchEntactA()));
+	connect(ui.pushButtonComInit, SIGNAL(clicked()), this, SLOT(setRemoteComConfig()));
+	//connect(ui.radioButtonPosition , SIGNAL(toggled(bool)) , this , SLOT(setCmdInfo()));
+	//connect(ui.radioButtonScattering , SIGNAL(toggled(bool)) , this , SLOT(setCmdInfo()));
+	
+
 	connect(ui.pushButtonEntactACalibrate , SIGNAL(clicked()) , this , SLOT(calibrateEntactA()));
 	connect(ui.pushButtonEntactBCalibrate , SIGNAL(clicked()) , this , SLOT(calibrateEntactB()));
 	connect(ui.radioButtonSLPosition , SIGNAL(toggled(bool)) , this , SLOT(setExpInfo()));
+	
+	//**********
+	connect(ui.radioButtonForceToNet , SIGNAL(toggled(bool)) , this , SLOT(setExpInfo()));
+	
 	connect(ui.radioButtonSLForce , SIGNAL(toggled(bool)) , this , SLOT(setExpInfo()));
 	connect(ui.radioButtonDLForce , SIGNAL(toggled(bool)) , this , SLOT(setExpInfo()));
 	connect(ui.radioButtonHaptRep , SIGNAL(toggled(bool)) , this , SLOT(setExpInfo()));
@@ -142,7 +175,8 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WFlags flags)
 	connect(ui.radioButtonLeft , SIGNAL(toggled(bool)) , this , SLOT(setDominantHand()));
 	connect(ui.radioButtonRight , SIGNAL(toggled(bool)) , this , SLOT(setDominantHand()));
 
-	
+	//graph display choice
+	connect(ui.pushButtonDisplaySwitch,SIGNAL(clicked()) , this , SLOT(switchDisplay()));
 	
 	HaptLinkSupervisor::getInstance()->attachObserver(this);	
 
@@ -154,6 +188,8 @@ HapticEvaluationGUI::HapticEvaluationGUI(QWidget *parent, Qt::WFlags flags)
 	HaptLinkSupervisor::getInstance()->setHaptActiveB(false);
 	DataLogger::getInstance()->setDataActiveA(false);
 	DataLogger::getInstance()->setDataActiveB(false);
+	DataLogger::getInstance()->setCommandActive(false);
+	DataLogger::getInstance()->setExternalCommandActive(false);
 	DataLogger::getInstance()->setHapticActiveA(false);
 	DataLogger::getInstance()->setHapticActiveB(false);
 
@@ -207,6 +243,10 @@ void HapticEvaluationGUI::update(short value)
 	if(value == HAPTIC_UPDATE_GUI)
 	{
 		HaptLinkSupervisor *sp = HaptLinkSupervisor::getInstance();
+
+		//RemoteControlLaw *command = sp->getCommand();
+		//RemoteControlLaw *externalCommand = sp->getExternalCommand();
+		
 		forceActiveA = getAtiAActivate(); //getting status of activation of each ATI
 		forceActiveB = getAtiBActivate();
 
@@ -246,6 +286,16 @@ void HapticEvaluationGUI::update(short value)
 			updateDevGraphDisplay(empty , empty);
 		}
 		
+		if(ui.frame_6->isVisible())
+		{
+			updateDevPositionDisplay(sp->getCommandPosition(),empty);
+			updateDevForceDisplay(sp->getCommandForce(),empty);
+			if(ui.checkBoxFzA_2->isChecked())
+				updateDevGraphDisplay(sp->getCommandPosition(),empty);
+			else if (ui.checkBoxFxB_2->isChecked())
+				updateDevGraphDisplay(sp->getCommandForce(),empty);
+		}
+
 		if ((sp->getExperimentType() == DEPTHCONST)||(sp->getExperimentType() == DEPTHLINEAR))
 			updateGriffith(sp->getPositionB(), Vector3(0,0,sp->getAddedForceB()));
 
@@ -295,111 +345,173 @@ bool HapticEvaluationGUI::getAtiBActivate()
 
 bool HapticEvaluationGUI::getEntactAActivate()
 {
-	return ui.checkBoxActiveEntactA->isChecked();
+	return ui.checkBoxActiveEntactA->isChecked() || ui.checkBoxActiveHapticA->isChecked();
 }	
 bool HapticEvaluationGUI::getEntactBActivate()
 {
-	return ui.checkBoxActiveEntactB->isChecked();
+	return ui.checkBoxActiveEntactB->isChecked() ;
+}
+
+bool HapticEvaluationGUI::getHapticActivate()
+{
+	return ui.checkBoxActiveHapticA->isChecked();
 }
 
 void HapticEvaluationGUI::updateCheckGraph()
  {
-	state = ui.checkBoxFxA->isChecked();
-	if(state)
-		courbeFxA->setVisible(true);
-	else
-		courbeFxA->setVisible(false);
+	if (ui.frame_5->isVisible())
+	{
+		state = ui.checkBoxFxA->isChecked();
+		if(state)
+			courbeFxA->setVisible(true);
+		else
+			courbeFxA->setVisible(false);
 
 	
-	state =ui.checkBoxFyA->isChecked();
-	if(state)
-	    courbeFyA->setVisible(true);
-	else 
-		courbeFyA->setVisible(false);
+		state =ui.checkBoxFyA->isChecked();
+		if(state)
+			courbeFyA->setVisible(true);
+		else 
+			courbeFyA->setVisible(false);
 
 
-	state = ui.checkBoxFzA->isChecked();
-	if(state)
-		courbeFzA->setVisible(true);
-	else
-		courbeFzA->setVisible(false);
+		state = ui.checkBoxFzA->isChecked();
+		if(state)
+			courbeFzA->setVisible(true);
+		else
+			courbeFzA->setVisible(false);
 
-	state = ui.checkBoxFtotalA->isChecked();
-	if(state)
-		courbeFtotalA->setVisible(true);
-	else
-		courbeFtotalA->setVisible(false);
+		state = ui.checkBoxFtotalA->isChecked();
+		if(state)
+			courbeFtotalA->setVisible(true);
+		else
+			courbeFtotalA->setVisible(false);
 
-	state = ui.checkBoxFxB->isChecked();
-	if(state)
-		courbeFxB->setVisible(true);
-	else
-		courbeFxB->setVisible(false);
+		state = ui.checkBoxFxB->isChecked();
+		if(state)
+			courbeFxB->setVisible(true);
+		else
+			courbeFxB->setVisible(false);
 
 	
-	state =ui.checkBoxFyB->isChecked();
-	if(state)
-	    courbeFyB->setVisible(true);
-	else 
-		courbeFyB->setVisible(false);
+		state =ui.checkBoxFyB->isChecked();
+		if(state)
+			courbeFyB->setVisible(true);
+		else 
+			courbeFyB->setVisible(false);
 
 
-	state = ui.checkBoxFzB->isChecked();
-	if(state)
-		courbeFzB->setVisible(true);
-	else
-		courbeFzB->setVisible(false);
+		state = ui.checkBoxFzB->isChecked();
+		if(state)
+			courbeFzB->setVisible(true);
+		else
+			courbeFzB->setVisible(false);
 
-	state = ui.checkBoxFtotalB->isChecked();
-	if(state)
-		courbeFtotalB->setVisible(true);
-	else
-		courbeFtotalB->setVisible(false);
-	/*
-	state = ui.checkBoxPx->isChecked();
-	if(state)
-		courbePx->setVisible(true);
-	else
-		courbePx->setVisible(false);
-	*/
+		state = ui.checkBoxFtotalB->isChecked();
+		if(state)
+			courbeFtotalB->setVisible(true);
+		else
+			courbeFtotalB->setVisible(false);
+		/*
+		state = ui.checkBoxPx->isChecked();
+		if(state)
+			courbePx->setVisible(true);
+		else
+			courbePx->setVisible(false);
+		*/
+	}
+	else if(ui.frame_6->isVisible())
+	{
+		
+		state = ui.checkBoxFxB_2->isChecked()||ui.checkBoxFzA_2->isChecked();
+		if(state)
+		{
+			courbeFxA->setVisible(true);
+			courbeFyA->setVisible(true);
+			courbeFzA->setVisible(true);
+			courbeFxB->setVisible(true);
+			courbeFyB->setVisible(true);
+			courbeFzB->setVisible(true);
+		}
+		else
+		{
+			courbeFxA->setVisible(false);
+			courbeFyA->setVisible(false);
+			courbeFzA->setVisible(false);
+			courbeFxB->setVisible(false);
+			courbeFyB->setVisible(false);
+			courbeFzB->setVisible(false);
+		}
+	}
 }
 void HapticEvaluationGUI::updateDevForceDisplay(Vector3 f1 , Vector3 f2)
 {
+	if(ui.frame_5->isVisible())
+	{
+		QString Fx_A = QString::number(f1.x,'f',3);
+		ui.labelFx_A->setText(Fx_A);
 
-	QString Fx_A = QString::number(f1.x,'f',3);
-	ui.labelFx_A->setText(Fx_A);
+		QString Fy_A = QString::number(f1.y,'f',3);
+		ui.labelFy_A->setText(Fy_A);
 
-	QString Fy_A = QString::number(f1.y,'f',3);
-	ui.labelFy_A->setText(Fy_A);
+		QString Fz_A = QString::number(f1.z,'f',3);	
+		ui.labelFz_A->setText(Fz_A);
 
-	QString Fz_A = QString::number(f1.z,'f',3);	
-	ui.labelFz_A->setText(Fz_A);
+		QString Fx_B = QString::number(f2.x,'f',3);
+		ui.labelFx_B->setText(Fx_B);
 
-	QString Fx_B = QString::number(f2.x,'f',3);
-	ui.labelFx_B->setText(Fx_B);
+		QString Fy_B = QString::number(f2.y,'f',3);
+		ui.labelFy_B->setText(Fy_B);
 
-	QString Fy_B = QString::number(f2.y,'f',3);
-	ui.labelFy_B->setText(Fy_B);
+		QString Fz_B = QString::number(f2.z,'f',3);	
+		ui.labelFz_B->setText(Fz_B);
+	}
+	else if (ui.frame_5->isVisible())
+	{
+		QString Fx_A = QString::number(f1.x,'f',3);
+		ui.labelFx_A_2->setText(Fx_A);
 
-	QString Fz_B = QString::number(f2.z,'f',3);	
-	ui.labelFz_B->setText(Fz_B);
+		QString Fy_A = QString::number(f1.y,'f',3);
+		ui.labelFy_A_2->setText(Fy_A);
 
+		QString Fz_A = QString::number(f1.z,'f',3);	
+		ui.labelFz_A_2->setText(Fz_A);
+
+		QString Fx_B = QString::number(f2.x,'f',3);
+		ui.labelFx_B_2->setText(Fx_B);
+
+		QString Fy_B = QString::number(f2.y,'f',3);
+		ui.labelFy_B_2->setText(Fy_B);
+
+		QString Fz_B = QString::number(f2.z,'f',3);	
+		ui.labelFz_B_2->setText(Fz_B);
+	}
 }
-/*
-void HapticEvaluationGUI::updateDevPositionDisplay(Vector3 p)
+
+void HapticEvaluationGUI::updateDevPositionDisplay(Vector3 p, Vector3 g)
 {
 	
-	QString Px = QString::number(p.x,'f',3);
-	ui.labelPx->setText(Px);
+	QString Px_A = QString::number(p.x,'f',3);
+	ui.labelTx_A_2->setText(Px_A);
 		
-	QString Py = QString::number(p.y,'f',3);
-	ui.labelPy->setText(Py);
+	QString Py_A = QString::number(p.y,'f',3);
+	ui.labelTy_A_2->setText(Py_A);
     
-	QString Pz = QString::number(p.z,'f',3);
-	ui.labelPz->setText(Pz);
+	QString Pz_A = QString::number(p.z,'f',3);
+	ui.labelTz_A_2->setText(Pz_A);
 	
+	QString Px_B = QString::number(g.x,'f',3);
+	ui.labelTx_B_2->setText(Px_A);
+		
+	QString Py_B = QString::number(g.y,'f',3);
+	ui.labelTy_B_2->setText(Py_B);
+    
+	QString Pz_B = QString::number(g.z,'f',3);
+	ui.labelTz_B_2->setText(Pz_B);
+
 }
 
+/*
 void HapticEvaluationGUI::updateDevOrientationDisplay(Vector3 o)
 {
 	QString Ox = QString::number(o.x,'f',3);
@@ -454,6 +566,23 @@ void HapticEvaluationGUI::setStartLog()
 	//else
 	//	sex = "Female";
 
+	if (ui.radioButtonPosition->isChecked())
+		initCmd(SIMPLE_MODE, ui.lineEditDelayValue->text().toInt());
+	else if(ui.radioButtonScattering->isChecked())
+		initCmd(SCATTERING_MODE, ui.lineEditDelayValue->text().toInt());
+	else if(ui.radioButtonVelocity->isChecked()) 
+		initCmd(VELOCITY_MODE, ui.lineEditDelayValue->text().toInt());
+	else if(ui.radioButtonWave->isChecked()) 
+		initCmd(WAVE_MODE, ui.lineEditDelayValue->text().toInt());
+	else if(ui.radioButtonDelayed->isChecked()) 
+		initCmd(DELAYED_MODE, ui.lineEditDelayValue->text().toInt());
+	
+	if(ui.checkBoxInitExternalCommand->isChecked())
+	{
+		initExternalCmd();
+	}
+
+
 	if ( ui.radioButtonRight->isChecked() )
 		pref = "Right";
 	else
@@ -463,6 +592,19 @@ void HapticEvaluationGUI::setStartLog()
 		HaptLinkSupervisor::getInstance()->setExperimentType( SLPOS );
 	else if ( ui.radioButtonSLForce->isChecked() )
 		HaptLinkSupervisor::getInstance()->setExperimentType( SLFORCE );
+
+	//*********
+	else if (ui.radioButtonForceToNet->isChecked()) 
+	{
+		if (ui.checkBoxInitExternalCommand->isChecked())
+			HaptLinkSupervisor::getInstance()->setExperimentType(FORCE2NET_TEST);
+		else
+			HaptLinkSupervisor::getInstance()->setExperimentType(FORCE2NET);
+	}
+
+	else if (ui.radioButtonForceToNet->isChecked()) 
+		HaptLinkSupervisor::getInstance()->setExperimentType(FORCE2NET_TEST);
+	
 	else if ( ui.radioButtonDLForce->isChecked() )
 		HaptLinkSupervisor::getInstance()->setExperimentType( DLFORCE );
 	else if ( ui.radioButtonHaptRep->isChecked() )
@@ -607,6 +749,7 @@ void HapticEvaluationGUI::setStopLog()
 	ui.pushButtonStart->setEnabled( true );
 	ui.pushButtonZero->setEnabled( true );
 	ui.pushButtonStop->setEnabled( false );
+	ui.pushButtonComInit->setEnabled( true );
 	
 	enableInterface();
 	enableHRFrame();
@@ -713,16 +856,18 @@ void HapticEvaluationGUI::switchEntactA()
 {
 	if ( getEntactAActivate() )
 	{
-		if ( HaptLinkSupervisor::getInstance()->initEntactA( 0 , ui.lineEditEntactAIP->text().toLocal8Bit().data() ) == 1 )
+		if ( HaptLinkSupervisor::getInstance()->initHapticA( ui.tabWidgetDevice->currentIndex() , ui.lineEditEntactAIP->text().toLocal8Bit().data() ) == 1 )
 		{
-			setStatus("Entact A activated.  Press Start to start logging.");
+			setStatus("Haptic device A activated.  Press Start to start logging.");
 			DataLogger::getInstance()->setHapticActiveA( true );
 			HaptLinkSupervisor::getInstance()->setHaptActiveA( true );
 			ui.pushButtonEntactACalibrate->setEnabled( true );
+			ui.pushButtonComInit->setEnabled(true);
+			//HaptLinkSupervisor::getInstance()->calibrateHapticA();
 		}
 		else 
 		{
-			setStatus("Entact A connection failed.  Please check IP is correct and Entact is on.  Then recheck the activate box.");
+			setStatus("Haptic device A connection failed.  Please check IP is correct and Haptic device is on.  Then recheck the activate box.");
 			ui.checkBoxActiveEntactA->setChecked( false );
 			ui.checkBoxActiveEntactA->setCheckState( Qt::Unchecked );
 			DataLogger::getInstance()->setHapticActiveA( false );
@@ -731,28 +876,29 @@ void HapticEvaluationGUI::switchEntactA()
 	}
 	else if ( HaptLinkSupervisor::getInstance()->getHaptActiveA() )
 	{
-		HaptLinkSupervisor::getInstance()->closeEntactConnectionA();//fix after creating method to close connections of entacts
-		setStatus("Entact A deactivated.  Press Start to start logging.");
+		HaptLinkSupervisor::getInstance()->closeHapticConnectionA();//fix after creating method to close connections of entacts
+		setStatus("Haptic device A deactivated.  Press Start to start logging.");
 		DataLogger::getInstance()->setHapticActiveA( getEntactAActivate() );
 		HaptLinkSupervisor::getInstance()->setHaptActiveA( getEntactAActivate() );
 		ui.pushButtonEntactACalibrate->setEnabled( false );
-	}	
+	}
 }
 
 void HapticEvaluationGUI::switchEntactB()
 {
 	if ( getEntactBActivate() )
 	{
-		if ( HaptLinkSupervisor::getInstance()->initEntactB( 1 , ui.lineEditEntactBIP->text().toLocal8Bit().data() ) == 1 )
+		if ( HaptLinkSupervisor::getInstance()->initHapticB( 1 , ui.lineEditEntactBIP->text().toLocal8Bit().data() ) == 1 )
 		{
-			setStatus("Entact B activated.  Press Start to start logging.");
+			setStatus("Haptic device B activated.  Press Start to start logging.");
 			DataLogger::getInstance()->setHapticActiveB( true );
 			HaptLinkSupervisor::getInstance()->setHaptActiveB( true );
 			ui.pushButtonEntactBCalibrate->setEnabled( true );
+			//HaptLinkSupervisor::getInstance()->calibrateHapticB();
 		}
 		else
 		{
-			setStatus("Entact B connection failed.  Please check IP is correct and Entact is on.  Then recheck the activate box.");
+			setStatus("Haptic device B connection failed.  Please check IP is correct and Haptic device is on.  Then recheck the activate box.");
 			ui.checkBoxActiveEntactB->setChecked( false );
 			ui.checkBoxActiveEntactB->setCheckState( Qt::Unchecked );
 			DataLogger::getInstance()->setHapticActiveB( false );
@@ -762,8 +908,8 @@ void HapticEvaluationGUI::switchEntactB()
 	}
 	else if ( HaptLinkSupervisor::getInstance()->getHaptActiveB() )
 	{
-		HaptLinkSupervisor::getInstance()->closeEntactConnectionB();
-		setStatus("Entact B deactivated.  Press Start to start logging.");
+		HaptLinkSupervisor::getInstance()->closeHapticConnectionB();
+		setStatus("Haptic device B deactivated.  Press Start to start logging.");
 		DataLogger::getInstance()->setHapticActiveB( getEntactBActivate() );
 		HaptLinkSupervisor::getInstance()->setHaptActiveB( getEntactBActivate() );
 		ui.pushButtonEntactBCalibrate->setEnabled( false );
@@ -771,24 +917,70 @@ void HapticEvaluationGUI::switchEntactB()
 	}
 }
 
+
+
+void HapticEvaluationGUI::setRemoteComConfig( void )
+{
+	if (ui.tabWidgetDevice->currentIndex() == 0) //0 = left
+		HaptLinkSupervisor::getInstance()->initUDPReadWrite(ui.lineEditLocalPortL->text().toUInt(), ui.lineEditRemIPL->text().toStdString().data(),ui.lineEditRemPortL->text().toStdString().data(), ui.lineEditDelayValue->text().toInt());
+	
+	else if (ui.tabWidgetDevice->currentIndex() == 1) // 1 = right
+		HaptLinkSupervisor::getInstance()->initUDPReadWrite(ui.lineEditLocalPortR->text().toUInt(), ui.lineEditRemIPR->text().toStdString().data(),ui.lineEditRemPortR->text().toStdString().data(), ui.lineEditDelayValue->text().toInt());
+	
+
+	ui.pushButtonComInit->setEnabled(false);	
+	ui.pushButtonStart->setEnabled( true );
+}
+
+void HapticEvaluationGUI::initCmd(ControlMode mode, int timeDelay)
+{
+	HaptLinkSupervisor::getInstance()->initCommand(mode, timeDelay);
+	DataLogger::getInstance()->setCommandActive(true);
+}
+
+void HapticEvaluationGUI::initExternalCmd()
+{
+	HaptLinkSupervisor::getInstance()->initExternalCommand();
+	DataLogger::getInstance()->setExternalCommandActive(true);
+}
+
 void HapticEvaluationGUI::calibrateEntactA( void )
 {
-	HaptLinkSupervisor::getInstance()->calibrateEntactA();
+	HaptLinkSupervisor::getInstance()->calibrateHapticA();
 }
 void HapticEvaluationGUI::calibrateEntactB( void )
 {
-	HaptLinkSupervisor::getInstance()->calibrateEntactB();
+	HaptLinkSupervisor::getInstance()->calibrateHapticB();
 }
+
 void HapticEvaluationGUI::setExpInfo( void )
 {
 	disableHRFrame(); //disabling haptrep settings
 	disableDepthFrame();
 	ui.frameHaptRep->setVisible( false );
 	ui.frameHaptRepAuto->setVisible( false );
+	ui.frameHaptACtrl->setVisible( true );
+	ui.frameHaptBCtrl->setVisible( true );
+	ui.frameRemCtrl->setVisible( false );
+	
+	if ( ui.radioButtonForceToNet->isChecked() )
+	{			
+		ui.frameRemCtrl->setVisible( true );
+		ui.frameHaptACtrl->setVisible( false );
+		ui.frameHaptBCtrl->setVisible( false );
 
-	if ( ui.radioButtonSLPosition->isChecked() )
+		//ui.pushButtonStart->setEnabled( false );
+		//ui.pushButtonComInit->setEnabled(true);
+		
+		ui.textEditExpInfo->setPlainText( "Dual Link Force Control through Network:\n"
+										  "This control scheme uses a master-master configuration.\n"
+										  "-Omni A and B will output a force proportional to the difference in position between them " 
+										  "to try and move to the same position.");
+	}
+	else if ( ui.radioButtonSLPosition->isChecked() )
 	{	
 		ui.pushButtonStart->setEnabled( true );
+
 		ui.textEditExpInfo->setPlainText( "Single Link Position Control:\n"
 										  "This control scheme uses a master-slave configuration.\n"
 										  "-Entact A is Master, in force mode outputting no force while sending its position to Entact B.\n"
@@ -797,6 +989,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonSLForce->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+		
 		ui.textEditExpInfo->setPlainText( "Single Link Force Control:\n"
 										  "This control scheme uses a master-slave configuration.\n"
 										  "-Entact A is Master, in force mode outputting no force while sending its position to Entact B.\n"
@@ -806,6 +999,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonDLForce->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		ui.textEditExpInfo->setPlainText( "Dual Link Force Control:\n"
 										  "This control scheme uses a master-master configuration.\n"
 										  "-Entact A and B will output a force proportional to the difference in position between them " 
@@ -814,6 +1008,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonHaptRep->isChecked() || ui.radioButtonHRSeq->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		enableHRFrame();
 		ui.frameHaptRep->setVisible( true );
 		ui.textEditExpInfo->setPlainText( "Haptic Replication Experiment:\n" 
@@ -824,12 +1019,14 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonATIOnly->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		ui.textEditExpInfo->setPlainText( "Use ATI Only:\n" 
 										  "In this mode, only the ATI sensors are used for measuring force.  That is, the haptic devices are not used." );
 	}
 	else if ( ui.radioButtonHaptRepAuto->isChecked() )
 	{
 		ui.frameHaptRepAuto->setVisible( true );
+
 		ui.pushButtonStart->setEnabled( false );
 		ui.textEditExpInfo->setPlainText( "Haptic Replication Experiment:\n" 
 										  "This experiment tests the ability of a subject to feel a force on one hand and to reproduce it in another.\n" 
@@ -840,6 +1037,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonSingleHaptic->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		enableHRFrame();
 		ui.frameHaptRep->setVisible( true );
 		ui.textEditExpInfo->setPlainText( "Single Haptic Force Feedback:\n" 
@@ -848,6 +1046,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonDepthConstant->isChecked()  )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		DataLogger::getInstance()->setInstruction( true );
 			
 		enableDepthFrame();
@@ -863,6 +1062,7 @@ void HapticEvaluationGUI::setExpInfo( void )
 	else if ( ui.radioButtonDepthLinear->isChecked() )
 	{
 		ui.pushButtonStart->setEnabled( true );
+
 		DataLogger::getInstance()->setInstruction( true );
 			
 		enableDepthFrame();
@@ -952,48 +1152,48 @@ void HapticEvaluationGUI::initGraph()
 	courbeFxA= new QwtPlotCurve( "Fx_A (N)" );
 	courbeFxA->setPen(QPen(Qt::yellow));
 	courbeFxA->attach(ui.qwtPlot);
-	courbeFxA->setRawData( dataX, dataFxA, index );
+	courbeFxA->setRawSamples( dataX, dataFxA, index );
 
 	courbeFxB= new QwtPlotCurve( "Fx_B (N)" );
 	courbeFxB->setPen(QPen(Qt::darkYellow));
 	courbeFxB->attach(ui.qwtPlot);
-	courbeFxB->setRawData( dataX, dataFxB, index );
+		courbeFxB->setRawSamples( dataX, dataFxB, index );
     
 	courbeFyA = new QwtPlotCurve( "Fy_A (N)" );
 	courbeFyA->setPen(QPen(Qt::green));
 	courbeFyA->attach(ui.qwtPlot);
-	courbeFyA->setRawData( dataX, dataFyA, index );
+	courbeFyA->setRawSamples( dataX, dataFyA, index );
 	
 	courbeFyB = new QwtPlotCurve( "Fy_B (N)" );
 	courbeFyB->setPen(QPen(Qt::darkGreen));
 	courbeFyB->attach(ui.qwtPlot);
-	courbeFyB->setRawData( dataX, dataFyB, index );
+	courbeFyB->setRawSamples( dataX, dataFyB, index );
 	
 	courbeFzA = new QwtPlotCurve( "Fz_A (N)" );
 	courbeFzA->setPen(QPen(Qt::blue));
 	courbeFzA->attach(ui.qwtPlot);
-	courbeFzA->setRawData( dataX, dataFzA, index );
+	courbeFzA->setRawSamples( dataX, dataFzA, index );
 
 	courbeFzB = new QwtPlotCurve( "Fz_B (N)" );
 	courbeFzB->setPen(QPen(Qt::darkRed));
 	courbeFzB->attach(ui.qwtPlot);
-	courbeFzB->setRawData( dataX, dataFzB, index );
+	courbeFzB->setRawSamples( dataX, dataFzB, index );
 
 	courbeFtotalA = new QwtPlotCurve( "F_A (N)" );
 	courbeFtotalA->setPen(QPen(Qt::red));
 	courbeFtotalA->attach(ui.qwtPlot);
-	courbeFtotalA->setRawData( dataX, dataFtotalA, index );
+	courbeFtotalA->setRawSamples( dataX, dataFtotalA, index );
 
 	courbeFtotalB = new QwtPlotCurve( "F_B (N)" );
 	courbeFtotalB->setPen(QPen(Qt::darkBlue));
 	courbeFtotalB->attach(ui.qwtPlot);
-	courbeFtotalB->setRawData( dataX, dataFtotalB, index );
+	courbeFtotalB->setRawSamples( dataX, dataFtotalB, index );
 	
 	/*
 	courbePx = new QwtPlotCurve("Pos (m)");
 	courbePx->setPen(QPen(Qt::cyan));
 	courbePx->attach(ui.qwtPlot);
-	courbePx->setRawData( dataX, dataPx, index );
+	courbePx->setRawSamples( dataX, dataPx, index );
 	courbePx->setYAxis(ui.qwtPlot->yRight);
 	*/
 
@@ -1018,7 +1218,7 @@ void HapticEvaluationGUI::initGraph()
     
 	Grid= new QwtPlotGrid();
 	Grid->enableX(false);
-	Grid->setMajPen(QPen(Qt::darkCyan));
+	Grid->setMajorPen(QPen(Qt::darkCyan));
     Grid->attach(ui.qwtPlot); 
 
 //	startTimer( period );
@@ -1067,15 +1267,15 @@ void HapticEvaluationGUI::updateDevGraphDisplay(Vector3 g , Vector3 p)
 	index++;
 	realIndex++;
 
-	courbeFxA->setRawData( dataX, dataFxA, KEEP ? qMin( realIndex, nbPoints ) : index );
-	courbeFyA->setRawData( dataX, dataFyA, KEEP ? qMin( realIndex, nbPoints ) : index );
-	courbeFzA->setRawData( dataX, dataFzA, KEEP ? qMin( realIndex, nbPoints ) : index );	
-	courbeFtotalA->setRawData( dataX, dataFtotalA, KEEP ? qMin( realIndex, nbPoints ) : index );	
-	courbeFxB->setRawData( dataX, dataFxB, KEEP ? qMin( realIndex, nbPoints ) : index );
-	courbeFyB->setRawData( dataX, dataFyB, KEEP ? qMin( realIndex, nbPoints ) : index );
-	courbeFzB->setRawData( dataX, dataFzB, KEEP ? qMin( realIndex, nbPoints ) : index );	
-	courbeFtotalB->setRawData( dataX, dataFtotalB, KEEP ? qMin( realIndex, nbPoints ) : index );
-	//courbePx->setRawData( dataX, dataPx, KEEP ? qMin( realIndex, nbPoints ) : index );
+	courbeFxA->setRawSamples( dataX, dataFxA, KEEP ? qMin( realIndex, nbPoints ) : index );
+	courbeFyA->setRawSamples( dataX, dataFyA, KEEP ? qMin( realIndex, nbPoints ) : index );
+	courbeFzA->setRawSamples( dataX, dataFzA, KEEP ? qMin( realIndex, nbPoints ) : index );	
+	courbeFtotalA->setRawSamples( dataX, dataFtotalA, KEEP ? qMin( realIndex, nbPoints ) : index );	
+	courbeFxB->setRawSamples( dataX, dataFxB, KEEP ? qMin( realIndex, nbPoints ) : index );
+	courbeFyB->setRawSamples( dataX, dataFyB, KEEP ? qMin( realIndex, nbPoints ) : index );
+	courbeFzB->setRawSamples( dataX, dataFzB, KEEP ? qMin( realIndex, nbPoints ) : index );	
+	courbeFtotalB->setRawSamples( dataX, dataFtotalB, KEEP ? qMin( realIndex, nbPoints ) : index );
+	//courbePx->setRawSamples( dataX, dataPx, KEEP ? qMin( realIndex, nbPoints ) : index );
 }
 
 void HapticEvaluationGUI::disableHRFrame()
@@ -1172,6 +1372,47 @@ void HapticEvaluationGUI::hideDataB()
 	ui.checkBoxFzB->setEnabled( false );
 	ui.checkBoxFtotalB->setEnabled( false );
 }
+
+void HapticEvaluationGUI::showDataA_2()
+{
+	ui.labelFx_A_2->setVisible( true );
+	ui.labelFy_A_2->setVisible( true );
+	ui.labelFz_A_2->setVisible( true );
+	ui.labelTx_A_2->setVisible( true );
+	ui.labelTy_A_2->setVisible( true );
+	ui.labelTz_A_2->setVisible( true );
+	ui.checkBoxFzA_2->setEnabled( true );
+}
+void HapticEvaluationGUI::hideDataA_2()
+{
+	ui.labelFx_A_2->setVisible( false );
+	ui.labelFy_A_2->setVisible( false );
+	ui.labelFz_A_2->setVisible( false );
+	ui.labelTx_A_2->setVisible( false );
+	ui.labelTy_A_2->setVisible( false );
+	ui.labelTz_A_2->setVisible( false );
+	ui.checkBoxFzA_2->setEnabled( false );
+}
+void HapticEvaluationGUI::showDataB_2()
+{
+	ui.labelFx_B_2->setVisible( true );
+	ui.labelFy_B_2->setVisible( true );
+	ui.labelFz_B_2->setVisible( true );
+	ui.labelTx_B_2->setVisible( true );
+	ui.labelTy_B_2->setVisible( true );
+	ui.labelTz_B_2->setVisible( true );
+	ui.checkBoxFxB_2->setEnabled( true );
+}
+void HapticEvaluationGUI::hideDataB_2()
+{
+	ui.labelFx_B_2->setVisible( false );
+	ui.labelFy_B_2->setVisible( false );
+	ui.labelFz_B_2->setVisible( false );
+	ui.labelTx_B_2->setVisible( false );
+	ui.labelTy_B_2->setVisible( false );
+	ui.labelTz_B_2->setVisible( false );
+	ui.checkBoxFxB_2->setEnabled( false );
+}
 void HapticEvaluationGUI::disableInterface()
 {
 	
@@ -1192,6 +1433,10 @@ void HapticEvaluationGUI::disableInterface()
 	ui.pushButtonEntactACalibrate->setEnabled( false );
 	ui.pushButtonEntactBCalibrate->setEnabled( false );
 	ui.radioButtonSLPosition->setEnabled( false );
+	
+	//******
+	ui.radioButtonForceToNet->setEnabled( false );
+	
 	ui.radioButtonSLForce->setEnabled( false );
 	ui.radioButtonDLForce->setEnabled( false );
 	ui.radioButtonHaptRep->setEnabled( false );
@@ -1220,6 +1465,10 @@ void HapticEvaluationGUI::enableInterface()
 	ui.pushButtonEntactACalibrate->setEnabled( true );
 	ui.pushButtonEntactBCalibrate->setEnabled( true );
 	ui.radioButtonSLPosition->setEnabled( true );
+
+	//******
+	ui.radioButtonForceToNet->setEnabled( true );
+
 	ui.radioButtonSLForce->setEnabled( true );
 	ui.radioButtonDLForce->setEnabled( true );
 	ui.radioButtonHaptRep->setEnabled( true );
@@ -1336,4 +1585,18 @@ void HapticEvaluationGUI::updateGriffith(Vector3 t1, Vector3 f1)
 	QString Fz_A = QString::number(f1.z,'f',3);	
 	ui.labelFz_A->setText(Fz_A);
 	ui.labelFz_A->show();
+}
+
+void HapticEvaluationGUI::switchDisplay()
+{
+	if (ui.frame_5->isVisible())
+	{
+		ui.frame_5->setVisible(false);
+		ui.frame_6->setVisible(true);
+	}
+	else if(ui.frame_6->isVisible())
+	{
+		ui.frame_5->setVisible(true);
+		ui.frame_6->setVisible(false);
+	}
 }

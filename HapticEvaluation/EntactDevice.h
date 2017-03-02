@@ -62,7 +62,7 @@ public:
 	bool getConnectSuccess() const { return connectSuccess; }
 
 	//setters
-	int setMode( int setmode ); //sets the running mode of the Entact.  We should be in force mode mostly
+	int setMode( HapticMode setmode ); //sets the running mode of the Entact.  We should be in force mode mostly
 	void writeForce( Vector3 force , Vector3 torque );  //sets the force to output from the Entact
 	void writePosition( Vector3 position , Matrix3x3 rotation ); //sets the position to output to the entact
 	void writeDamping( Vector3 translation , Vector3 rotation ); //sets the damping to the Entact

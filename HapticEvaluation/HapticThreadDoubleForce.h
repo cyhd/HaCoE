@@ -46,6 +46,7 @@ haptDeviceB is the slave.
 #include <qthread.h>
 #include "HapticThread.h"
 
+
 class HapticThreadDoubleForce : public HapticThread
 {
 public:
