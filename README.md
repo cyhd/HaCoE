@@ -29,4 +29,6 @@ Installation
       - OH_SDK_BASE to point to OpenHaptics
 - build with Visual C++ 2010 express
 
-[![codecov](https://codecov.io/gh/cyhd/HaCoE/branch/master/graph/badge.svg)](https://codecov.io/gh/cyhd/HaCoE)
+.. image:: https://coveralls.io/repos/github/cyhd/HaCoE/badge.svg?branch=master
+:target: https://coveralls.io/github/cyhd/HaCoE?branch=master
+
