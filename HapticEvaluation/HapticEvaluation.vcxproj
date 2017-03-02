@@ -47,7 +47,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>F:\Dev\qwt-5.2.1\src;F:\Dev\EntactAPI\include;.\GeneratedFiles;C:\Qt\5.5\msvc2010\include;.\GeneratedFiles\$(Configuration);C:\Qt\5.5\msvc2010\include\qtmain;C:\Qt\5.5\msvc2010\include\QtCore;C:\Qt\5.5\msvc2010\include\QtGui;C:\Qt\5.5\msvc2010\include\QtXml;C:\Qt\5.5\msvc2010\include\QtXmlPatterns;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\qtmain;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtXmlPatterns;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_THREAD_SUPPORT;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_XML_LIB;QT_XMLPATTERNS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
@@ -57,7 +57,7 @@
     <Link>
       <AdditionalDependencies>EntactAPI.lib;qwt5.lib;qtmain.lib;QtCore4.lib;QtGui4.lib;QtXml4.lib;QtXmlPatterns4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>F:\Dev\qwt-5.2.1\lib;F:\Dev\EntactAPI\lib32;C:\Qt\5.5\msvc2010\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>F:\Dev\qwt-5.2.1\lib;F:\Dev\EntactAPI\lib32;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -88,6 +88,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
+
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <AdditionalOptions>/ENTRY:"mainCRTStartup" %(AdditionalOptions)</AdditionalOptions>
@@ -184,6 +185,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="HapticThreadForceToNetwork.cpp" />
+
     <ClCompile Include="main.cpp" />
     <ClCompile Include="AtiU6.cpp" />
     <ClCompile Include="EntactDevice.cpp" />
@@ -201,6 +203,7 @@
     <ClCompile Include="RemoteControlLawWaveTheory.cpp" />
     <ClCompile Include="ReplWidget.cpp" />
     <ClCompile Include="Subject.cpp" />
+
     <ClCompile Include="datalogger.cpp" />
     <ClCompile Include="HapticThreadDoubleForce.cpp" />
     <ClCompile Include="HapticThreadHaptReplication.cpp" />
@@ -218,7 +221,7 @@
     <ClCompile Include="ftrt.c" />
     <ClCompile Include="node.c" />
     <ClCompile Include="stack.c" />
-    <ClCompile Include="topwidget.cpp" />
+  <ClCompile Include="topwidget.cpp" />
     <ClCompile Include="WriteNetworkThread.cpp" />
     <ClCompile Include="xmlparse.c" />
     <ClCompile Include="xmlrole.c" />
@@ -228,6 +231,9 @@
       </PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_hapticevaluationgui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -254,6 +260,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AtiU6.h" />
+
     <ClInclude Include="AutoWidget.h" />
     <CustomBuild Include="bottomwidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -359,6 +366,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" </Command>
     </CustomBuild>
     <ClInclude Include="WriteNetworkThread.h" />
+
     <ClInclude Include="datalogger.h" />
     <ClInclude Include="haptlinksupervisor.h" />
     <ClInclude Include="HapticThread.h" />
@@ -376,7 +384,9 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
+
       <UserProperties lupdateOnBuild="0" MocDir=".\GeneratedFiles\$(ConfigurationName)" MocOptions="" QtVersion_x0020_Win32="qt" RccDir=".\GeneratedFiles" UicDir=".\GeneratedFiles" Qt5Version_x0020_Win32="msvc2010" />
+
     </VisualStudio>
   </ProjectExtensions>
 </Project>

@@ -6,6 +6,7 @@
       <Extensions>cpp;cxx;c;def</Extensions>
     </Filter>
     <Filter Include="Source Files\device">
+
       <UniqueIdentifier>{02c819fd-b026-47d1-b42c-70a96ff70ca6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\general use">
@@ -16,6 +17,7 @@
     </Filter>
     <Filter Include="Source Files\logger">
       <UniqueIdentifier>{906bddce-0da8-4768-a67c-b9aac383de13}</UniqueIdentifier>
+
     </Filter>
     <Filter Include="Source Files\Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
@@ -23,6 +25,7 @@
       <ParseFiles>false</ParseFiles>
     </Filter>
     <Filter Include="Source Files\threads">
+
       <UniqueIdentifier>{ad56ecd5-1931-430a-9d7c-e88a32e274d2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\experiment">
@@ -30,12 +33,14 @@
     </Filter>
     <Filter Include="Source Files\supervisor">
       <UniqueIdentifier>{6fa2c16b-2b8f-48ad-badd-aa32beb2852b}</UniqueIdentifier>
+
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h</Extensions>
     </Filter>
     <Filter Include="Header Files\device">
+
       <UniqueIdentifier>{b8af56e2-6e53-4956-97ad-513f2e7698e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\general use">
@@ -55,6 +60,7 @@
     </Filter>
     <Filter Include="Header Files\experiment">
       <UniqueIdentifier>{8be7457f-5a9a-475c-8d92-5203a0036c77}</UniqueIdentifier>
+
     </Filter>
     <Filter Include="Form Files">
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
@@ -381,6 +387,7 @@
     <ClInclude Include="HRExperiment.h">
       <Filter>Header Files\experiment</Filter>
     </ClInclude>
+
     <ClInclude Include="OmniDevice.h">
       <Filter>Header Files\device</Filter>
     </ClInclude>
@@ -465,6 +472,7 @@
     <ClInclude Include="ExperimentInfoWidget.h">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
+
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="hapticevaluationgui.qrc">
